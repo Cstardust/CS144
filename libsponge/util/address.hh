@@ -12,24 +12,32 @@
 //! Wrapper around [IPv4 addresses](@ref man7::ip) and DNS operations.
 class Address {
   public:
+
+
     //! \brief Wrapper around [sockaddr_storage](@ref man7::socket).
     //! \details A `sockaddr_storage` is enough space to store any socket address (IPv4 or IPv6).
     class Raw {
       public:
-        sockaddr_storage storage{};  //!< The wrapped struct itself.
+  // 其实就是个struct sockaddr_in。数据都是一样的。 
+        sockaddr_storage storage{};  //!< The wrapped struct itself.  可强转成sockaddr_in
         operator sockaddr *();
         operator const sockaddr *() const;
     };
 
   private:
     socklen_t _size;  //!< Size of the wrapped address.
+    //  Address的核心数据 其实就是个struct sockaddr_in
     Raw _address{};   //!< A wrapped [sockaddr_storage](@ref man7::socket) containing the address.
+    //  _address 在构造函数结束时，其中就已经存储了ip以及port（即一个完备的sockaddr_in）
 
     //! Constructor from ip/host, service/port, and hints to the resolver.
     Address(const std::string &node, const std::string &service, const addrinfo &hints);
 
   public:
     //! Construct by resolving a hostname and servicename.
+      //  DNS operation : getaddrinfo
+        //  gethostbyname : hostname -> IP
+        //  getsevbyname  : servicename -> PORT
     Address(const std::string &hostname, const std::string &service);
 
     //! Construct from dotted-quad string ("18.243.0.1") and numeric port.

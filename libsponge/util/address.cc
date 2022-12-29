@@ -59,9 +59,10 @@ Address::Address(const string &node, const string &service, const addrinfo &hint
 
     // put resolved_address in a wrapper so it will get freed if we have to throw an exception
     auto addrinfo_deleter = [](addrinfo *const x) { freeaddrinfo(x); };
-    unique_ptr<addrinfo, decltype(addrinfo_deleter)> wrapped_address(resolved_address, move(addrinfo_deleter));
+    unique_ptr<addrinfo, decltype(addrinfo_deleter)> wrapped_address(resolved_address, move(addrinfo_deleter));     //  struct addrinfo
 
     // assign to our private members (making sure size fits)
+        //  struct addrinfo -> struct sockaddr ai_addr  ( -强转为-> (sockaddr_in*) addr 即可得到网络字节序的ip(sin_addr),port(sin_port) ) 
     *this = Address(wrapped_address->ai_addr, wrapped_address->ai_addrlen);
 }
 
@@ -88,11 +89,14 @@ Address::Address(const string &ip, const uint16_t port)
 
 // accessors
 pair<string, uint16_t> Address::ip_port() const {
-    array<char, NI_MAXHOST> ip{};
-    array<char, NI_MAXSERV> port{};
+    array<char, NI_MAXHOST> ip{};       //  string ip
+    array<char, NI_MAXSERV> port{};     //  string port
 
     const int gni_ret =
         getnameinfo(_address, _size, ip.data(), ip.size(), port.data(), port.size(), NI_NUMERICHOST | NI_NUMERICSERV);
+    //  getnameinfo : 通过传入的socketaddr(_address) 获取字符串表示的主机名和服务名
+    //  NI_NUMERICHOST ：返回字符串表示的IP地址，而非主机名
+    //  NI_NUMERICSERV ：返回字符串表示的port号，而非服务名
     if (gni_ret != 0) {
         throw tagged_error(gai_error_category(), "getnameinfo", gni_ret);
     }

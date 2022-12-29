@@ -13,6 +13,8 @@ int main() {
 
             test.execute(Write{"cat"});
 
+            cout<<"======================================================="<<endl;
+
             test.execute(InputEnded{false});
             test.execute(BufferEmpty{false});
             test.execute(Eof{false});
@@ -21,6 +23,8 @@ int main() {
             test.execute(RemainingCapacity{12});
             test.execute(BufferSize{3});
             test.execute(Peek{"cat"});
+            
+            cout<<"======================================================="<<endl;
 
             test.execute(EndInput{});
 
