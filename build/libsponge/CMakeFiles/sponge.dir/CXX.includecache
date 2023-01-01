@@ -6,6 +6,14 @@
 
 #IncludeRegexTransform: 
 
+/home/shc/CS144/sponge/libsponge/byte_stream.cc
+byte_stream.hh
+/home/shc/CS144/sponge/libsponge/byte_stream.hh
+cassert
+-
+iostream
+-
+
 /home/shc/CS144/sponge/libsponge/byte_stream.hh
 string
 -

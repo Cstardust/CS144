@@ -27,6 +27,9 @@ ByteStream::ByteStream(const size_t capacity)
 size_t ByteStream::write(const string &data) {
     // cout<<"==============wirte start============"<<endl;
     // cout << "write data " << data << endl;
+    
+    assert(!input_ended());     //  如果写端被关闭，则外界不应当对stream进行write。
+
     size_t bytes_to_write = min(data.size(), _capacity - _stream.size());   //  最多写多少bytes
     _bytes_pushed += bytes_to_write;
     for (size_t i = 0; i < bytes_to_write; ++i) {
@@ -109,3 +112,4 @@ size_t ByteStream::bytes_written() const { return _bytes_pushed; }
 size_t ByteStream::bytes_read() const { return _bytes_popped; }
 
 size_t ByteStream::remaining_capacity() const { return _capacity - _stream.size(); }
+

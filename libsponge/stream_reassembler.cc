@@ -152,18 +152,15 @@ bool StreamReassembler::corner(const string &data, const size_t index, const boo
 //! possibly out-of-order, from the logical stream, and assembles any newly
 //! contiguous substrings and writes them into the output stream in order.
 void StreamReassembler::push_substring(const string &data, const size_t index, const bool eof) {
-    // cout<<"================push_substring start=============="<<endl;
-
+    //  0. corner case
     if(corner(data,index,eof))
         return ;
 
     _first_unread = _output.bytes_read();
     _first_unassembled = _output.bytes_written();
 
-    // cout<<_first_unread<<" "<<_first_unassembled<<" "<<first_unacceptable()<<" "<<_receving_window.size()<<" "<<_output.bytes_read()<<" "<<_output.bytes_written()<<endl;
-    
     //  1. 将data的相应部分cached into receiving_window
-    bool non = false;   //  nothing_to_do ? 
+    bool non = false;   //  nothing_to_do 
     size_t last_idx = cached_into_receiving_window(data,index,non);
     if(non) return ;
 
@@ -172,11 +169,6 @@ void StreamReassembler::push_substring(const string &data, const size_t index, c
     //  3. 将receiving_window中的顺序字节加入bytestream，宏观来看就是移动接收窗口
     move_receiving_window();
 
-    _first_unread = _output.bytes_read();
-    _first_unassembled = _output.bytes_written();
-
-    // cout<<_first_unread<<" "<<_first_unassembled<<" "<<first_unacceptable()<<" "<<_receving_window.size()<<" "<<_output.bytes_read()<<" "<<_output.bytes_written()<<endl;
-    // cout<<"================push_substring end=============="<<endl;
 }
 
 size_t StreamReassembler::unassembled_bytes() const { 
