@@ -5,6 +5,11 @@
 
 #include <cstdint>
 #include <string>
+#include <unordered_map>
+#include<memory>
+
+using std::unordered_map;
+using std::unique_ptr;
 
 //! \brief A class that assembles a series of excerpts from a byte stream (possibly out of order,
 //! possibly overlapping) into an in-order byte stream.
@@ -12,9 +17,20 @@ class StreamReassembler {
   private:
     // Your code here -- add private members as necessary.
 
-    ByteStream _output;  //!< The reassembled in-order byte stream
-    size_t _capacity;    //!< The maximum number of bytes
+    ByteStream _output;  //!< The reassembled in-order byte stream  有序的bytes
+    size_t _capacity;    //!< The maximum number of bytes   // receiving window ?
+    
+    unordered_map<size_t , char> _receving_window;      //  乱序到达的，还没加入bytestream的bytes
 
+    // size_t _nread;             //  已经读了多少bytes。（所谓读，即上层调用bytestream.read()读走) nread = _first_unread (起始索引为0)
+    size_t _first_unread;         //  第一个没被读的byte的索引
+    size_t _first_unassembled;    //  第一个没加入bytestream的byte的索引（第一个乱序的byte索引）
+    // size_t _first_unacceptable; //  = first_unread + capacity;   第一个不可接收的字节，即第一个超出接收范围的字节。
+    size_t _eof_idx;
+    bool _eof;
+
+  private:
+    size_t first_unacceptable() const {return _first_unread + _capacity;}
   public:
     //! \brief Construct a `StreamReassembler` that will store up to `capacity` bytes.
     //! \note This capacity limits both the bytes that have been reassembled,

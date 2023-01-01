@@ -17,7 +17,6 @@ int main() {
             test.execute(BytesAvailable(""));
             test.execute(NotAtEof{});
         }
-
         {
             ReassemblerTestHarness test{65000};
 
@@ -37,16 +36,22 @@ int main() {
             test.execute(BytesAvailable("a"));
             test.execute(AtEof{});
         }
+        cout<<"*******************************************"<<endl;
 
         {
             ReassemblerTestHarness test{65000};
-
+            cout<<"test0"<<endl;
             test.execute(SubmitSegment{"", 0}.with_eof(true));
-
+            cout<<"test1"<<endl;
             test.execute(BytesAssembled(0));
+            cout<<"test2"<<endl;
+
             test.execute(BytesAvailable(""));
+            cout<<"test3"<<endl;
+            
             test.execute(AtEof{});
         }
+        cout<<"*******************************************"<<endl;
 
         {
             ReassemblerTestHarness test{65000};
@@ -57,6 +62,7 @@ int main() {
             test.execute(BytesAvailable("b"));
             test.execute(AtEof{});
         }
+        cout<<"*******************************************"<<endl;
 
         {
             ReassemblerTestHarness test{65000};
@@ -67,6 +73,7 @@ int main() {
             test.execute(BytesAvailable(""));
             test.execute(NotAtEof{});
         }
+        cout<<"*******************************************"<<endl;
 
         {
             ReassemblerTestHarness test{8};
@@ -77,6 +84,7 @@ int main() {
             test.execute(BytesAvailable{"abcdefgh"});
             test.execute(NotAtEof{});
         }
+        cout<<"*******************************************"<<endl;
 
         {
             ReassemblerTestHarness test{8};
@@ -87,6 +95,7 @@ int main() {
             test.execute(BytesAvailable{"abcdefgh"});
             test.execute(AtEof{});
         }
+        cout<<"*******************************************"<<endl;
 
         {
             ReassemblerTestHarness test{8};
@@ -100,6 +109,7 @@ int main() {
             test.execute(BytesAvailable{"abcdefgh"});
             test.execute(AtEof{});
         }
+        cout<<"*******************************************"<<endl;
 
         {
             ReassemblerTestHarness test{8};
@@ -117,6 +127,7 @@ int main() {
             test.execute(BytesAvailable{"abcdefgh"});
             test.execute(NotAtEof{});
         }
+        cout<<"*******************************************"<<endl;
 
         // credit for test: Bill Lin (2020)
         {

@@ -1,17 +1,429 @@
-Start testing: Dec 29 11:16 CST
+Start testing: Jan 01 13:51 CST
 ----------------------------------------------------------
+18/169 Testing: t_strm_reassem_single
+18/169 Test: t_strm_reassem_single
+Command: "/home/shc/CS144/sponge/build/tests/fsm_stream_reassembler_single"
+Directory: /home/shc/CS144/sponge/build
+"t_strm_reassem_single" start time: Jan 01 13:51 CST
+Output:
+----------------------------------------------------------
+capacity 65000
+capacity 65000
+capacity 65000
+*******************************************
+capacity 65000
+test0
+test1
+test2
+test3
+*******************************************
+capacity 65000
+*******************************************
+capacity 65000
+*******************************************
+capacity 8
+*******************************************
+capacity 8
+*******************************************
+capacity 8
+*******************************************
+capacity 8
+*******************************************
+capacity 8
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"t_strm_reassem_single" end time: Jan 01 13:51 CST
+"t_strm_reassem_single" time elapsed: 00:00:00
+----------------------------------------------------------
+
+19/169 Testing: t_strm_reassem_seq
+19/169 Test: t_strm_reassem_seq
+Command: "/home/shc/CS144/sponge/build/tests/fsm_stream_reassembler_seq"
+Directory: /home/shc/CS144/sponge/build
+"t_strm_reassem_seq" start time: Jan 01 13:51 CST
+Output:
+----------------------------------------------------------
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+get unassembled_bytes 0
+my test 5001 a
+capacity 65000
+get unassembled_bytes 5000
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"t_strm_reassem_seq" end time: Jan 01 13:51 CST
+"t_strm_reassem_seq" time elapsed: 00:00:00
+----------------------------------------------------------
+
+20/169 Testing: t_strm_reassem_dup
+20/169 Test: t_strm_reassem_dup
+Command: "/home/shc/CS144/sponge/build/tests/fsm_stream_reassembler_dup"
+Directory: /home/shc/CS144/sponge/build
+"t_strm_reassem_dup" start time: Jan 01 13:51 CST
+Output:
+----------------------------------------------------------
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"t_strm_reassem_dup" end time: Jan 01 13:51 CST
+"t_strm_reassem_dup" time elapsed: 00:00:00
+----------------------------------------------------------
+
+21/169 Testing: t_strm_reassem_holes
+21/169 Test: t_strm_reassem_holes
+Command: "/home/shc/CS144/sponge/build/tests/fsm_stream_reassembler_holes"
+Directory: /home/shc/CS144/sponge/build
+"t_strm_reassem_holes" start time: Jan 01 13:51 CST
+Output:
+----------------------------------------------------------
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"t_strm_reassem_holes" end time: Jan 01 13:51 CST
+"t_strm_reassem_holes" time elapsed: 00:00:00
+----------------------------------------------------------
+
+22/169 Testing: t_strm_reassem_many
+22/169 Test: t_strm_reassem_many
+Command: "/home/shc/CS144/sponge/build/tests/fsm_stream_reassembler_many"
+Directory: /home/shc/CS144/sponge/build
+"t_strm_reassem_many" start time: Jan 01 13:51 CST
+Output:
+----------------------------------------------------------
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+capacity 65000
+<end of output>
+Test time =   0.41 sec
+----------------------------------------------------------
+Test Passed.
+"t_strm_reassem_many" end time: Jan 01 13:51 CST
+"t_strm_reassem_many" time elapsed: 00:00:00
+----------------------------------------------------------
+
+23/169 Testing: t_strm_reassem_overlapping
+23/169 Test: t_strm_reassem_overlapping
+Command: "/home/shc/CS144/sponge/build/tests/fsm_stream_reassembler_overlapping"
+Directory: /home/shc/CS144/sponge/build
+"t_strm_reassem_overlapping" start time: Jan 01 13:51 CST
+Output:
+----------------------------------------------------------
+capacity 1000
+capacity 1000
+capacity 1000
+get unassembled_bytes 0
+capacity 1000
+get unassembled_bytes 2
+capacity 1000
+get unassembled_bytes 3
+capacity 1000
+get unassembled_bytes 4
+capacity 1000
+get unassembled_bytes 3
+get unassembled_bytes 0
+capacity 1000
+get unassembled_bytes 3
+get unassembled_bytes 0
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"t_strm_reassem_overlapping" end time: Jan 01 13:51 CST
+"t_strm_reassem_overlapping" time elapsed: 00:00:00
+----------------------------------------------------------
+
+24/169 Testing: t_strm_reassem_win
+24/169 Test: t_strm_reassem_win
+Command: "/home/shc/CS144/sponge/build/tests/fsm_stream_reassembler_win"
+Directory: /home/shc/CS144/sponge/build
+"t_strm_reassem_win" start time: Jan 01 13:51 CST
+Output:
+----------------------------------------------------------
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+capacity 262144
+<end of output>
+Test time =   0.42 sec
+----------------------------------------------------------
+Test Passed.
+"t_strm_reassem_win" end time: Jan 01 13:51 CST
+"t_strm_reassem_win" time elapsed: 00:00:00
+----------------------------------------------------------
+
+25/169 Testing: t_strm_reassem_cap
+25/169 Test: t_strm_reassem_cap
+Command: "/home/shc/CS144/sponge/build/tests/fsm_stream_reassembler_cap"
+Directory: /home/shc/CS144/sponge/build
+"t_strm_reassem_cap" start time: Jan 01 13:51 CST
+Output:
+----------------------------------------------------------
+capacity 2
+capacity 2
+capacity 2
+capacity 1
+capacity 8
+capacity 3
+<end of output>
+Test time =   0.06 sec
+----------------------------------------------------------
+Test Passed.
+"t_strm_reassem_cap" end time: Jan 01 13:51 CST
+"t_strm_reassem_cap" time elapsed: 00:00:00
+----------------------------------------------------------
+
 26/169 Testing: t_byte_stream_construction
 26/169 Test: t_byte_stream_construction
 Command: "/home/shc/CS144/sponge/build/tests/byte_stream_construction"
 Directory: /home/shc/CS144/sponge/build
-"t_byte_stream_construction" start time: Dec 29 11:16 CST
+"t_byte_stream_construction" start time: Jan 01 13:51 CST
 Output:
 ----------------------------------------------------------
 <end of output>
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"t_byte_stream_construction" end time: Dec 29 11:16 CST
+"t_byte_stream_construction" end time: Jan 01 13:51 CST
 "t_byte_stream_construction" time elapsed: 00:00:00
 ----------------------------------------------------------
 
@@ -19,7 +431,7 @@ Test Passed.
 27/169 Test: t_byte_stream_one_write
 Command: "/home/shc/CS144/sponge/build/tests/byte_stream_one_write"
 Directory: /home/shc/CS144/sponge/build
-"t_byte_stream_one_write" start time: Dec 29 11:16 CST
+"t_byte_stream_one_write" start time: Jan 01 13:51 CST
 Output:
 ----------------------------------------------------------
 =======================================================
@@ -28,7 +440,7 @@ Output:
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"t_byte_stream_one_write" end time: Dec 29 11:16 CST
+"t_byte_stream_one_write" end time: Jan 01 13:51 CST
 "t_byte_stream_one_write" time elapsed: 00:00:00
 ----------------------------------------------------------
 
@@ -36,14 +448,14 @@ Test Passed.
 28/169 Test: t_byte_stream_two_writes
 Command: "/home/shc/CS144/sponge/build/tests/byte_stream_two_writes"
 Directory: /home/shc/CS144/sponge/build
-"t_byte_stream_two_writes" start time: Dec 29 11:16 CST
+"t_byte_stream_two_writes" start time: Jan 01 13:51 CST
 Output:
 ----------------------------------------------------------
 <end of output>
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"t_byte_stream_two_writes" end time: Dec 29 11:16 CST
+"t_byte_stream_two_writes" end time: Jan 01 13:51 CST
 "t_byte_stream_two_writes" time elapsed: 00:00:00
 ----------------------------------------------------------
 
@@ -51,14 +463,14 @@ Test Passed.
 29/169 Test: t_byte_stream_capacity
 Command: "/home/shc/CS144/sponge/build/tests/byte_stream_capacity"
 Directory: /home/shc/CS144/sponge/build
-"t_byte_stream_capacity" start time: Dec 29 11:16 CST
+"t_byte_stream_capacity" start time: Jan 01 13:51 CST
 Output:
 ----------------------------------------------------------
 <end of output>
-Test time =   0.29 sec
+Test time =   0.30 sec
 ----------------------------------------------------------
 Test Passed.
-"t_byte_stream_capacity" end time: Dec 29 11:16 CST
+"t_byte_stream_capacity" end time: Jan 01 13:51 CST
 "t_byte_stream_capacity" time elapsed: 00:00:00
 ----------------------------------------------------------
 
@@ -66,50 +478,29 @@ Test Passed.
 30/169 Test: t_byte_stream_many_writes
 Command: "/home/shc/CS144/sponge/build/tests/byte_stream_many_writes"
 Directory: /home/shc/CS144/sponge/build
-"t_byte_stream_many_writes" start time: Dec 29 11:16 CST
+"t_byte_stream_many_writes" start time: Jan 01 13:51 CST
 Output:
 ----------------------------------------------------------
 <end of output>
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"t_byte_stream_many_writes" end time: Dec 29 11:16 CST
+"t_byte_stream_many_writes" end time: Jan 01 13:51 CST
 "t_byte_stream_many_writes" time elapsed: 00:00:00
-----------------------------------------------------------
-
-31/169 Testing: t_webget
-31/169 Test: t_webget
-Command: "/home/shc/CS144/sponge/tests/webget_t.sh"
-Directory: /home/shc/CS144/sponge/build
-"t_webget" start time: Dec 29 11:16 CST
-Output:
-----------------------------------------------------------
-Function called: get_URL(cs144.keithw.org, /nph-hasher/xyzzy).
-Warning: get_URL() has not been implemented yet.
-HTTP/1.1 200 OK
-Content-type: text/plain
-
-7SmXqWkrLKzVBCEalbSPqBcvs11Pw263K7x4Wv3JckI
-<end of output>
-Test time =   1.24 sec
-----------------------------------------------------------
-Test Passed.
-"t_webget" end time: Dec 29 11:16 CST
-"t_webget" time elapsed: 00:00:01
 ----------------------------------------------------------
 
 53/169 Testing: t_address_dt
 53/169 Test: t_address_dt
 Command: "/home/shc/CS144/sponge/build/doctests/address_dt"
 Directory: /home/shc/CS144/sponge/build
-"t_address_dt" start time: Dec 29 11:16 CST
+"t_address_dt" start time: Jan 01 13:51 CST
 Output:
 ----------------------------------------------------------
 <end of output>
-Test time =   0.06 sec
+Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"t_address_dt" end time: Dec 29 11:16 CST
+"t_address_dt" end time: Jan 01 13:51 CST
 "t_address_dt" time elapsed: 00:00:00
 ----------------------------------------------------------
 
@@ -117,14 +508,14 @@ Test Passed.
 54/169 Test: t_parser_dt
 Command: "/home/shc/CS144/sponge/build/doctests/parser_dt"
 Directory: /home/shc/CS144/sponge/build
-"t_parser_dt" start time: Dec 29 11:16 CST
+"t_parser_dt" start time: Jan 01 13:51 CST
 Output:
 ----------------------------------------------------------
 <end of output>
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"t_parser_dt" end time: Dec 29 11:16 CST
+"t_parser_dt" end time: Jan 01 13:51 CST
 "t_parser_dt" time elapsed: 00:00:00
 ----------------------------------------------------------
 
@@ -132,15 +523,15 @@ Test Passed.
 55/169 Test: t_socket_dt
 Command: "/home/shc/CS144/sponge/build/doctests/socket_dt"
 Directory: /home/shc/CS144/sponge/build
-"t_socket_dt" start time: Dec 29 11:16 CST
+"t_socket_dt" start time: Jan 01 13:51 CST
 Output:
 ----------------------------------------------------------
 <end of output>
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"t_socket_dt" end time: Dec 29 11:16 CST
+"t_socket_dt" end time: Jan 01 13:51 CST
 "t_socket_dt" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-End testing: Dec 29 11:16 CST
+End testing: Jan 01 13:51 CST

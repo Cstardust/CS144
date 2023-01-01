@@ -1,3 +1,4 @@
-27:t_byte_stream_one_write
-28:t_byte_stream_two_writes
-29:t_byte_stream_capacity
+21:t_strm_reassem_holes
+22:t_strm_reassem_many
+24:t_strm_reassem_win
+25:t_strm_reassem_cap

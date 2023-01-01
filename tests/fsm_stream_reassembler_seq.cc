@@ -66,6 +66,35 @@ int main() {
             }
         }
 
+        {
+            ReassemblerTestHarness test{65000};
+            std::ostringstream ss;
+
+            for (size_t i = 0; i < 100; ++i) {
+                test.execute(BytesAssembled(5 * i));
+                test.execute(SubmitSegment{"abcde", 5 * i});
+                test.execute(NotAtEof{});
+                test.execute(BytesAvailable("abcde"));
+                test.execute(UnassembledBytes(0));
+            }
+        }
+
+{
+    cout<<"my test 5001 a"<<endl;
+        ReassemblerTestHarness test{65000};
+        std::ostringstream ss;
+        for(int i=0;i<5000;++i)
+        {
+            test.execute(SubmitSegment("a",i+1));
+        }
+        test.execute(UnassembledBytes(5000));
+        test.execute(NotAtEof{});
+        test.execute(SubmitSegment("a",0));
+        test.execute(BytesAvailable(string(5001,'a')));
+        //  ok
+}
+    
+
     } catch (const exception &e) {
         cerr << "Exception: " << e.what() << endl;
         return EXIT_FAILURE;

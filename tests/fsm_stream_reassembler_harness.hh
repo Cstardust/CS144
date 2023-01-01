@@ -36,6 +36,8 @@ struct ReassemblerExpectation : public ReassemblerTestStep {
     virtual ~ReassemblerExpectation() {}
 };
 
+//  以下为几种测试行为
+//  测试当前bytestream中可读的字节内容及数量是否符合预期
 struct BytesAvailable : public ReassemblerExpectation {
     std::string _bytes;
 
@@ -63,6 +65,7 @@ struct BytesAvailable : public ReassemblerExpectation {
     }
 };
 
+//  测试写入bytestream的字节数量是否符合预期
 struct BytesAssembled : public ReassemblerExpectation {
     size_t _bytes;
 
@@ -83,6 +86,8 @@ struct BytesAssembled : public ReassemblerExpectation {
     }
 };
 
+//  test action : 测试处于 recving_window中的字节的数量是否符合预期
+//  也即测试 [first_unassemble,first_unacceptable)之间的字节数量
 struct UnassembledBytes : public ReassemblerExpectation {
     size_t _bytes;
 
@@ -120,6 +125,8 @@ struct AtEof : public ReassemblerExpectation {
     }
 };
 
+//  测试reassembler是否处于eof状态
+    //  即 测试其成员bytestream是否处于eof状态
 struct NotAtEof : public ReassemblerExpectation {
     NotAtEof() {}
     std::string description() const {
@@ -137,6 +144,7 @@ struct NotAtEof : public ReassemblerExpectation {
     }
 };
 
+//  test action : 向resemble中加入字节
 struct SubmitSegment : public ReassemblerAction {
     std::string _data;
     size_t _index;
@@ -159,6 +167,7 @@ struct SubmitSegment : public ReassemblerAction {
     void execute(StreamReassembler &reassembler) const { reassembler.push_substring(_data, _index, _eof); }
 };
 
+//  执行上述test action 的执行类
 class ReassemblerTestHarness {
     StreamReassembler reassembler;
     std::vector<std::string> steps_executed;

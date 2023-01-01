@@ -41,8 +41,6 @@ size_t ByteStream::write(const string &data) {
 
 //! \param[in] len bytes will be copied from the output side of the buffer
 string ByteStream::peek_output(const size_t len) const {
-    // DUMMY_CODE(len);
-    
     // cout<<"=============peek_output start============="<<endl;
     
     assert(_stream.size() <= _capacity);
@@ -98,16 +96,16 @@ void ByteStream::end_input() { _end = true; }
 
 //  input写端是否被关闭
 bool ByteStream::input_ended() const { return _end; }
-
+//  当前_stream中还有多少bytes未读出
 size_t ByteStream::buffer_size() const { return _stream.size(); }
 
 bool ByteStream::buffer_empty() const { return _stream.empty(); }
 
 //  遇见eof : input关闭，且_stream中无数据
 bool ByteStream::eof() const { return _end && _stream.empty(); }
-
+//  总共有多少bytes压入到_stream中过
 size_t ByteStream::bytes_written() const { return _bytes_pushed; }
-
+//  _stream中总共有过多少bytes流出
 size_t ByteStream::bytes_read() const { return _bytes_popped; }
 
 size_t ByteStream::remaining_capacity() const { return _capacity - _stream.size(); }
