@@ -9,6 +9,7 @@
 using namespace std;
 
 void check_roundtrip(const WrappingInt32 isn, const uint64_t value, const uint64_t checkpoint) {
+    // cout<<"check_roundtrip "<<isn<<" "<<value<<" "<<checkpoint<<" "<<wrap(value, isn)<<endl;
     if (unwrap(wrap(value, isn), isn, checkpoint) != value) {
         ostringstream ss;
 

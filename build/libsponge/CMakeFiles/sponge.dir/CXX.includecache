@@ -6,39 +6,17 @@
 
 #IncludeRegexTransform: 
 
-/home/shc/CS144/sponge/libsponge/byte_stream.cc
-byte_stream.hh
-/home/shc/CS144/sponge/libsponge/byte_stream.hh
-cassert
--
+/home/shc/CS144/sponge/libsponge/wrapping_integers.cc
+wrapping_integers.hh
+/home/shc/CS144/sponge/libsponge/wrapping_integers.hh
 iostream
 -
-
-/home/shc/CS144/sponge/libsponge/byte_stream.hh
-string
--
-queue
--
-deque
+cmath
 -
 
-/home/shc/CS144/sponge/libsponge/stream_reassembler.cc
-stream_reassembler.hh
-/home/shc/CS144/sponge/libsponge/stream_reassembler.hh
-cassert
--
-iostream
--
-
-/home/shc/CS144/sponge/libsponge/stream_reassembler.hh
-byte_stream.hh
-/home/shc/CS144/sponge/libsponge/byte_stream.hh
+/home/shc/CS144/sponge/libsponge/wrapping_integers.hh
 cstdint
 -
-string
--
-unordered_map
--
-memory
+ostream
 -
 

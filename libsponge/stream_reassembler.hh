@@ -67,6 +67,19 @@ class StreamReassembler {
     //! \brief Is the internal state empty (other than the output stream)?
     //! \returns `true` if no substrings are waiting to be assembled
     bool empty() const;
+
+    size_t window_size() const{
+      // _first_unassembled = _output.bytes_written();      
+      // return first_unacceptable() - _first_unassembled;
+      return _capacity + _output.bytes_read() - _output.bytes_written();
+    }
+
+    size_t first_unassembled() const{   
+      //  比_first_unassembled更及时；不过由于整个类只能通过push_substring来改变_first_unassembled，因此first_unassembled() 调用时 应当== _first_unassembled
+      // _first_unassembled = _output.bytes_written();
+      // return _first_unassembled;
+      return _output.bytes_written();
+    }
 };
 
 #endif  // SPONGE_LIBSPONGE_STREAM_REASSEMBLER_HH

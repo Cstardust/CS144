@@ -14,7 +14,7 @@ using namespace std;
 int main() {
     try {
         // auto rd = get_random_generator();
-
+        cout<<"======================================"<<endl;
         {
             TCPReceiverTestHarness test{4000};
             test.execute(ExpectWindow{4000});
@@ -26,6 +26,7 @@ int main() {
             test.execute(ExpectUnassembledBytes{0});
             test.execute(ExpectTotalAssembledBytes{0});
         }
+        cout<<"======================================"<<endl;
 
         {
             TCPReceiverTestHarness test{5435};
@@ -37,6 +38,7 @@ int main() {
             test.execute(ExpectUnassembledBytes{0});
             test.execute(ExpectTotalAssembledBytes{0});
         }
+        cout<<"======================================"<<endl;
 
         {
             TCPReceiverTestHarness test{5435};
@@ -48,6 +50,7 @@ int main() {
             test.execute(ExpectUnassembledBytes{0});
             test.execute(ExpectTotalAssembledBytes{0});
         }
+        cout<<"======================================"<<endl;
 
         {
             TCPReceiverTestHarness test{5435};
@@ -60,6 +63,7 @@ int main() {
             test.execute(ExpectUnassembledBytes{0});
             test.execute(ExpectTotalAssembledBytes{0});
         }
+        cout<<"======================================"<<endl;
 
         {
             TCPReceiverTestHarness test{5435};
@@ -76,6 +80,7 @@ int main() {
             test.execute(ExpectUnassembledBytes{0});
             test.execute(ExpectTotalAssembledBytes{0});
         }
+        cout<<"======================================"<<endl;
 
         {
             TCPReceiverTestHarness test{4000};
@@ -85,6 +90,7 @@ int main() {
             test.execute(ExpectUnassembledBytes{0});
             test.execute(ExpectTotalAssembledBytes{0});
         }
+        cout<<"======================================"<<endl;
 
         {
             // Window overflow

@@ -34,6 +34,7 @@ int main() {
         /* segment with SYN + data */
         {
             uint32_t isn = uniform_int_distribution<uint32_t>{0, UINT32_MAX}(rd);
+            cout<<"isn "<<isn<<endl;
             TCPReceiverTestHarness test{4000};
             test.execute(ExpectState{TCPReceiverStateSummary::LISTEN});
             test.execute(SegmentArrives{}

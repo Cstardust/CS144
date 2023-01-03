@@ -5,7 +5,11 @@
 #include "stream_reassembler.hh"
 #include "tcp_segment.hh"
 #include "wrapping_integers.hh"
+#include <iostream>
 
+using std::cout;
+using std::endl;
+#include <cassert>
 #include <optional>
 
 //! \brief The "receiver" part of a TCP implementation.
@@ -19,13 +23,23 @@ class TCPReceiver {
 
     //! The maximum number of bytes we'll store.
     size_t _capacity;
+    std::optional<WrappingInt32> _isn;
 
+    enum State { LISTENING = 1, SYN_RECV,FIN_RECV };
+    State _state;
+
+  private:
+    bool listening() { return !_isn.has_value(); }
+    bool syn_recv() { return _isn.has_value() && !_reassembler.stream_out().input_ended(); }
+    bool fin_recv() { return _reassembler.stream_out().input_ended(); }
+    void update_state();
   public:
+
     //! \brief Construct a TCP receiver
     //!
     //! \param capacity the maximum number of bytes that the receiver will
     //!                 store in its buffers at any give time.
-    TCPReceiver(const size_t capacity) : _reassembler(capacity), _capacity(capacity) {}
+    TCPReceiver(const size_t capacity) : _reassembler(capacity), _capacity(capacity) , _isn(),_state(LISTENING) {}
 
     //! \name Accessors to provide feedback to the remote TCPSender
     //!@{
@@ -61,6 +75,17 @@ class TCPReceiver {
     ByteStream &stream_out() { return _reassembler.stream_out(); }
     const ByteStream &stream_out() const { return _reassembler.stream_out(); }
     //!@}
+
+  private:
+    size_t abs_seq_to_stream_idx(size_t abs_seq) {
+        // assert(abs_seq > 0);
+        // if(abs_seq <= 0)
+        // {
+        //   cout<<"abs seq = 0"<<endl;
+        //   exit(-1);
+        // }
+        return abs_seq - 1;
+    }
 };
 
 #endif  // SPONGE_LIBSPONGE_TCP_RECEIVER_HH

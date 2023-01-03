@@ -175,7 +175,7 @@ int main() {
             uint32_t isn = 23452;
             TCPReceiverTestHarness test{cap};
             test.execute(SegmentArrives{}.with_syn().with_seqno(isn).with_result(SegmentArrives::Result::OK));
-            test.execute(SegmentArrives{}.with_seqno(isn).with_data("a").with_result(SegmentArrives::Result::OK));
+            test.execute(SegmentArrives{}.with_seqno(isn).with_data("a").with_result(SegmentArrives::Result::OK));  //  这没做错吗？果然做错了。invalid stream index should be ignored
             test.execute(ExpectTotalAssembledBytes{0});
         }
 

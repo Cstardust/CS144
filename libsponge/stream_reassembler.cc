@@ -152,6 +152,9 @@ bool StreamReassembler::corner(const string &data, const size_t index, const boo
 //! possibly out-of-order, from the logical stream, and assembles any newly
 //! contiguous substrings and writes them into the output stream in order.
 void StreamReassembler::push_substring(const string &data, const size_t index, const bool eof) {
+    
+    cout<<"pushsubstring "<<data<<endl;
+    
     //  0. corner case
     if(corner(data,index,eof))
         return ;
@@ -164,10 +167,18 @@ void StreamReassembler::push_substring(const string &data, const size_t index, c
     size_t last_idx = cached_into_receiving_window(data,index,non);
     if(non) return ;
 
+    _first_unread = _output.bytes_read();
+    _first_unassembled = _output.bytes_written();
+
+    // cout<<"pushsubstring "<<data<<" "<<_first_unread<<" "<<_first_unassembled<<" "<<last_idx<<" "<<first_unacceptable()<<endl;
+
     //  2. 计算eof下标
     whether_eof(data,index,eof,last_idx);
     //  3. 将receiving_window中的顺序字节加入bytestream，宏观来看就是移动接收窗口
     move_receiving_window();
+
+    _first_unread = _output.bytes_read();
+    _first_unassembled = _output.bytes_written();
 
 }
 

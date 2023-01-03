@@ -9,12 +9,16 @@
 class WrappingInt32 {
   private:
     uint32_t _raw_value;  //!< The raw 32-bit stored integer
-
   public:
     //! Construct from a raw 32-bit unsigned integer
     explicit WrappingInt32(uint32_t raw_value) : _raw_value(raw_value) {}
 
     uint32_t raw_value() const { return _raw_value; }  //!< Access raw stored value
+    uint64_t raw_64_value() const { return static_cast<uint64_t>(_raw_value); }
+    static const uint64_t _MOD = (1ul << 32);
+
+    static uint64_t ROUNDDOWN(uint64_t x) { return x & ~(_MOD - 1); }
+    static uint64_t ROUNDUP(uint64_t x) { return (x + _MOD - 1) & ~(_MOD - 1); }
 };
 
 //! Transform a 64-bit absolute sequence number (zero-indexed) into a 32-bit relative sequence number
@@ -56,6 +60,7 @@ inline bool operator!=(WrappingInt32 a, WrappingInt32 b) { return !(a == b); }
 inline std::ostream &operator<<(std::ostream &os, WrappingInt32 a) { return os << a.raw_value(); }
 
 //! \brief The point `b` steps past `a`.
+//  有溢出怎么办 ？ 解决方案：不必管，溢出就自动对2^32取模了。
 inline WrappingInt32 operator+(WrappingInt32 a, uint32_t b) { return WrappingInt32{a.raw_value() + b}; }
 
 //! \brief The point `b` steps before `a`.
