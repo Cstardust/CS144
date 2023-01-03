@@ -12,13 +12,8 @@ class WrappingInt32 {
   public:
     //! Construct from a raw 32-bit unsigned integer
     explicit WrappingInt32(uint32_t raw_value) : _raw_value(raw_value) {}
-
     uint32_t raw_value() const { return _raw_value; }  //!< Access raw stored value
-    uint64_t raw_64_value() const { return static_cast<uint64_t>(_raw_value); }
     static const uint64_t _MOD = (1ul << 32);
-
-    static uint64_t ROUNDDOWN(uint64_t x) { return x & ~(_MOD - 1); }
-    static uint64_t ROUNDUP(uint64_t x) { return (x + _MOD - 1) & ~(_MOD - 1); }
 };
 
 //! Transform a 64-bit absolute sequence number (zero-indexed) into a 32-bit relative sequence number

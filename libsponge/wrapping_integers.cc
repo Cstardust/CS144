@@ -36,78 +36,44 @@ WrappingInt32 wrap(uint64_t abs_seq, WrappingInt32 isn) {
 //! runs from the local TCPSender to the remote TCPReceiver and has one ISN,
 //! and the other stream runs from the remote TCPSender to the local TCPReceiver and
 //! has a different ISN.
-uint64_t unwrap(WrappingInt32 n, WrappingInt32 isn, uint64_t checkpoint) {
+uint64_t unwrap(WrappingInt32 seq, WrappingInt32 isn, uint64_t checkpoint) {
 //  seqno -> absolute seq no
 //  closet : 没有向上取最接近还是向下取最接近之分。只要求最接近即可。
-    // DUMMY_CODE(n, isn, checkpoint);
-    WrappingInt32 & seq = n;
-    //  absolute seq % _MOD
-    uint64_t base_abs = (seq + (WrappingInt32::_MOD - isn.raw_value())).raw_64_value();
 
-    // cout<<seq<<" "<<isn<<" "<<checkpoint<<" "<<base_abs<<endl;
-
-    if(checkpoint % WrappingInt32::_MOD !=0 )
+    uint32_t base_abs = seq - isn;
+    // cout<<seq<<" "<<isn<<" "<<checkpoint<<" "<<static_cast<uint32_t>(checkpoint)<<" "<<base_abs<<endl;    
+    if( base_abs >= static_cast<uint32_t>(checkpoint))
     {
-        uint64_t m1 = WrappingInt32::ROUNDUP(checkpoint) - checkpoint + base_abs;
-        uint64_t m2 = checkpoint - WrappingInt32::ROUNDDOWN(checkpoint) - base_abs;
-        if(checkpoint > (WrappingInt32::ROUNDDOWN(checkpoint) + base_abs))
+        uint32_t offset = base_abs - static_cast<uint32_t>(checkpoint);
+        if(offset <= (1ul<<31))
         {
-            // cout<<"\t branch1 b1 "<<checkpoint<<" "<<WrappingInt32::ROUNDDOWN(checkpoint)<<" "<<base_abs<<" "<<(WrappingInt32::ROUNDDOWN(checkpoint) + base_abs)<<endl;
-            m2 = checkpoint - WrappingInt32::ROUNDDOWN(checkpoint) - base_abs;
+            // cout<<"branch1a\t"<<offset<<" "<<checkpoint + offset<<endl;;
+            return checkpoint + offset;
         }
         else
         {
-            // cout<<"\t branch1 b2 "<<checkpoint<<" "<<WrappingInt32::ROUNDDOWN(checkpoint)<<" "<<base_abs<<" "<<(WrappingInt32::ROUNDDOWN(checkpoint) + base_abs)<<endl;
-            m2 = base_abs + WrappingInt32::ROUNDDOWN(checkpoint) - checkpoint;
+            // cout<<"branch1b\t"<<offset<<" "<<WrappingInt32::_MOD - offset<<" "<<checkpoint - (WrappingInt32::_MOD - offset)<<endl;
+            //  corner case : 当下溢时 选择右侧 而不是左侧溢出到2^64
+            if(checkpoint < (WrappingInt32::_MOD - offset))
+                return checkpoint + offset;
+            return checkpoint - (WrappingInt32::_MOD - offset);
         }
-
-        uint64_t m3 = checkpoint - WrappingInt32::ROUNDDOWN(checkpoint) + WrappingInt32::_MOD - base_abs;
-
-        // cout<<"\t branch1 "<<WrappingInt32::ROUNDDOWN(checkpoint)<<" "<<checkpoint<<" "<<WrappingInt32::ROUNDUP(checkpoint)<<endl;
-        // cout<<"\t branch1 "<<m1<<" "<<m2<<endl;
-        // cout<<"\t branch1 "<<WrappingInt32::ROUNDUP(checkpoint) + base_abs<<" "<<WrappingInt32::ROUNDDOWN(checkpoint) + base_abs<<endl;
-
-        uint64_t r = min(min(m1,m2),m3);
-        if(r == m1)
-        {
-            return WrappingInt32::ROUNDUP(checkpoint) + base_abs;
-        }
-        else if(r == m2)
-        {
-            return WrappingInt32::ROUNDDOWN(checkpoint) + base_abs;
-        }
-        else if(r == m3)
-        {
-            return WrappingInt32::ROUNDDOWN(checkpoint) - WrappingInt32::_MOD + base_abs;
-        }
-        else
-        {
-            cout<<"ASDSADASDADS"<<endl;
-            return -1;
-        }
-        // return m1 <= m2 ? WrappingInt32::ROUNDUP(checkpoint) + base_abs : WrappingInt32::ROUNDDOWN(checkpoint) + base_abs;
-    }
+    } 
     else
     {
-        uint64_t m1 = base_abs;
-        if(checkpoint == 0)             //  不能理解。corner case。居然不是循环回UINT64_MAX
-            return m1;
-        uint64_t m2 = WrappingInt32::_MOD - base_abs;
-        // cout<<"\t branch2 "<<m1<<" "<<m2<<endl;
-        // cout<<"\t branch2 "<<checkpoint + base_abs<<" "<<checkpoint + base_abs - WrappingInt32::_MOD<<endl;
-        return m1 <= m2 ? checkpoint + base_abs : checkpoint + base_abs - WrappingInt32::_MOD ;
-
+        uint32_t offset = static_cast<uint32_t>(checkpoint) - base_abs;
+        if(offset > (1ul<<31))
+        {
+            // cout<<"branch2a\t"<<offset<<" "<<checkpoint + (WrappingInt32::_MOD - offset)<<endl;;
+            return checkpoint + (WrappingInt32::_MOD - offset);
+        }
+        else
+        {
+            if(checkpoint < offset)
+                return checkpoint + (WrappingInt32::_MOD - offset);
+            // cout<<"branch2b\t"<<offset<<" "<<checkpoint - offset<<endl;
+            return checkpoint - offset;
+        }
     }
-    // uint64_t res1 = checkpoint + base_abs;
-    // if(checkpoint >= WrappingInt32::_MOD)
-    //     uint64_t res2 = checkpoint - WrappingInt32::_MOD + base_abs;    
-    return 0;
-
-    // WrappingInt32 wrap_checkpoint = wrap(checkpoint, isn);
-    // int32_t diff = n - wrap_checkpoint;
-    // int64_t res = checkpoint + diff;
-    // if (res < 0) {
-    //     return res + (1ul << 32);
-    // }
-    // return res;
 }
+

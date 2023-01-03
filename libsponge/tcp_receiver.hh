@@ -33,6 +33,7 @@ class TCPReceiver {
     bool syn_recv() { return _isn.has_value() && !_reassembler.stream_out().input_ended(); }
     bool fin_recv() { return _reassembler.stream_out().input_ended(); }
     void update_state();
+    bool corner(const TCPSegment &seg) const;
   public:
 
     //! \brief Construct a TCP receiver
@@ -78,13 +79,9 @@ class TCPReceiver {
 
   private:
     size_t abs_seq_to_stream_idx(size_t abs_seq) {
-        // assert(abs_seq > 0);
-        // if(abs_seq <= 0)
-        // {
-        //   cout<<"abs seq = 0"<<endl;
-        //   exit(-1);
-        // }
-        return abs_seq - 1;
+        //  特例abs_seq == 0 : 对于最一开始的syn报文 其携带的seq 不是 正式应用数据报文的seq 而是isn。
+        //  那么如果携带了数据 对于该写动作，应用报文的stream_idx也不能通过abs_seq_to_streamidx计算 应当人为规定为0
+        return abs_seq == 0 ? 0 : abs_seq - 1;
     }
 };
 

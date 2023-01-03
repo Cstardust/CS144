@@ -153,8 +153,6 @@ bool StreamReassembler::corner(const string &data, const size_t index, const boo
 //! contiguous substrings and writes them into the output stream in order.
 void StreamReassembler::push_substring(const string &data, const size_t index, const bool eof) {
     
-    cout<<"pushsubstring "<<data<<endl;
-    
     //  0. corner case
     if(corner(data,index,eof))
         return ;
@@ -183,7 +181,6 @@ void StreamReassembler::push_substring(const string &data, const size_t index, c
 }
 
 size_t StreamReassembler::unassembled_bytes() const { 
-    cout<<"get unassembled_bytes "<<_receving_window.size()<<endl;
     return _receving_window.size();
 }
 
