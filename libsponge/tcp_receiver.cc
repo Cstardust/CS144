@@ -69,7 +69,7 @@ optional<WrappingInt32> TCPReceiver::ackno() const {
     }
     else 
     {
-        cout<<"unknown _state" <<_state<<endl;
+        cout<<"receiver unknown _state" <<_state<<endl;
         return wrap(_reassembler.first_unassembled() + 1,_isn.value());
     }
 }

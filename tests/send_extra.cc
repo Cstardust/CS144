@@ -159,18 +159,19 @@ int main() {
             for (unsigned int i = 0; i < TCPConfig::DEFAULT_CAPACITY; i++) {
                 bigstring.push_back(nicechars.at(rd() % nicechars.size()));
             }
-
+            //  reivew
             const size_t window_size = uniform_int_distribution<uint16_t>{50000, 63000}(rd);
-
+            //  ??????????????? 
             TCPSenderTestHarness test{"fill_window() correctly fills a big window", cfg};
-            test.execute(WriteBytes(string(bigstring)));
+            test.execute(WriteBytes(string(bigstring)));    //  all into byestream ,and only one byte into send-window because recv_window = 0
             test.execute(ExpectSegment{}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
             test.execute(AckReceived{WrappingInt32{isn + 1}}.with_win(window_size));
             test.execute(ExpectState{TCPSenderStateSummary::SYN_ACKED});
-
+            cout<<"+++++++++++++++++++"<<endl;
             for (unsigned int i = 0; i + TCPConfig::MAX_PAYLOAD_SIZE < min(bigstring.size(), window_size);
                  i += TCPConfig::MAX_PAYLOAD_SIZE) {
                 const size_t expected_size = min(TCPConfig::MAX_PAYLOAD_SIZE, min(bigstring.size(), window_size) - i);
+                cout<<i<<" "<<expected_size<<endl;
                 test.execute(ExpectSegment{}
                                  .with_no_flags()
                                  .with_payload_size(expected_size)
@@ -299,30 +300,35 @@ int main() {
         }
 
         {
+            //  review
             TCPConfig cfg;
             WrappingInt32 isn(rd());
             const size_t rto = uniform_int_distribution<uint16_t>{30, 10000}(rd);
             cfg.fixed_isn = isn;
             cfg.rt_timeout = rto;
-
+            //  ?? 这话是啥意思 不要倒退RTO ? RTO不翻倍的意思吗 ？
             TCPSenderTestHarness test{
                 "When filling window, treat a '0' window size as equal to '1' but don't back off RTO", cfg};
             test.execute(ExpectSegment{}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
             test.execute(WriteBytes("abc"));
             test.execute(ExpectNoSegment{});
             test.execute(AckReceived{WrappingInt32{isn + 1}}.with_win(0));
+            cout<<"------------------0-----------------"<<endl;
             test.execute(ExpectState{TCPSenderStateSummary::SYN_ACKED});
-            test.execute(ExpectSegment{}.with_payload_size(1).with_data("a").with_seqno(isn + 1).with_no_flags());
+            cout<<"-------------------1----------------"<<endl;
+            test.execute(ExpectSegment{}.with_payload_size(1).with_data("a").with_seqno(isn + 1).with_no_flags());  //  执行一次expectsegment 就相当于check了sender将要发送的segment(out_segment中的segment)，并将该segment发送出去。
+            cout<<"------------------2-----------------"<<endl;
             test.execute(Close{});
+            cout<<"------------------3-----------------"<<endl;
             test.execute(ExpectNoSegment{});
-
+            cout<<"-----------------4----------------"<<endl;
             for (unsigned int i = 0; i < 5; i++) {
                 test.execute(Tick{rto - 1});
                 test.execute(ExpectNoSegment{});
                 test.execute(Tick{1});
                 test.execute(ExpectSegment{}.with_payload_size(1).with_data("a").with_seqno(isn + 1).with_no_flags());
             }
-
+            cout<<"----------5----------------"<<endl;
             test.execute(AckReceived{isn + 2}.with_win(0));
             test.execute(ExpectSegment{}.with_payload_size(1).with_data("b").with_seqno(isn + 2).with_no_flags());
 
@@ -398,7 +404,7 @@ int main() {
             cfg.rt_timeout = rto;
 
             TCPSenderTestHarness test{"Repeated ACKs and outdated ACKs are harmless", cfg};
-
+            //  review
             test.execute(ExpectSegment{}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
             test.execute(AckReceived{WrappingInt32{isn + 1}}.with_win(1000));
             test.execute(ExpectState{TCPSenderStateSummary::SYN_ACKED});
@@ -422,6 +428,7 @@ int main() {
             test.execute(AckReceived{WrappingInt32{isn + 8}}.with_win(1000));
             test.execute(AckReceived{WrappingInt32{isn + 8}}.with_win(1000));
             test.execute(AckReceived{WrappingInt32{isn + 8}}.with_win(1000));
+            cout<<"8888888888888888888888888888"<<endl;
             test.execute(AckReceived{WrappingInt32{isn + 12}}.with_win(1000));
             test.execute(AckReceived{WrappingInt32{isn + 12}}.with_win(1000));
             test.execute(AckReceived{WrappingInt32{isn + 12}}.with_win(1000));
@@ -431,6 +438,9 @@ int main() {
             test.execute(ExpectNoSegment{});
             test.execute(AckReceived(WrappingInt32{isn + 13}).with_win(1000));
             test.execute(AckReceived(WrappingInt32{isn + 1}).with_win(1000));
+            
+            //  syn data fin 都已经被ack了。
+            //  为什么这里还要有tick ? 我的方法是tick的时候加一个特判。判断timer是否在工作。
             test.execute(Tick{5 * rto});
             test.execute(ExpectNoSegment{});
             test.execute(ExpectState{TCPSenderStateSummary::FIN_ACKED});

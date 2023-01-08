@@ -103,6 +103,7 @@ struct ExpectNoSegment : public SenderExpectation {
     ExpectNoSegment() {}
     std::string description() const { return "no (more) segments"; }
 
+    //  sender没有要发送的segment
     void execute(TCPSender &, std::queue<TCPSegment> &segments) const {
         if (not segments.empty()) {
             std::ostringstream ss;
@@ -137,6 +138,7 @@ struct WriteBytes : public SenderAction {
     }
 
     void execute(TCPSender &sender, std::queue<TCPSegment> &) const {
+        cout<<"user writes "<< _bytes<<" into stream"<<endl;
         sender.stream_in().write(std::move(_bytes));
         if (_end_input) {
             sender.stream_in().end_input();
@@ -336,6 +338,7 @@ struct ExpectSegment : public SenderExpectation {
 
     virtual std::string description() const { return "segment sent with " + segment_description(); }
 
+    //  check queue队头的tcpsegment是否等于ExpectSegment类内预期的tcp segment
     void execute(TCPSender &, std::queue<TCPSegment> &segments) const {
         if (segments.empty()) {
             throw SegmentExpectationViolation::violated_verb("existed");
@@ -364,10 +367,12 @@ struct ExpectSegment : public SenderExpectation {
             throw SegmentExpectationViolation::violated_field("win", win.value(), seg.header().win);
         }
         if (payload_size.has_value() and seg.payload().size() != payload_size.value()) {
+            cout<<"payload "<<seg.payload().copy()<<endl;
             throw SegmentExpectationViolation::violated_field(
                 "payload_size", payload_size.value(), seg.payload().size());
         }
         if (seg.payload().size() > TCPConfig::MAX_PAYLOAD_SIZE) {
+            cout<<"payload "<<seg.payload().copy()<<endl;
             throw SegmentExpectationViolation("packet has length (" + std::to_string(seg.payload().size()) +
                                               ") greater than the maximum");
         }
@@ -399,6 +404,7 @@ class TCPSenderTestHarness {
         , name(name_) {
         sender.fill_window();
         collect_output();
+        cout<<"********************** "<<name_<<endl;
         std::ostringstream ss;
         ss << "Initialized with ("
            << "retx-timeout=" << config.rt_timeout << ") and called fill_window()";

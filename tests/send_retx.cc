@@ -21,7 +21,9 @@ int main() {
             uint16_t retx_timeout = uniform_int_distribution<uint16_t>{10, 10000}(rd);
             cfg.fixed_isn = isn;
             cfg.rt_timeout = retx_timeout;
-
+            //  review 
+            //  receive window = 0 时 不double
+            //  但sender看到的receive window的初始值是1 .. ??
             TCPSenderTestHarness test{"Retx SYN twice at the right times, then ack", cfg};
             test.execute(ExpectSegment{}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
             test.execute(ExpectNoSegment{});
@@ -56,6 +58,7 @@ int main() {
             test.execute(ExpectNoSegment{});
             test.execute(ExpectState{TCPSenderStateSummary::SYN_SENT});
             for (size_t attempt_no = 0; attempt_no < TCPConfig::MAX_RETX_ATTEMPTS; attempt_no++) {
+                cout<<"loop retx "<<attempt_no<<endl;
                 test.execute(Tick{(retx_timeout << attempt_no) - 1u}.with_max_retx_exceeded(false));
                 test.execute(ExpectNoSegment{});
                 test.execute(Tick{1}.with_max_retx_exceeded(false));
@@ -66,7 +69,6 @@ int main() {
             test.execute(Tick{(retx_timeout << TCPConfig::MAX_RETX_ATTEMPTS) - 1u}.with_max_retx_exceeded(false));
             test.execute(Tick{1}.with_max_retx_exceeded(true));
         }
-
         {
             TCPConfig cfg;
             WrappingInt32 isn(rd());
@@ -81,8 +83,11 @@ int main() {
             test.execute(WriteBytes{"abcd"});
             test.execute(ExpectSegment{}.with_payload_size(4));
             test.execute(ExpectNoSegment{});
+            // cout<<"++++++++++++++++++++++++++++++++++++++"<<endl;
             test.execute(AckReceived{WrappingInt32{isn + 5}});
+            // cout<<"++++++++++++++++++++++++++++++++++++++"<<endl;
             test.execute(ExpectBytesInFlight{0});
+            // cout<<"++++++++++++++++++++++++++++++++++++++"<<endl;
             test.execute(WriteBytes{"efgh"});
             test.execute(ExpectSegment{}.with_payload_size(4));
             test.execute(ExpectNoSegment{});
@@ -94,6 +99,7 @@ int main() {
             test.execute(WriteBytes{"ijkl"});
             test.execute(ExpectSegment{}.with_payload_size(4).with_seqno(isn + 9));
             for (size_t attempt_no = 0; attempt_no < TCPConfig::MAX_RETX_ATTEMPTS; attempt_no++) {
+                cout<<"loop retx "<<attempt_no<<endl;
                 test.execute(Tick{(retx_timeout << attempt_no) - 1u}.with_max_retx_exceeded(false));
                 test.execute(ExpectNoSegment{});
                 test.execute(Tick{1}.with_max_retx_exceeded(false));
