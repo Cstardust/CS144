@@ -1,35 +1,42 @@
 t_webget 20 0
-t_byte_stream_construction 108 1.86787e-05
-t_byte_stream_one_write 95 1.53011e-05
-t_byte_stream_two_writes 95 1.32042e-05
-t_byte_stream_capacity 95 0.00455942
-t_byte_stream_many_writes 107 4.56533e-05
-t_address_dt 103 0.00767559
-t_parser_dt 108 1.36667e-05
-t_socket_dt 108 4.60231e-05
-t_strm_reassem_single 60 3.31983e-05
-t_strm_reassem_seq 79 0.000119638
-t_strm_reassem_dup 79 6.46835e-05
-t_strm_reassem_holes 67 3.66328e-05
-t_strm_reassem_many 69 0.00715883
-t_strm_reassem_overlapping 79 2.11823e-05
-t_strm_reassem_win 69 0.00625027
-t_strm_reassem_cap 65 0.00112317
-t_wrapping_ints_cmp 55 8.18109e-05
-t_wrapping_ints_unwrap 51 2.62804e-05
-t_wrapping_ints_wrap 55 1.84436e-05
-t_wrapping_ints_roundtrip 52 0.00245527
-t_recv_connect 32 5.36531e-05
-t_recv_transmit 36 0.00417731
-t_recv_window 30 5.184e-05
-t_recv_reorder 36 5.7375e-05
-t_recv_close 33 5.52545e-05
-t_recv_special 19 9.56526e-05
-t_send_connect 8 0.00021975
-t_send_transmit 3 0.103433
-t_send_retx 3 0.000786567
-t_send_window 3 0.0118964
-t_send_ack 8 0.000319925
-t_send_close 4 0.00053705
-t_send_extra 2 0.00203585
+t_byte_stream_construction 111 1.23162e-05
+t_byte_stream_one_write 98 1.19918e-05
+t_byte_stream_two_writes 98 1.10163e-05
+t_byte_stream_capacity 98 0.00301812
+t_byte_stream_many_writes 110 3.65164e-05
+t_address_dt 106 0.000500643
+t_parser_dt 111 1.81243e-05
+t_socket_dt 111 3.33468e-05
+t_strm_reassem_single 63 3.52397e-05
+t_strm_reassem_seq 82 8.63073e-05
+t_strm_reassem_dup 82 5.51366e-05
+t_strm_reassem_holes 70 2.69843e-05
+t_strm_reassem_many 72 0.00711417
+t_strm_reassem_overlapping 82 1.92415e-05
+t_strm_reassem_win 72 0.00579384
+t_strm_reassem_cap 68 0.000871344
+t_wrapping_ints_cmp 58 5.20293e-05
+t_wrapping_ints_unwrap 54 2.23963e-05
+t_wrapping_ints_wrap 58 1.77448e-05
+t_wrapping_ints_roundtrip 55 0.00229764
+t_recv_connect 35 4.14229e-05
+t_recv_transmit 39 0.00377368
+t_recv_window 33 4.87606e-05
+t_recv_reorder 39 5.80872e-05
+t_recv_close 36 9.61e-05
+t_recv_special 22 8.84636e-05
+t_send_connect 10 0
+t_send_transmit 5 0
+t_send_retx 5 0
+t_send_window 5 0
+t_send_ack 10 0
+t_send_close 6 0
+t_send_extra 3 0
 ---
+t_send_connect
+t_send_transmit
+t_send_retx
+t_send_window
+t_send_ack
+t_send_close
+t_send_extra

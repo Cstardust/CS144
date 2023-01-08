@@ -87,6 +87,42 @@ static void Assert(bool msg)
     }
 }
 
+size_t TCPSender::send_segment(size_t remaining_recv_window_sz)
+{
+    //  1. build tcpsegment
+    TCPSegment seg;
+        seg.header().seqno = next_seqno();
+        //  syn
+        if(state() == State::CLOSED && remaining_recv_window_sz >= 1)
+        {
+            seg.header().syn = true;
+        }
+
+        //  payload
+        cout<<TCPConfig::MAX_PAYLOAD_SIZE <<" "<< remaining_recv_window_sz - seg.header().syn<< " " <<_stream.buffer_size()<<endl;
+        
+        size_t payload_sz = min({TCPConfig::MAX_PAYLOAD_SIZE,remaining_recv_window_sz - seg.header().syn,_stream.buffer_size()});
+        seg.payload() = _stream.read(payload_sz);       //  bytestream中读取出来的是tcp payload。至于tcp header 是由sender自己填写。
+        
+        cout<<"payload_sz"<<" "<<payload_sz<<" seg.payload() "<<seg.payload().copy()<<endl;
+        cout<<"stream_eof "<<_stream.eof()<<endl;
+        //  fin
+        if(state() == SYN_ACKED_2 && remaining_recv_window_sz > payload_sz + seg.header().syn)
+        {
+            seg.header().fin = true;
+        }
+
+
+    //  2. send the seg
+    if(seg.length_in_sequence_space()!=0)
+    {
+        cout<<"I send"<<" "<<" seg.payload() "<<seg.payload().copy()<<" syn "<<seg.header().syn<<" fin "<<seg.header().fin<<endl;
+        _send_window.push_back(seg);
+    }
+
+    //  3.  return length in seq space
+    return seg.length_in_sequence_space();
+}
 
 void TCPSender::fill_window() //  try to send segment to fill the receive window
 {
@@ -104,8 +140,10 @@ void TCPSender::fill_window() //  try to send segment to fill the receive window
     size_t remaining_recv_window_sz = _receive_window_size == 0 ? 1 : _receive_window_size;
     if(bytes_in_flight() > remaining_recv_window_sz)
     {
-        cout<<"send byte more than 1 bytes when the receive window is null"<<endl;
-        cout<<"never send more before recive window is not null"<<endl;
+        cout<<"the recv_window should == bytes_in_flight"<<endl;
+        cout<<"In fact , the receive_window is full now , but because of our sender implementation , we can't acked part of the segment , so we can't bascially remaining_recv_window_sz -= bytes_in_flight() to get 0 . Instead, we should return now"<<endl;
+        // cout<<"send byte more than 1 bytes when the receive window is null"<<endl;
+        // cout<<"never send more before recive window is not null"<<endl;
         return ;
     }
 
@@ -126,48 +164,16 @@ void TCPSender::fill_window() //  try to send segment to fill the receive window
         //  2. 发送还未发送的新数据
         cout<<"_next_abs_seqno "<<_next_seqno<<endl;
 
-        //  build tcpsegment
-        TCPSegment seg;
-            seg.header().seqno = next_seqno();
-            //  syn
-            if(state() == State::CLOSED && remaining_recv_window_sz >= 1)
-            {
-                seg.header().syn = true;
-            }
-
-            //  payload
-            cout<<TCPConfig::MAX_PAYLOAD_SIZE <<" "<< remaining_recv_window_sz - seg.header().syn<< " " <<_stream.buffer_size()<<endl;
-            
-            size_t payload_sz = min({TCPConfig::MAX_PAYLOAD_SIZE,remaining_recv_window_sz - seg.header().syn,_stream.buffer_size()});
-            seg.payload() = _stream.read(payload_sz);       //  bytestream中读取出来的是tcp payload。至于tcp header 是由sender自己填写。
-            
-            cout<<"payload_sz"<<" "<<payload_sz<<" seg.payload() "<<seg.payload().copy()<<endl;
-            cout<<"stream_eof "<<_stream.eof()<<endl;
-            //  fin
-            //  我目前认为 : fin 并不占据 stream idx 故 可以 >=  _receive_window_size >= payload_sz
-            //  目前认为 _receive_window_size >= payload_sz 不加也可以吧。反正receiver自己会判断。
-            //  最新目前认为：还是要判断_receive_window_size >= payload_sz接收方能否接收fin的，因为要维护_next_seqno变量
-            //  _next_seqno 假定 sender所有发送的字节都被receiver成功接收?
-            //  最最新目前认为：sender看receive_windows中 其中是含有syn和fin的。也即syn和fin会占据receive_window的字节位置.
-                //  疑问：receiver在实现的时候 syn和fin并没有占据receive_window的字节位置。
-                //  为什么sender要认为占据了。
-                //  先按照占据了来做吧。等做完再看看。
-            
-            if(state() == SYN_ACKED_2 && remaining_recv_window_sz > payload_sz + seg.header().syn)
-            {
-                seg.header().fin = true;
-            }
+        //  build and send tcpsegment
+        size_t seg_len_in_seq_space = send_segment(remaining_recv_window_sz);
 
         //  如果这个segment 既没有 flag 如 syn fin；又没有 payload 则 不必发送该seg
-        if(seg.length_in_sequence_space() == 0)
+        if(seg_len_in_seq_space == 0)
         {
             cout<<"nothing to send"<<endl;
             break;
         }
-        //  send seg
-        _segments_out.push(seg);
-        //  update send_window
-        _send_window.push_back(seg);
+
         //  如果这是 send_window empty之后 第一次发送数据（装入数据到_send_window）。
         if(!_timer.active())
         {
@@ -177,13 +183,10 @@ void TCPSender::fill_window() //  try to send segment to fill the receive window
         }
 
         //  update _next_seq
-        _next_seqno += seg.length_in_sequence_space();
-        //  update _send_window_size
-        // _send_window_size += seg.length_in_sequence_space();
+        _next_seqno += seg_len_in_seq_space;
         //  update receive_window_size
-        cout<<seg.length_in_sequence_space()<<" "<<remaining_recv_window_sz<<" "<<remaining_recv_window_sz-seg.length_in_sequence_space()<<endl;
-        remaining_recv_window_sz -= seg.length_in_sequence_space();
-
+        cout<<seg_len_in_seq_space<<" "<<remaining_recv_window_sz<<" "<<remaining_recv_window_sz-seg_len_in_seq_space<<endl;
+        remaining_recv_window_sz -= seg_len_in_seq_space;
     }
 
     cout<<"============fill window end=========="<<endl;

@@ -154,6 +154,8 @@ class TCPSender {
         }
     }
 
+
+    size_t send_segment(size_t remaining_recv_window_sz);
   public:
     //! Initialize a TCPSender
     TCPSender(const size_t capacity = TCPConfig::DEFAULT_CAPACITY,
