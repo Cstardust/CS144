@@ -10,6 +10,13 @@
 #include <string>
 
 using namespace std;
+void collect_output(TCPSender &sender ,std::queue<TCPSegment> &outbound_segments) 
+{
+    while (not sender.segments_out().empty()) {
+        outbound_segments.push(std::move(sender.segments_out().front()));
+        sender.segments_out().pop();
+    }
+}
 
 int main() {
     try {
@@ -227,6 +234,8 @@ int main() {
             test.execute(ExpectSegment{}.with_payload_size(0).with_seqno(isn + 4).with_fin(true));
         }
 
+
+
         {
             TCPConfig cfg;
             WrappingInt32 isn(rd());
@@ -234,19 +243,37 @@ int main() {
             cfg.fixed_isn = isn;
             cfg.rt_timeout = rto;
 
-            TCPSenderTestHarness test{"Don't add FIN if this would make the segment exceed the receiver's window", cfg};
+            TCPSenderTestHarness test{"Don't add FIN if this would make the segment exceed the receiver's window", cfg};        
+                //  sender.fill_window(); 发送syn报文 
             test.execute(ExpectSegment{}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
+                //  check 刚才发送的报文 : seq(isn) + syn + payload(0)
+                //  [0](isn)  1  2  3  4
+                //  syn 
             test.execute(WriteBytes("abc").with_end_input(true));
+                //  sender.stream_in().write(std::move(_bytes));    sender.stream_in().end_input();     sender.fill_window();     
+                //  [0]  1  2  3  4
+                //  syn  
+                //  in stream wait for send : a b c fin   
             test.execute(AckReceived{WrappingInt32{isn + 1}}.with_win(3));
             test.execute(ExpectState{TCPSenderStateSummary::SYN_ACKED});
             test.execute(ExpectSegment{}.with_payload_size(3).with_data("abc").with_seqno(isn + 1).with_no_flags());
-            //  review
+                // sender.ack_received(_ackno, _window_advertisement.value_or(DEFAULT_TEST_WINDOW));
+                //  0   [1  2  3]  4
+                //  syn  a  b  c
+                //  in stream wait for send : fin   
+            //  ack for a
             test.execute(AckReceived{WrappingInt32{isn + 2}}.with_win(2));
             test.execute(ExpectNoSegment{});
+            //  ack for b
             test.execute(AckReceived{WrappingInt32{isn + 3}}.with_win(1));
             test.execute(ExpectNoSegment{});
+            //  ack for c
             test.execute(AckReceived{WrappingInt32{isn + 4}}.with_win(1));
             test.execute(ExpectSegment{}.with_payload_size(0).with_seqno(isn + 4).with_fin(true));
+                // sender.ack_received(_ackno, _window_advertisement.value_or(DEFAULT_TEST_WINDOW));
+                //  0   1  2  3  [4]
+                // syn  a  b  c  fin
+                //  in stream wait for send
         }
 
         {

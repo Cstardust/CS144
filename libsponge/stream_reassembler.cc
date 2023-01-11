@@ -59,6 +59,13 @@ size_t StreamReassembler::cached_into_receiving_window(const string &data, const
         last_idx = index + len;
     }
     //  3.  data全部位于receving_window范围之外
+    //  这种情况即所谓的 [接收缓存溢出] 因为bytestream可能已经满了达到capacity 导致 receive_window_size == 0，向其中写入byte失败
+    //  因为bytestream长时间不读，导致bytestream_size + recv_window_sz == capacity(最终会变成bytestream_sz == capacity) , 致使data落在recv_window之外被discard
+    //  此即[接收缓存溢出]
+    //  与自顶向下P164描述不同 , 我的处理方案是 写失败后 并不将其从receive_window中移除
+    //  而是既不写入bytestream , 也不将其从receive_window中移除
+    //  也即不做操作，从bytestream到receive_window都不变
+    //  而之后如果有新的数据到来receiver , receiver 不会将其缓存进receive_window 而是丢弃。
     else if (index >= first_unacceptable()) {
         non = true;
         return 0;  //  nothing
@@ -110,8 +117,8 @@ void StreamReassembler::move_receiving_window()
             break;
         // cout<<_receving_window[i];
         
-        //  从recving_window进入bytestream
-        _output.write(string(1,_receving_window[i]));
+        //  字节从recving_window进入bytestream
+        size_t len_written = _output.write(string(1,_receving_window[i]));
         //  从recving_window中移除
         _receving_window.erase(i);
     }

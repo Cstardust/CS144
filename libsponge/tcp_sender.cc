@@ -30,7 +30,6 @@ bool Timer::elapse(uint64_t elapsed)
 }
 
 
-
 void Timer::reset()
 {
     _active = false;
@@ -117,6 +116,7 @@ size_t TCPSender::send_segment(size_t remaining_recv_window_sz)
     if(seg.length_in_sequence_space()!=0)
     {
         cout<<"I send"<<" "<<" seg.payload() "<<seg.payload().copy()<<" syn "<<seg.header().syn<<" fin "<<seg.header().fin<<endl;
+        _segments_out.push(seg);
         _send_window.push_back(seg);
     }
 
@@ -124,31 +124,46 @@ size_t TCPSender::send_segment(size_t remaining_recv_window_sz)
     return seg.length_in_sequence_space();
 }
 
+//    (5.1) Every time a packet containing data is sent (including a
+//          retransmission), if the timer is not running, start it running
+//          so that it will expire after RTO seconds (for the current value
+//          of RTO).
+void TCPSender::timer_when_filling()
+{
+    //  如果此时 timer 还未开启
+    //  如果这是 send_window empty之后 第一次发送数据（装入数据到_send_window）。
+    if(!_timer.active())
+    {
+        cout<<"start a timer"<<endl;
+        _timer.reset();
+        _timer.start(_initial_retransmission_timeout);
+    }
+}
+
+void TCPSender::update_when_filling(size_t seg_len_in_seq_space,size_t & remaining_recv_window_sz)
+{
+    //  update _next_seq
+    _next_seqno += seg_len_in_seq_space;
+    //  update receive_window_size. useful for filling loop
+    cout<<seg_len_in_seq_space<<" "<<remaining_recv_window_sz<<" "<<remaining_recv_window_sz-seg_len_in_seq_space<<endl;
+    remaining_recv_window_sz -= seg_len_in_seq_space;
+}
+
 void TCPSender::fill_window() //  try to send segment to fill the receive window
 {
 
     Assert(1);
     cout<<"============fill window start=========="<<endl;
-    if(_aborted)
-    {
-        cout<<"this tcp connection is aborted"<<endl;
-        return ;
-    }
     
-    //  1. 发送超时重传 数据  ? 难道不是在fill_window中实现吗？果然不是。似乎是在tick中实现。
-
     size_t remaining_recv_window_sz = _receive_window_size == 0 ? 1 : _receive_window_size;
     if(bytes_in_flight() > remaining_recv_window_sz)
     {
         cout<<"the recv_window should == bytes_in_flight"<<endl;
-        cout<<"In fact , the receive_window is full now , but because of our sender implementation , we can't acked part of the segment , so we can't bascially remaining_recv_window_sz -= bytes_in_flight() to get 0 . Instead, we should return now"<<endl;
-        // cout<<"send byte more than 1 bytes when the receive window is null"<<endl;
-        // cout<<"never send more before recive window is not null"<<endl;
+        cout<<"In fact , the receive_window is full now , but because of our sender implementation , we can't acked part of the segment , so we can't bascially remaining_recv_window_sz -= bytes_in_flight() to get 0 . Instead, we should return now"<<endl;  // cout<<"send byte more than 1 bytes when the receive window is null"<<endl;   // cout<<"never send more before recive window is not null"<<endl;
         return ;
     }
 
-    //  !!! sender目前已知的 receive_window_size 减去 之前发送的 bytes。
-        //  感觉目的是为了让sender和receiver看到的receive window size大小相同 ,还不确定
+    // sender目前已知的 receive_window_size 减去 bytes sen but not acked。
     remaining_recv_window_sz -= bytes_in_flight();
 
     if(_receive_window_size == 0)
@@ -157,11 +172,10 @@ void TCPSender::fill_window() //  try to send segment to fill the receive window
     }
     
     cout<<"remaing_recv_window_sz = "<<remaining_recv_window_sz<<endl;
-    //  什么时候发送结束 : remaining_recv_window_sz == 0 or 没有报文可以发送(payload empty and flag is empty)
+    //  发送结束 : remaining_recv_window_sz == 0 or 没有报文可以发送(payload empty and flag is empty)
     while(remaining_recv_window_sz > 0)
     {
         cout<<"looping "<<remaining_recv_window_sz<<endl;
-        //  2. 发送还未发送的新数据
         cout<<"_next_abs_seqno "<<_next_seqno<<endl;
 
         //  build and send tcpsegment
@@ -174,19 +188,11 @@ void TCPSender::fill_window() //  try to send segment to fill the receive window
             break;
         }
 
-        //  如果这是 send_window empty之后 第一次发送数据（装入数据到_send_window）。
-        if(!_timer.active())
-        {
-            cout<<"start a timer"<<endl;
-            _timer.reset();
-            _timer.start(_initial_retransmission_timeout);
-        }
+        //  start timer if it not start
+        timer_when_filling();
 
-        //  update _next_seq
-        _next_seqno += seg_len_in_seq_space;
-        //  update receive_window_size
-        cout<<seg_len_in_seq_space<<" "<<remaining_recv_window_sz<<" "<<remaining_recv_window_sz-seg_len_in_seq_space<<endl;
-        remaining_recv_window_sz -= seg_len_in_seq_space;
+        //  update _next_seq ; update receive_window_size ; update _send_window_size
+        update_when_filling(seg_len_in_seq_space,remaining_recv_window_sz);
     }
 
     cout<<"============fill window end=========="<<endl;
@@ -214,19 +220,13 @@ void TCPSender::ack_received(const WrappingInt32 ackno, const uint16_t window_si
 
     cout<<"============ack_received start=========== "<<abs_ackno<<" "<<_receive_window_size<<endl;
 
-    if(_aborted)
-    {
-        cout<<"this tcp connection is aborted"<<endl;
-        return ;
-    }
     
     if(abs_ackno > _next_seqno)     // ack: receiver 期待 sender发送的下一个字节索引 ，_next_seqno : sender顺序将要发送的下一个字节索引
     {
         cout<<"never happened ! the byte after _next_seqno hasn't been sent !"<<endl;
         return ;
     }
-    //  如果接收到了已确认数据的ack，那么该怎么办？我这里采用的是忽略该ack
-        //  即如果send_window empty的话，则ack无用。确认谁啊。没谁能确认了。
+    //  即如果send_window empty的话，则ack无用。确认谁啊。没谁能确认了。
     if(_send_window.empty())
     {
         cout<<"send window is empty"<<endl;
@@ -256,29 +256,32 @@ void TCPSender::ack_received(const WrappingInt32 ackno, const uint16_t window_si
     if(!seg_acked)
     {
         cout<<"invalid acked"<<endl;
+        fill_window();
         return ;
     }
     //  上一个计时重传的分组被移除 故 下一个重新计数
     _consecutive_retransmissions_cnt = 0;
-    //  如果send_window中还有未发送的分组 则 为send_window新的最左侧分组开启timer
+
+    //    (5.3) When an ACK is received that acknowledges new data, restart the
+    //      retransmission timer so that it will expire after RTO seconds
+    //      (for the current value of RTO).
     if(!_send_window.empty())
     {
         cout<<"close and start a new timer"<<endl;
         _timer.reset();
         _timer.start(_initial_retransmission_timeout);
     }
-    //  否则关闭老timer
+    //    (5.2) When all outstanding data has been acknowledged, turn off the retransmission timer.
     else
     {
         cout<<"send_window is empty"<<endl;
         _timer.reset();
     }
 
-    //  接着从next_seqno发送新分组 (扩大send_window) 填充receive_window
+    //  接着从next_seqno发送新segment
     fill_window();
 
     cout<<"============ack_received end==========="<<endl;
-
 }
 
 //! \param[in] ms_since_last_tick the number of milliseconds since the last call to this method
@@ -292,37 +295,40 @@ void TCPSender::tick(const size_t ms_since_last_tick) {
         cout<<"not active but want to use ???"<<endl;
         return ;
     }
+//    When the retransmission timer expires, do the following: 5.4 , 5.5 , 5.6 , 5.7
     if(_timer.elapse(ms_since_last_tick))
     {
         TCPSegment & oldest_seg = _send_window.front();
-                        //  不是这样重新发送的。因为fill_window是从bytestream中读取新数据 再 发送。而这里是要重新发送老数据。老数据都在send_window中
-                        // _next_seqno = unwrap(oldest_seg.header().seqno,_isn,_next_seqno);
-                        // //  重新发送_next_seqno分组
-                        // fill_window();
 
-        //  重新发送_next_seqno分组
         cout<<"cnt "<<_consecutive_retransmissions_cnt<<endl;
-        // if(_consecutive_retransmissions_cnt == TCPConfig::MAX_RETX_ATTEMPTS)
-        // {
-        //     cout<<"this tcp connection is aborted"<<endl;
-        //     _aborted = true;
-        //     return ;
-        // }
+
         uint64_t timeout = _timer.initial_alarm();
         //  只有当window size > 0的时候 才 double alarm ; 才 ++ cnt
         //  why ？ 有啥依据吗 ？？
         if(_receive_window_size > 0)
         {
+//    (5.5) The host MUST set RTO <- RTO * 2 ("back off the timer").  The
+//          maximum value discussed in (2.5) above may be used to provide
+//          an upper bound to this doubling operation.
             timeout <<= 1;
             ++_consecutive_retransmissions_cnt;         // > MAX_RETX_ATTEMPTS 该怎么办 ? 放弃该tcp连接？如何放弃 ？
+//    (5.7) If the timer expires awaiting the ACK of a SYN segment and the
+//          TCP implementation is using an RTO less than 3 seconds, the RTO
+//          MUST be re-initialized to 3 seconds when data transmission
+//          begins (i.e., after the three-way handshake completes).
         }
         else
         {
             cout<<"_receive_window_size == 0"<<endl;
         }
         //  如果recv windowsize == 0 则 不double 不记录cnt
+        //    (5.6) Start the retransmission timer, such that it expires after RTO
+        //  seconds (for the value of RTO after the doubling operation
+        //  outlined in 5.5).
         _timer.reset();
         _timer.start(timeout);
+
+//    超时重传 (5.4) Retransmit the earliest segment that has not been acknowledged by the TCP receiver.
         _segments_out.push(oldest_seg);
 
         cout<<"restart the timer "<<_timer.alarm()<<endl;
