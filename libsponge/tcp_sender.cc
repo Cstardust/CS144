@@ -212,6 +212,7 @@ void TCPSender::fill_window() //  try to send segment to fill the receive window
 
 //! \param ackno The remote receiver's ackno (acknowledgment number)
 //! \param window_size The remote receiver's advertised window size
+//  robust enough to deal with any ackno 
 void TCPSender::ack_received(const WrappingInt32 ackno, const uint16_t window_size) { 
     
     _receive_window_size = window_size;
@@ -239,6 +240,9 @@ void TCPSender::ack_received(const WrappingInt32 ackno, const uint16_t window_si
     {
         uint64_t abs_idx = unwrap(iter->header().seqno,_isn,_next_seqno);
         uint64_t len = iter->length_in_sequence_space();
+        //  _send_window中得seqno一定都是增序排列(由fill_window可知，是按照发送的顺序push到send_window中的)
+        if(abs_idx >= abs_ackno)
+            break;
         if(abs_idx + len <=  abs_ackno)     //  如果对于abs_idx < abs_ackno , abs_idx + len > abs_ackno的情况呢 ? 该如何处理 ?
         {
             cout<<"\t remove it from sender window "<<abs_idx<<" "<<len<<" "<<abs_ackno<<" payload "<<iter->payload().copy()<<" syn "<<iter->header().syn<<" fin "<<iter->header().fin<<endl;

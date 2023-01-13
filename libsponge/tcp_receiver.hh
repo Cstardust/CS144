@@ -25,14 +25,14 @@ class TCPReceiver {
     size_t _capacity;
     std::optional<WrappingInt32> _isn;
 
-    enum State { LISTENING = 1, SYN_RECV,FIN_RECV };
-    State _state;
-
+    enum State { ERROR = 0,LISTEN , SYN_RECV,FIN_RECV };
+    // State _state;
   private:
-    bool listening() { return !_isn.has_value(); }
-    bool syn_recv() { return _isn.has_value() && !_reassembler.stream_out().input_ended(); }
-    bool fin_recv() { return _reassembler.stream_out().input_ended(); }
-    void update_state();
+    State state() const;
+    bool listen() const { return !_isn.has_value(); }
+    bool syn_recv() const{ return _isn.has_value() && !_reassembler.stream_out().input_ended(); }
+    bool fin_recv() const { return _reassembler.stream_out().input_ended(); }
+    // void update_state();
     bool corner(const TCPSegment &seg) const;
   public:
 
@@ -40,7 +40,7 @@ class TCPReceiver {
     //!
     //! \param capacity the maximum number of bytes that the receiver will
     //!                 store in its buffers at any give time.
-    TCPReceiver(const size_t capacity) : _reassembler(capacity), _capacity(capacity) , _isn(),_state(LISTENING) {}
+    TCPReceiver(const size_t capacity) : _reassembler(capacity), _capacity(capacity) , _isn() {}  //,_state(LISTEN) {}
 
     //! \name Accessors to provide feedback to the remote TCPSender
     //!@{

@@ -6,6 +6,8 @@
 #include "tcp_sender.hh"
 #include "tcp_state.hh"
 
+
+
 //! \brief A complete endpoint of a TCP connection
 class TCPConnection {
   private:
@@ -19,8 +21,17 @@ class TCPConnection {
     //! Should the TCPConnection stay active (and keep ACKing)
     //! for 10 * _cfg.rt_timeout milliseconds after both streams have ended,
     //! in case the remote TCPConnection doesn't know we've received its whole stream?
-    bool _linger_after_streams_finish{true};
+    //  这就是说本端是否需要有 TIME_WAIT状态 ?
+    //  什么时候需要有TIME_WAIT : 本端正常主动发起关闭
+    //  什么时候没有TIME_WAIT : 被动关闭连接 | 发送/收到 rst
 
+    bool _linger_after_streams_finish{true};
+    bool _active{false};
+    bool _ack_to_send{false};
+
+  private:
+    void send_segments();
+    void unclean_shutdown();
   public:
     //! \name "Input" interface for the writer
     //!@{
