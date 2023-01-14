@@ -33,6 +33,7 @@ void TestFD::write(const BufferViewList &buffer) {
     message.msg_iov = iovecs.data();
     message.msg_iovlen = iovecs.size();
 
+    //  sendmsg() : 将message从fd发送出去. 发送的data , 以及
     SystemCall("sendmsg", ::sendmsg(fd_num(), &message, MSG_EOR));
 }
 
@@ -66,8 +67,10 @@ void TestFdAdapter::config_segment(TCPSegment &seg) {
 
 //! \param[in] seg is the TCPSegment to write
 void TestFdAdapter::write(TCPSegment &seg) {
+    //  为TCPSegment 添加上 src port , dest port
     config_segment(seg);
-    TestFD::write(seg.serialize());
+    //  把segment真正的发送出去 ?
+    TestFD::write(seg.serialize());     
 }
 
 //! \param[in] seqno is the sequence number of the segment
@@ -106,6 +109,7 @@ void TCPTestHarness::send_rst(const WrappingInt32 seqno, const optional<Wrapping
 //! \param[in] seqno is the sequence number of the segment
 //! \param[in] ackno is the optional acknowledgment number of the segment; if no value, ACK flag is not set
 void TCPTestHarness::send_syn(const WrappingInt32 seqno, const optional<WrappingInt32> ackno) {
+    cout<<"TCPTestHarness::send_syn"<<endl;
     SendSegment step{};
     if (ackno.has_value()) {
         step.with_ack(true).with_ackno(ackno.value());
@@ -195,11 +199,14 @@ TCPTestHarness TCPTestHarness::in_listen(const TCPConfig &cfg) {
 //! \param[in] tx_isn is the ISN of the FSM's outbound sequence. i.e. the
 //!            seqno for the SYN.
 TCPTestHarness TCPTestHarness::in_syn_sent(const TCPConfig &cfg, const WrappingInt32 tx_isn) {
+    cout<<"++++++++++++++++Create an FSM which has sent a SYN start+++++++++++++"<<endl;
     TCPConfig c{cfg};
     c.fixed_isn = tx_isn;
     TCPTestHarness h{c};
     h.execute(Connect{});
     h.execute(ExpectOneSegment{}.with_no_flags().with_syn(true).with_seqno(tx_isn).with_payload_size(0));
+    cout<<"++++++++++++++++Create an FSM which has sent a SYN end+++++++++++++"<<endl;
+
     return h;
 }
 
@@ -212,11 +219,14 @@ TCPTestHarness TCPTestHarness::in_syn_sent(const TCPConfig &cfg, const WrappingI
 TCPTestHarness TCPTestHarness::in_established(const TCPConfig &cfg,
                                               const WrappingInt32 tx_isn,
                                               const WrappingInt32 rx_isn) {
+    cout<<"+++++++++++++++Create an FSM with an established connection start++++++++++++++"<<endl;
     TCPTestHarness h = in_syn_sent(cfg, tx_isn);
     // It has sent a SYN with nothing else, and that SYN has been consumed
     // We reply with ACK and SYN.
-    h.send_syn(rx_isn, tx_isn + 1);
+    h.send_syn(rx_isn, tx_isn + 1);     //  recv segment syn = rx_isn , ackno = tx_isn + 1 
+    cout<<"...................................."<<endl;
     h.execute(ExpectOneSegment{}.with_no_flags().with_ack(true).with_ackno(rx_isn + 1).with_payload_size(0));
+    cout<<"+++++++++++++++Create an FSM with an established connection end++++++++++++++"<<endl;
     return h;
 }
 
@@ -229,9 +239,14 @@ TCPTestHarness TCPTestHarness::in_established(const TCPConfig &cfg,
 TCPTestHarness TCPTestHarness::in_close_wait(const TCPConfig &cfg,
                                              const WrappingInt32 tx_isn,
                                              const WrappingInt32 rx_isn) {
+    cout<<"+++++++++++++++Create an FSM in CLOSE_WAIT start++++++++++++++"<<endl;
+    
     TCPTestHarness h = in_established(cfg, tx_isn, rx_isn);
     h.send_fin(rx_isn + 1, tx_isn + 1);
     h.execute(ExpectOneSegment{}.with_no_flags().with_ack(true).with_ackno(rx_isn + 2));
+
+    cout<<"+++++++++++++++Create an FSM in CLOSE_WAIT end++++++++++++++"<<endl;
+
     return h;
 }
 
@@ -244,10 +259,15 @@ TCPTestHarness TCPTestHarness::in_close_wait(const TCPConfig &cfg,
 TCPTestHarness TCPTestHarness::in_last_ack(const TCPConfig &cfg,
                                            const WrappingInt32 tx_isn,
                                            const WrappingInt32 rx_isn) {
+    cout<<"+++++++++++++++Create an FSM in LAST_ACK start++++++++++++++"<<endl;
+    
     TCPTestHarness h = in_close_wait(cfg, tx_isn, rx_isn);
-    h.execute(Close{});
+    h.execute(Close{});     //  send fin
     h.execute(
         ExpectOneSegment{}.with_no_flags().with_fin(true).with_ack(true).with_seqno(tx_isn + 1).with_ackno(rx_isn + 2));
+    
+    cout<<"+++++++++++++++Create an FSM in LAST_ACK end++++++++++++++"<<endl;
+    
     return h;
 }
 
@@ -261,10 +281,15 @@ TCPTestHarness TCPTestHarness::in_last_ack(const TCPConfig &cfg,
 TCPTestHarness TCPTestHarness::in_fin_wait_1(const TCPConfig &cfg,
                                              const WrappingInt32 tx_isn,
                                              const WrappingInt32 rx_isn) {
+    cout<<"+++++++++++++++Create an FSM in FIN_WAIT_1 start++++++++++++++"<<endl;
+    
     TCPTestHarness h = in_established(cfg, tx_isn, rx_isn);
-    h.execute(Close{});
+    h.execute(Close{});     //  TCPSender send fin segment
     h.execute(
-        ExpectOneSegment{}.with_no_flags().with_fin(true).with_ack(true).with_ackno(rx_isn + 1).with_seqno(tx_isn + 1));
+        ExpectOneSegment{}.with_no_flags().with_fin(true).with_ack(true).with_ackno(rx_isn + 1).with_seqno(tx_isn + 1));    //  发完syn之后 立刻发送fin
+    
+    cout<<"+++++++++++++++Create an FSM in FIN_WAIT_1 end++++++++++++++"<<endl;
+    
     return h;
 }
 
@@ -278,8 +303,13 @@ TCPTestHarness TCPTestHarness::in_fin_wait_1(const TCPConfig &cfg,
 TCPTestHarness TCPTestHarness::in_fin_wait_2(const TCPConfig &cfg,
                                              const WrappingInt32 tx_isn,
                                              const WrappingInt32 rx_isn) {
+    cout<<"+++++++++++++++Create an FSM in FIN_WAIT2 start++++++++++++++"<<endl;
+                                            
     TCPTestHarness h = in_fin_wait_1(cfg, tx_isn, rx_isn);
     h.send_ack(rx_isn + 1, tx_isn + 2);
+
+    cout<<"+++++++++++++++Create an FSM in FIN_WAIT2 end++++++++++++++"<<endl;
+
     return h;
 }
 
@@ -293,9 +323,14 @@ TCPTestHarness TCPTestHarness::in_fin_wait_2(const TCPConfig &cfg,
 TCPTestHarness TCPTestHarness::in_closing(const TCPConfig &cfg,
                                           const WrappingInt32 tx_isn,
                                           const WrappingInt32 rx_isn) {
+    cout<<"+++++++++++++++Create an FSM in CLOSING start++++++++++++++"<<endl;
+                                    
     TCPTestHarness h = in_fin_wait_1(cfg, tx_isn, rx_isn);
     h.send_fin(rx_isn + 1, tx_isn + 1);
     h.execute(ExpectOneSegment{}.with_no_flags().with_ack(true).with_ackno(rx_isn + 2));
+    
+    cout<<"+++++++++++++++Create an FSM in CLOSING end++++++++++++++"<<endl;
+    
     return h;
 }
 
@@ -309,8 +344,13 @@ TCPTestHarness TCPTestHarness::in_closing(const TCPConfig &cfg,
 TCPTestHarness TCPTestHarness::in_time_wait(const TCPConfig &cfg,
                                             const WrappingInt32 tx_isn,
                                             const WrappingInt32 rx_isn) {
+    cout<<"+++++++++++++++Create an FSM in TIME_WAIT start++++++++++++++"<<endl;
+    
     TCPTestHarness h = in_fin_wait_1(cfg, tx_isn, rx_isn);
     h.send_fin(rx_isn + 1, tx_isn + 2);
     h.execute(ExpectOneSegment{}.with_no_flags().with_ack(true).with_ackno(rx_isn + 2));
+    
+    cout<<"+++++++++++++++Create an FSM in TIME_WAIT end++++++++++++++"<<endl;
+    
     return h;
 }

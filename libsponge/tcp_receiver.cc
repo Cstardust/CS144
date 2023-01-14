@@ -29,6 +29,7 @@ bool TCPReceiver::corner(const TCPSegment & seg) const
 //  合法seg : seg.header().syn || seg.header().fin || (seg.payload().size()!=0)
 //  可处理非法seg
 void TCPReceiver::segment_received(const TCPSegment &seg) {
+    cout<<"====================TCPReceiver segment_received start================"<<endl;
     //  0.  corner case such as invalid idx
     if(corner(seg))
         return ;
@@ -45,16 +46,22 @@ void TCPReceiver::segment_received(const TCPSegment &seg) {
     size_t abs_seq = unwrap(seg.header().seqno,_isn.value(),_reassembler.first_unassembled());   
     size_t stream_idx = abs_seq_to_stream_idx(abs_seq);
 
-    cout<<seg.header().seqno<<" "<<abs_seq<<" "<<stream_idx<<" "<<seg.payload().str()<<endl;
+    cout<<"seqno "<<seg.header().seqno<<" abs_seq "<<abs_seq<<" stream_idx "<<stream_idx<<" payload "<<seg.payload().str()<<" syn "<<seg.header().syn<<" fin "<<seg.header().fin<<endl;
     //  4.  push_substring(segment)
+    //  这里可以看出 reassembler之中 payload占据空间 而不flag不占据空间
     _reassembler.push_substring(string(seg.payload().str()),stream_idx,seg.header().fin);   
 
     // update_state();         
+
+    cout<<"====================TCPReceiver segment_received end================"<<endl;
+
 }
 
 optional<WrappingInt32> TCPReceiver::ackno() const {
     //  还没初始化isn，也即还没建立连接，还没接收到第一个SYN报文 
     // cout<<"ackno state "<<_state<<endl;
+    // cout<<"====================TCPReceiver ackno start================"<<endl;
+
     State st = state();
     if(st == LISTEN)
     {
@@ -75,6 +82,9 @@ optional<WrappingInt32> TCPReceiver::ackno() const {
         cout<<"receiver unknown _state" <<st<<endl;
         return wrap(_reassembler.first_unassembled() + 1,_isn.value());
     }
+
+    // cout<<"====================TCPReceiver ackno end================"<<endl;
+
 }
 
 
@@ -86,25 +96,30 @@ size_t TCPReceiver::window_size() const {
 
 TCPReceiver::State TCPReceiver::state() const
 {
+    // cout<<"TCPReceiver State ";
     if(stream_out().error())
     {
+        // cout<<states.at(ERROR)<<endl;
         return ERROR;
     }
     else if(listen())
     {
+        // cout<<states.at(LISTEN)<<endl;
         return LISTEN;
     }
     else if(syn_recv())
     {
+        // cout<<states.at(SYN_RECV)<<endl;
         return SYN_RECV;
     }
     else if(fin_recv())
     {
+        // cout<<states.at(FIN_RECV)<<endl;
         return FIN_RECV;
     }
     else
     {
-        cout<<"keep state "<<" SYN_RECV"<<endl;
+        // cout<<"keep state "<<" SYN_RECV"<<endl;
         return SYN_RECV;
     }
 }

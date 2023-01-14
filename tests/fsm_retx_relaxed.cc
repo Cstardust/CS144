@@ -12,6 +12,7 @@ using State = TCPTestHarness::State;
 
 int main() {
     try {
+        cout<<"fsm_rext_relaxed"<<endl;
         TCPConfig cfg{};
         cfg.recv_capacity = 65000;
         auto rd = get_random_generator();
@@ -52,6 +53,8 @@ int main() {
             }
 
             test_1.execute(ExpectState{State::ESTABLISHED});
+            
+            cout<<"ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"<<endl;
 
             test_1.execute(Tick(1 + (cfg.rt_timeout << TCPConfig::MAX_RETX_ATTEMPTS)));
             test_1.execute(ExpectState{State::RESET});

@@ -17,7 +17,7 @@ static void check_segment(TCPTestHarness &test, const std::string &data, const b
         std::cerr << "  check_segment" << std::endl;
         test.execute(ExpectSegment{}.with_ack(true).with_payload_size(data.size()).with_data(data));
         if (!multiple) {
-            test.execute(ExpectNoSegment{}, "test failed: multiple re-tx?");
+            test.execute(ExpectNoSegment{}, "test failed: multiple re-tx?");    //  review multiple re-tx 这是说啥 ?
         }
     } catch (const std::exception &e) {
         throw std::runtime_error(std::string(e.what()) + " (in check_segment called from line " +

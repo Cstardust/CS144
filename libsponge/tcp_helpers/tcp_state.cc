@@ -92,7 +92,7 @@ string TCPState::state_summary(const TCPReceiver &receiver) {
 }
 
 string TCPState::state_summary(const TCPSender &sender) {
-    cout<<"state_summary next_abs_seqno "<<sender.next_seqno_absolute()<<" bytes in flight(send window) "<<sender.bytes_in_flight()<<endl;
+    // cout<<"state_summary next_abs_seqno "<<sender.next_seqno_absolute()<<" bytes in flight(send window) "<<sender.bytes_in_flight()<<endl;
     if (sender.stream_in().error()) {
         return TCPSenderStateSummary::ERROR;
     } else if (sender.next_seqno_absolute() == 0) {

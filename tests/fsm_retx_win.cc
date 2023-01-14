@@ -12,6 +12,8 @@ using State = TCPTestHarness::State;
 
 int main() {
     try {
+        cout<<"fsm_rext_win"<<endl;
+
         TCPConfig cfg{};
         cfg.recv_capacity = 65000;
         auto rd = get_random_generator();

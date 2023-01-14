@@ -153,7 +153,7 @@ void TCPSender::fill_window() //  try to send segment to fill the receive window
 {
 
     Assert(1);
-    cout<<"============fill window start=========="<<endl;
+    cout<<"============TCPSender fill window start=========="<<endl;
     
     size_t remaining_recv_window_sz = _receive_window_size == 0 ? 1 : _receive_window_size;
     if(bytes_in_flight() > remaining_recv_window_sz)
@@ -195,7 +195,7 @@ void TCPSender::fill_window() //  try to send segment to fill the receive window
         update_when_filling(seg_len_in_seq_space,remaining_recv_window_sz);
     }
 
-    cout<<"============fill window end=========="<<endl;
+    cout<<"============TCPSender fill window end=========="<<endl;
 }
 
 //  receiver 返回给 sender window_size()
@@ -219,7 +219,7 @@ void TCPSender::ack_received(const WrappingInt32 ackno, const uint16_t window_si
 
     uint64_t abs_ackno = unwrap(ackno,_isn,_next_seqno);
 
-    cout<<"============ack_received start=========== "<<abs_ackno<<" "<<_receive_window_size<<endl;
+    cout<<"============TCPSender ack_received start=========== "<<abs_ackno<<" "<<_receive_window_size<<endl;
 
     
     if(abs_ackno > _next_seqno)     // ack: receiver 期待 sender发送的下一个字节索引 ，_next_seqno : sender顺序将要发送的下一个字节索引
@@ -285,18 +285,18 @@ void TCPSender::ack_received(const WrappingInt32 ackno, const uint16_t window_si
     //  接着从next_seqno发送新segment
     fill_window();
 
-    cout<<"============ack_received end==========="<<endl;
+    cout<<"============TCPSender ack_received end==========="<<endl;
 }
 
 //! \param[in] ms_since_last_tick the number of milliseconds since the last call to this method
 void TCPSender::tick(const size_t ms_since_last_tick) { 
-    cout<<"==============tick start============="<<endl;
+    // cout<<"==============TCPSender tick start============="<<endl;
     
-    cout<<"alarm "<<_timer.alarm()<<" ms_since_last_tick "<<ms_since_last_tick<<" receive window size "<<_receive_window_size<<endl;
+    // cout<<"alarm "<<_timer.alarm()<<" ms_since_last_tick "<<ms_since_last_tick<<" receive window size "<<_receive_window_size<<endl;
     
     if(!_timer.active())        //  send_extra.cc 最后在alarm不工作的时候又调用了一次tick
     {
-        cout<<"not active but want to use ???"<<endl;
+        // cout<<"not active but want to use ???"<<endl;
         return ;
     }
 //    When the retransmission timer expires, do the following: 5.4 , 5.5 , 5.6 , 5.7
@@ -304,7 +304,7 @@ void TCPSender::tick(const size_t ms_since_last_tick) {
     {
         TCPSegment & oldest_seg = _send_window.front();
 
-        cout<<"cnt "<<_consecutive_retransmissions_cnt<<endl;
+        // cout<<"cnt "<<_consecutive_retransmissions_cnt<<endl;
 
         uint64_t timeout = _timer.initial_alarm();
         //  只有当window size > 0的时候 才 double alarm ; 才 ++ cnt
@@ -323,7 +323,7 @@ void TCPSender::tick(const size_t ms_since_last_tick) {
         }
         else
         {
-            cout<<"_receive_window_size == 0"<<endl;
+            // cout<<"_receive_window_size == 0"<<endl;
         }
         //  如果recv windowsize == 0 则 不double 不记录cnt
         //    (5.6) Start the retransmission timer, such that it expires after RTO
@@ -335,27 +335,27 @@ void TCPSender::tick(const size_t ms_since_last_tick) {
 //    超时重传 (5.4) Retransmit the earliest segment that has not been acknowledged by the TCP receiver.
         _segments_out.push(oldest_seg);
 
-        cout<<"restart the timer "<<_timer.alarm()<<endl;
+        // cout<<"restart the timer "<<_timer.alarm()<<endl;
     }
-    cout<<"==============tick end============="<<endl;
+    // cout<<"==============TCPSender tick end============="<<endl;
 }
 
 unsigned int TCPSender::consecutive_retransmissions() const { 
     return _consecutive_retransmissions_cnt;
 }
 
-void TCPSender::send_empty_segment() 
+void TCPSender::send_empty_segment(bool rst /*= false*/) 
 {
-    if(_aborted)
-    {
-        cout<<"this tcp connection is aborted"<<endl;
-        return ;
-    }
+    cout<<"=======TCPSender send_empty_segment start=========="<<endl;
     
-    cout<<"=======send_empty_segment start=========="<<endl;
     TCPSegment seg;
     seg.header().seqno = wrap(_next_seqno,_isn);
+    if(rst)
+    {
+        seg.header().rst = true;    //  rst seg之前还会有一些未发送出去的普通segment. 目前是需要先将那些segment发送出去之后再发送rst segment
+    }
+
     _next_seqno += 0;
     _segments_out.push(seg);
-    cout<<"=======send_empty_segment end=========="<<endl;
+    cout<<"=======TCPSender send_empty_segment end=========="<<endl;
 }

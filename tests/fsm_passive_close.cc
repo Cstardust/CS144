@@ -17,6 +17,8 @@ int main() {
     try {
         TCPConfig cfg{};
 
+        cout<<"---------start in LAST_ACK, ack-------------"<<endl;
+        //  review
         // test #1: start in LAST_ACK, ack
         {
             TCPTestHarness test_1 = TCPTestHarness::in_last_ack(cfg);
@@ -31,7 +33,9 @@ int main() {
             test_1.execute(ExpectState{State::CLOSED});
         }
 
+        cout<<"---------start in CLOSE_WAIT, close(), throw away first FIN, ack re-tx FIN-------------"<<endl;
         // test #2: start in CLOSE_WAIT, close(), throw away first FIN, ack re-tx FIN
+        //  review
         {
             TCPTestHarness test_2 = TCPTestHarness::in_close_wait(cfg);
 
@@ -67,6 +71,8 @@ int main() {
 
             test_2.execute(ExpectState{State::CLOSED});
         }
+        
+        cout<<"---------start in ESTABLSHED, send FIN, recv ACK, check for CLOSE_WAIT-------------"<<endl;
 
         // test #3: start in ESTABLSHED, send FIN, recv ACK, check for CLOSE_WAIT
         {

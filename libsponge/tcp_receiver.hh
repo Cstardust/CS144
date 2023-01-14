@@ -25,15 +25,17 @@ class TCPReceiver {
     size_t _capacity;
     std::optional<WrappingInt32> _isn;
 
-    enum State { ERROR = 0,LISTEN , SYN_RECV,FIN_RECV };
     // State _state;
   private:
-    State state() const;
     bool listen() const { return !_isn.has_value(); }
     bool syn_recv() const{ return _isn.has_value() && !_reassembler.stream_out().input_ended(); }
     bool fin_recv() const { return _reassembler.stream_out().input_ended(); }
     // void update_state();
     bool corner(const TCPSegment &seg) const;
+  public:
+    enum State { ERROR = 0,LISTEN , SYN_RECV,FIN_RECV };
+    State state() const;
+    unordered_map<State,string> states{{ERROR , "ERROR"} , {LISTEN , "LISTEN"} , {SYN_RECV , "SYN_RECV"} , {FIN_RECV , "FIN_RECV"}};
   public:
 
     //! \brief Construct a TCP receiver

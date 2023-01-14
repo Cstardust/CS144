@@ -87,17 +87,7 @@ class TCPSender {
     //! the (absolute) sequence number for the next byte to be sent
     //  sender将要发送的下一个字节的abs seq
     uint64_t _next_seqno{0};
-    //  原先以为：接收方回复的ack是累计确认，那么sender要发送的下一个字节的序号自然就是ack。那么_next_seq就是ack。不过很可惜，似乎想错了，_next_seq并非ack。
-    //  很遗憾。似乎和我预想的不一样。这个_next_seq 不是ack.也不是在ack_received中更新，而是sender自己维护。发送了seg就自己更新_next_seq，也不用等到该seg被ack，也不用管这个seg到底是否被receiver接收
-    enum State {
-        ERROR = 0,
-        CLOSED ,
-        SYN_SENT,
-        SYN_ACKED_1,
-        SYN_ACKED_2,
-        FIN_SENT,
-        FIN_ACKED,
-    };
+
 
     //  对于同一分组的 重传次数
     uint64_t _consecutive_retransmissions_cnt;
@@ -116,48 +106,68 @@ class TCPSender {
     bool fin_acked() const {
         return stream_in().eof() && next_seqno_absolute() == stream_in().bytes_written() + 2 && bytes_in_flight() == 0;
     }
-    State state() const {
-        cout<<next_seqno_absolute()<<" "<<stream_in().bytes_written()<<endl;
-        if (closed())
-        {
-            cout<<"state CLOSED"<<endl;
-            return State::CLOSED;
-        }
-        else if (syn_sent())
-        {
-            cout<<"state SYN_SENT"<<endl;
-            return State::SYN_SENT;
-        }
-        else if (syn_acked_1())
-        {
-            cout<<"state SYN_ACKED_1"<<endl;
-            return State::SYN_ACKED_1;
-        }
-        else if (syn_acked_2())
-        {
-            cout<<"state SYN_ACKED_2"<<endl;
-            return State::SYN_ACKED_2;
-        }
-        else if (fin_sent())
-        {
-            cout<<"state FIN_SENT"<<endl;
-            return State::FIN_SENT;
-        }
-        else if (fin_acked())
-        {
-            cout<<"state FIN_ACKED"<<endl;
-            return State::FIN_ACKED;
-        }
-        else {
-            cout << "unknown sender state" << endl;
-            return State::CLOSED;
-        }
-    }
+
 
 
     size_t send_segment(size_t remaining_recv_window_sz);
     void timer_when_filling();
     void update_when_filling(size_t seg_len_in_seq_space,size_t & remaining_recv_window_sz);
+    
+  public:
+        //  原先以为：接收方回复的ack是累计确认，那么sender要发送的下一个字节的序号自然就是ack。那么_next_seq就是ack。不过很可惜，似乎想错了，_next_seq并非ack。
+    //  很遗憾。似乎和我预想的不一样。这个_next_seq 不是ack.也不是在ack_received中更新，而是sender自己维护。发送了seg就自己更新_next_seq，也不用等到该seg被ack，也不用管这个seg到底是否被receiver接收
+    enum State {
+        ERROR = 0,
+        CLOSED ,
+        SYN_SENT,
+        SYN_ACKED_1,
+        SYN_ACKED_2,
+        FIN_SENT,
+        FIN_ACKED,
+    };
+
+      State state() const {
+        // cout<<next_seqno_absolute()<<" "<<stream_in().bytes_written()<<endl;
+        // cout<<"TCPSender State ";
+        if (closed())
+        {
+            // cout<<"state CLOSED"<<endl;
+            return State::CLOSED;
+        }
+        else if (syn_sent())
+        {
+            // cout<<"state SYN_SENT"<<endl;
+            return State::SYN_SENT;
+        }
+        else if (syn_acked_1())
+        {
+            // cout<<"state SYN_ACKED_1"<<endl;
+            return State::SYN_ACKED_1;
+        }
+        else if (syn_acked_2())
+        {
+            // cout<<"state SYN_ACKED_2"<<endl;
+            return State::SYN_ACKED_2;
+        }
+        else if (fin_sent())
+        {
+            // cout<<"state FIN_SENT"<<endl;
+            return State::FIN_SENT;
+        }
+        else if (fin_acked())
+        {
+            // cout<<"state FIN_ACKED"<<endl;
+            return State::FIN_ACKED;
+        }
+        else if(stream_in().error()){
+            // cout<<"state ERROR"<<endl;
+            return State::ERROR;
+        }
+        else{
+            // cout << "unknown sender state" << endl;
+            return State::CLOSED;
+        }
+    }
   public:
     //! Initialize a TCPSender
     TCPSender(const size_t capacity = TCPConfig::DEFAULT_CAPACITY,
@@ -177,7 +187,10 @@ class TCPSender {
     void ack_received(const WrappingInt32 ackno, const uint16_t window_size);
 
     //! \brief Generate an empty-payload segment (useful for creating empty ACK segments)
-    void send_empty_segment();
+    //  empty : empty-payload or len_in_seq = 0 ? 我目前认为是后者
+    //  用于 发送 ack 空报文 以及 rst 空报文
+        //  ack会由上层TCPConnection填充
+    void send_empty_segment(bool rst = false);
 
     //! \brief create and send segments to fill as much of the window as possible
     void fill_window();

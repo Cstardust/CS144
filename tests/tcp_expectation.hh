@@ -224,8 +224,14 @@ struct ExpectSegment : public TCPExpectation {
             throw SegmentExpectationViolation::violated_verb("existed");
         }
         TCPSegment seg;
+        //  这个read到底是从哪里read ? read出来的到底是TCPSender发送的segment还是TCPReceiver接受的segment ? 
         if (ParseResult::NoError != seg.parse(harness._flt.read())) {
             throw SegmentExpectationViolation::violated_verb("was parsable");
+        }
+        cout<<"seg read from fd : len_in_seq "<<seg.length_in_sequence_space()<<" seqno "<<seg.header().seqno<<" syn "<<seg.header().syn<<" fin "<<seg.header().fin<<" payload "<<seg.payload().copy()<<endl;
+        if(seg.header().ack)
+        {
+            cout<<"by the way ackno is "<<seg.header().ackno<<endl;
         }
         if (ack.has_value() and seg.header().ack != ack.value()) {
             throw SegmentExpectationViolation::violated_field("ack", ack.value(), seg.header().ack);
@@ -298,6 +304,7 @@ struct ExpectState : public TCPExpectation {
     }
 
     void execute(TCPTestHarness &harness) const {
+        cout<<"test state"<<endl;
         TCPState actual_state = harness._fsm.state();
         if (actual_state != state) {
             throw StateExpectationViolation{state, actual_state};
@@ -484,6 +491,7 @@ struct SendSegment : public TCPAction {
     }
 
     virtual void execute(TCPTestHarness &harness) const {
+        cout<<"SendSegment::execute"<<endl;
         TCPSegment seg = get_segment();
         harness._fsm.segment_received(std::move(seg));
     }
@@ -551,6 +559,7 @@ struct Tick : public TCPAction {
 
 struct Connect : public TCPAction {
     std::string description() const { return "connect"; }
+    //  TCPSender send syn
     void execute(TCPTestHarness &harness) const { harness._fsm.connect(); }
 };
 

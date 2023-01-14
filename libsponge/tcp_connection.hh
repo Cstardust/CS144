@@ -24,14 +24,17 @@ class TCPConnection {
     //  这就是说本端是否需要有 TIME_WAIT状态 ?
     //  什么时候需要有TIME_WAIT : 本端正常主动发起关闭
     //  什么时候没有TIME_WAIT : 被动关闭连接 | 发送/收到 rst
-
     bool _linger_after_streams_finish{true};
-    bool _active{false};
-    bool _ack_to_send{false};
 
+    //  什么时候第一次变成true
+      //  之前认为是在established的时候
+      //  然后看tcpstate里面是一开始就是true
+    bool _active{true};
+    size_t _time_since_last_segment_received{0};
   private:
     void send_segments();
-    void unclean_shutdown();
+    void unclean_shutdown(bool rst_to_send = false);
+    void clean_shutdown();
   public:
     //! \name "Input" interface for the writer
     //!@{

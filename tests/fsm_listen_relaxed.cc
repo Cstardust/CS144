@@ -20,6 +20,7 @@ int main() {
 
         // test #1: START -> LISTEN -> SYN -> SYN/ACK -> ACK
         {
+            cout<<"test #1: START -> LISTEN -> SYN -> SYN/ACK -> ACK"<<endl;
             TCPTestHarness test_1(cfg);
 
             // tell the FSM to connect, make sure we get a SYN

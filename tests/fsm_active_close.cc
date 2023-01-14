@@ -18,6 +18,7 @@ int main() {
         TCPConfig cfg{};
 
         // test #1: start in TIME_WAIT, timeout
+        cout<<"*********************start in TIME_WAIT, timeout***************************"<<endl;
         {
             TCPTestHarness test_1 = TCPTestHarness::in_time_wait(cfg);
 
@@ -33,7 +34,8 @@ int main() {
 
             test_1.execute(ExpectState{State::CLOSED});
         }
-
+        cout<<"*********************start in CLOSING, send ack, time out**********************"<<endl;
+        //  review
         // test #2: start in CLOSING, send ack, time out
         {
             TCPTestHarness test_2 = TCPTestHarness::in_closing(cfg);
@@ -41,9 +43,11 @@ int main() {
             test_2.execute(Tick(4 * cfg.rt_timeout));
             test_2.execute(ExpectOneSegment{}.with_fin(true));
 
+            cout<<"---------------------------------------------------"<<endl;
             test_2.execute(ExpectState{State::CLOSING});
             test_2.send_ack(WrappingInt32{2}, WrappingInt32{2});
             test_2.execute(ExpectNoSegment{});
+            cout<<"---------------------------------------------------"<<endl;
 
             test_2.execute(ExpectState{State::TIME_WAIT});
 
@@ -55,7 +59,7 @@ int main() {
 
             test_2.execute(ExpectState{State::CLOSED});
         }
-
+        cout<<"*********************start in FIN_WAIT_2, send FIN, time out*********************"<<endl;
         // test #3: start in FIN_WAIT_2, send FIN, time out
         {
             TCPTestHarness test_3 = TCPTestHarness::in_fin_wait_2(cfg);
@@ -78,7 +82,7 @@ int main() {
 
             test_3.execute(ExpectState{State::CLOSED});
         }
-
+        cout<<"*********************start in FIN_WAIT_1, ack, FIN , time out*********************"<<endl;
         // test #4: start in FIN_WAIT_1, ack, FIN, time out
         {
             TCPTestHarness test_4 = TCPTestHarness::in_fin_wait_1(cfg);
@@ -103,7 +107,8 @@ int main() {
 
             test_4.execute(ExpectState{State::CLOSED});
         }
-
+        
+        cout<<"*********************start in FIN_WAIT_1, ack, FIN, FIN again, time out*********************"<<endl;
         // test 5: start in FIN_WAIT_1, ack, FIN, FIN again, time out
         {
             TCPTestHarness test_5 = TCPTestHarness::in_fin_wait_1(cfg);
@@ -147,6 +152,7 @@ int main() {
             test_5.execute(ExpectState{State::CLOSED});
         }
 
+        cout<<"*********************start in ESTABLISHED, get FIN, get FIN re-tx, send FIN, get ACK, send ACK, time out*********************"<<endl;
         // test 6: start in ESTABLISHED, get FIN, get FIN re-tx, send FIN, get ACK, send ACK, time out
         {
             TCPTestHarness test_6 = TCPTestHarness::in_established(cfg);

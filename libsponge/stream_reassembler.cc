@@ -118,7 +118,7 @@ void StreamReassembler::move_receiving_window()
         // cout<<_receving_window[i];
         
         //  字节从recving_window进入bytestream
-        size_t len_written = _output.write(string(1,_receving_window[i]));
+        _output.write(string(1,_receving_window[i]));
         //  从recving_window中移除
         _receving_window.erase(i);
     }

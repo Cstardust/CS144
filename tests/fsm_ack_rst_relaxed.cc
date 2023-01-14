@@ -18,12 +18,18 @@ static void ack_listen_test(const TCPConfig &cfg,
                             const WrappingInt32 ackno,
                             const int lineno) {
     try {
+        cout<<"a new ack_listen_test"<<endl;
+
         TCPTestHarness test = TCPTestHarness::in_listen(cfg);
+        cout<<"opopopoppopopopopopopopopopoopopoppopo"<<endl;
 
         // any ACK should result in a RST
         test.send_ack(seqno, ackno);
+        cout<<"opopopoppopopopopopopopopopoopopoppopo"<<endl;
 
         test.execute(ExpectState{State::LISTEN});
+        cout<<"opopopoppopopopopopopopopopoopopoppopo"<<endl;
+
         test.execute(ExpectNoSegment{}, "test 3 failed: ACKs in LISTEN should be ignored");
     } catch (const exception &e) {
         throw runtime_error(string(e.what()) + " (ack_listen_test called from line " + to_string(lineno) + ")");
@@ -38,7 +44,6 @@ static void ack_rst_syn_sent_test(const TCPConfig &cfg,
                                   const int lineno) {
     try {
         TCPTestHarness test = TCPTestHarness::in_syn_sent(cfg, base_seq);
-
         // unacceptable ACKs should be ignored
         test.send_ack(seqno, ackno);
         test.execute(ExpectState{State::SYN_SENT});
@@ -115,8 +120,14 @@ int main() {
 
         // test 3: ACKs in LISTEN
         cerr << "Test 3" << endl;
+        cout<<"a"<<endl;
+        //  reivew
         ack_listen_test(cfg, base_seq, base_seq, __LINE__);
+        cout<<"b"<<endl;
+        
         ack_listen_test(cfg, base_seq - 1, base_seq, __LINE__);
+        cout<<"c"<<endl;
+        
         ack_listen_test(cfg, base_seq, base_seq - 1, __LINE__);
         ack_listen_test(cfg, base_seq - 1, base_seq, __LINE__);
         ack_listen_test(cfg, base_seq - 1, base_seq - 1, __LINE__);
