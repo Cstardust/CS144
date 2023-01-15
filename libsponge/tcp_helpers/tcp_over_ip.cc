@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <unistd.h>
 #include <utility>
+#include <iostream>
 
 using namespace std;
 
@@ -24,6 +25,7 @@ using namespace std;
 //! from the TCP header; it uses this information to filter future reads.
 //! \returns a std::optional<TCPSegment> that is empty if the segment was invalid or unrelated
 optional<TCPSegment> TCPOverIPv4Adapter::unwrap_tcp_in_ip(const InternetDatagram &ip_dgram) {
+    
     // is the IPv4 datagram for us?
     // Note: it's valid to bind to address "0" (INADDR_ANY) and reply from actual address contacted
     if (not listening() and (ip_dgram.header().dst != config().source.ipv4_numeric())) {
@@ -73,6 +75,7 @@ optional<TCPSegment> TCPOverIPv4Adapter::unwrap_tcp_in_ip(const InternetDatagram
 //! Takes a TCP segment, sets port numbers as necessary, and wraps it in an IPv4 datagram
 //! \param[in] seg is the TCP segment to convert
 InternetDatagram TCPOverIPv4Adapter::wrap_tcp_in_ip(TCPSegment &seg) {
+
     // set the port numbers in the TCP segment
     seg.header().sport = config().source.port();
     seg.header().dport = config().destination.port();

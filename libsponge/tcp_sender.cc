@@ -62,7 +62,6 @@ TCPSender::TCPSender(const size_t capacity, const uint16_t retx_timeout, const s
     , _consecutive_retransmissions_cnt(0)
     , _aborted(false)
 {
-    cout<<capacity<<" "<<_initial_retransmission_timeout<<" "<<_isn<<endl;
     _next_seqno = 0;    //  start abs_seq = 0
 }
 
@@ -98,13 +97,13 @@ size_t TCPSender::send_segment(size_t remaining_recv_window_sz)
         }
 
         //  payload
-        cout<<TCPConfig::MAX_PAYLOAD_SIZE <<" "<< remaining_recv_window_sz - seg.header().syn<< " " <<_stream.buffer_size()<<endl;
+        // cout<<TCPConfig::MAX_PAYLOAD_SIZE <<" "<< remaining_recv_window_sz - seg.header().syn<< " " <<_stream.buffer_size()<<endl;
         
         size_t payload_sz = min({TCPConfig::MAX_PAYLOAD_SIZE,remaining_recv_window_sz - seg.header().syn,_stream.buffer_size()});
         seg.payload() = _stream.read(payload_sz);       //  bytestream中读取出来的是tcp payload。至于tcp header 是由sender自己填写。
         
-        cout<<"payload_sz"<<" "<<payload_sz<<" seg.payload() "<<seg.payload().copy()<<endl;
-        cout<<"stream_eof "<<_stream.eof()<<endl;
+        // cout<<"payload_sz"<<" "<<payload_sz<<" seg.payload() "<<seg.payload().copy()<<endl;
+        // cout<<"stream_eof "<<_stream.eof()<<endl;
         //  fin
         if(state() == SYN_ACKED_2 && remaining_recv_window_sz > payload_sz + seg.header().syn)
         {
@@ -115,7 +114,7 @@ size_t TCPSender::send_segment(size_t remaining_recv_window_sz)
     //  2. send the seg
     if(seg.length_in_sequence_space()!=0)
     {
-        cout<<"I send"<<" "<<" seg.payload() "<<seg.payload().copy()<<" syn "<<seg.header().syn<<" fin "<<seg.header().fin<<endl;
+        // cout<<"I send"<<" "<<" seg.payload() "<<seg.payload().copy()<<" syn "<<seg.header().syn<<" fin "<<seg.header().fin<<endl;
         _segments_out.push(seg);
         _send_window.push_back(seg);
     }
@@ -134,7 +133,7 @@ void TCPSender::timer_when_filling()
     //  如果这是 send_window empty之后 第一次发送数据（装入数据到_send_window）。
     if(!_timer.active())
     {
-        cout<<"start a timer"<<endl;
+        // cout<<"start a timer"<<endl;
         _timer.reset();
         _timer.start(_initial_retransmission_timeout);
     }
@@ -145,7 +144,7 @@ void TCPSender::update_when_filling(size_t seg_len_in_seq_space,size_t & remaini
     //  update _next_seq
     _next_seqno += seg_len_in_seq_space;
     //  update receive_window_size. useful for filling loop
-    cout<<seg_len_in_seq_space<<" "<<remaining_recv_window_sz<<" "<<remaining_recv_window_sz-seg_len_in_seq_space<<endl;
+    // cout<<seg_len_in_seq_space<<" "<<remaining_recv_window_sz<<" "<<remaining_recv_window_sz-seg_len_in_seq_space<<endl;
     remaining_recv_window_sz -= seg_len_in_seq_space;
 }
 
@@ -153,7 +152,7 @@ void TCPSender::fill_window() //  try to send segment to fill the receive window
 {
 
     Assert(1);
-    cout<<"============TCPSender fill window start=========="<<endl;
+    // cout<<"============TCPSender fill window start=========="<<endl;
     
     size_t remaining_recv_window_sz = _receive_window_size == 0 ? 1 : _receive_window_size;
     if(bytes_in_flight() > remaining_recv_window_sz)
@@ -166,17 +165,17 @@ void TCPSender::fill_window() //  try to send segment to fill the receive window
     // sender目前已知的 receive_window_size 减去 bytes sen but not acked。
     remaining_recv_window_sz -= bytes_in_flight();
 
-    if(_receive_window_size == 0)
-    {
-        cout<<"_receive_window_size = 0"<<endl;
-    }
+    // if(_receive_window_size == 0)
+    // {
+        // cout<<"_receive_window_size = 0"<<endl;
+    // }
     
-    cout<<"remaing_recv_window_sz = "<<remaining_recv_window_sz<<endl;
+    // cout<<"remaing_recv_window_sz = "<<remaining_recv_window_sz<<endl;
     //  发送结束 : remaining_recv_window_sz == 0 or 没有报文可以发送(payload empty and flag is empty)
     while(remaining_recv_window_sz > 0)
     {
-        cout<<"looping "<<remaining_recv_window_sz<<endl;
-        cout<<"_next_abs_seqno "<<_next_seqno<<endl;
+        // cout<<"looping "<<remaining_recv_window_sz<<endl;
+        // cout<<"_next_abs_seqno "<<_next_seqno<<endl;
 
         //  build and send tcpsegment
         size_t seg_len_in_seq_space = send_segment(remaining_recv_window_sz);
@@ -184,7 +183,7 @@ void TCPSender::fill_window() //  try to send segment to fill the receive window
         //  如果这个segment 既没有 flag 如 syn fin；又没有 payload 则 不必发送该seg
         if(seg_len_in_seq_space == 0)
         {
-            cout<<"nothing to send"<<endl;
+            // cout<<"nothing to send"<<endl;
             break;
         }
 
@@ -195,7 +194,7 @@ void TCPSender::fill_window() //  try to send segment to fill the receive window
         update_when_filling(seg_len_in_seq_space,remaining_recv_window_sz);
     }
 
-    cout<<"============TCPSender fill window end=========="<<endl;
+    // cout<<"============TCPSender fill window end=========="<<endl;
 }
 
 //  receiver 返回给 sender window_size()
@@ -219,7 +218,7 @@ void TCPSender::ack_received(const WrappingInt32 ackno, const uint16_t window_si
 
     uint64_t abs_ackno = unwrap(ackno,_isn,_next_seqno);
 
-    cout<<"============TCPSender ack_received start=========== "<<abs_ackno<<" "<<_receive_window_size<<endl;
+    // cout<<"============TCPSender ack_received start=========== "<<abs_ackno<<" "<<_receive_window_size<<endl;
 
     
     if(abs_ackno > _next_seqno)     // ack: receiver 期待 sender发送的下一个字节索引 ，_next_seqno : sender顺序将要发送的下一个字节索引
@@ -245,13 +244,13 @@ void TCPSender::ack_received(const WrappingInt32 ackno, const uint16_t window_si
             break;
         if(abs_idx + len <=  abs_ackno)     //  如果对于abs_idx < abs_ackno , abs_idx + len > abs_ackno的情况呢 ? 该如何处理 ?
         {
-            cout<<"\t remove it from sender window "<<abs_idx<<" "<<len<<" "<<abs_ackno<<" payload "<<iter->payload().copy()<<" syn "<<iter->header().syn<<" fin "<<iter->header().fin<<endl;
+            // cout<<"\t remove it from sender window "<<abs_idx<<" "<<len<<" "<<abs_ackno<<" payload "<<iter->payload().copy()<<" syn "<<iter->header().syn<<" fin "<<iter->header().fin<<endl;
             seg_acked = true;
             iter = _send_window.erase(iter);
         }
         else
         {
-            cout<<"\t not remove it from sender window "<<abs_idx<<" "<<len<<" "<<abs_ackno<<" payload "<<iter->payload().copy()<<" syn "<<iter->header().syn<<" fin "<<iter->header().fin<<endl;
+            // cout<<"\t not remove it from sender window "<<abs_idx<<" "<<len<<" "<<abs_ackno<<" payload "<<iter->payload().copy()<<" syn "<<iter->header().syn<<" fin "<<iter->header().fin<<endl;
             ++iter;
         }
     } 
@@ -259,7 +258,7 @@ void TCPSender::ack_received(const WrappingInt32 ackno, const uint16_t window_si
     //  send_window中没有字节被ack，故不需要重启 / 关闭定时器 ，也不需要发送数据
     if(!seg_acked)
     {
-        cout<<"invalid acked"<<endl;
+        // cout<<"invalid acked"<<endl;
         fill_window();
         return ;
     }
@@ -271,21 +270,21 @@ void TCPSender::ack_received(const WrappingInt32 ackno, const uint16_t window_si
     //      (for the current value of RTO).
     if(!_send_window.empty())
     {
-        cout<<"close and start a new timer"<<endl;
+        // cout<<"close and start a new timer"<<endl;
         _timer.reset();
         _timer.start(_initial_retransmission_timeout);
     }
     //    (5.2) When all outstanding data has been acknowledged, turn off the retransmission timer.
     else
     {
-        cout<<"send_window is empty"<<endl;
+        // cout<<"send_window is empty"<<endl;
         _timer.reset();
     }
 
     //  接着从next_seqno发送新segment
     fill_window();
 
-    cout<<"============TCPSender ack_received end==========="<<endl;
+    // cout<<"============TCPSender ack_received end==========="<<endl;
 }
 
 //! \param[in] ms_since_last_tick the number of milliseconds since the last call to this method
@@ -346,7 +345,7 @@ unsigned int TCPSender::consecutive_retransmissions() const {
 
 void TCPSender::send_empty_segment(bool rst /*= false*/) 
 {
-    cout<<"=======TCPSender send_empty_segment start=========="<<endl;
+    // cout<<"=======TCPSender send_empty_segment start=========="<<endl;
     
     TCPSegment seg;
     seg.header().seqno = wrap(_next_seqno,_isn);
@@ -357,5 +356,5 @@ void TCPSender::send_empty_segment(bool rst /*= false*/)
 
     _next_seqno += 0;
     _segments_out.push(seg);
-    cout<<"=======TCPSender send_empty_segment end=========="<<endl;
+    // cout<<"=======TCPSender send_empty_segment end=========="<<endl;
 }

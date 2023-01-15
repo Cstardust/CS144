@@ -109,7 +109,7 @@ size_t TCPConnection::time_since_last_segment_received() const { return  _time_s
 //  还是先将segment_out中的报文发送出去 然后再 rst ? 
 void TCPConnection::unclean_shutdown(bool rst_to_send /* = false */)
 {
-    cout<<"===================TCPConnection unclean_shutdown start========================"<<endl;
+    // cout<<"===================TCPConnection unclean_shutdown start========================"<<endl;
     queue<TCPSegment> empty;
     _sender.segments_out().swap(empty);
 
@@ -126,7 +126,7 @@ void TCPConnection::unclean_shutdown(bool rst_to_send /* = false */)
     _receiver.stream_out().set_error();
 
 
-    cout<<"===================TCPConnection unclean_shutdown end========================"<<endl;
+    // cout<<"===================TCPConnection unclean_shutdown end========================"<<endl;
 
 }
 
@@ -141,8 +141,8 @@ static void Assert(bool msg)
 void TCPConnection::segment_received(const TCPSegment &seg) { 
     Assert(1);
     cout<<"===================TCPConnection segment_received start========================"<<endl;
-        cout<<"\t";_receiver.state();
-        cout<<"\t";_sender.state();
+        // cout<<"\t";_receiver.state();
+        // cout<<"\t";_sender.state();
     cout<<"len "<<seg.length_in_sequence_space()<<" payload "<<seg.payload().copy()<<" syn "<<seg.header().syn<<" fin "<<seg.header().fin<<" ack "<<seg.header().ack<<" ackno "<<seg.header().ackno<<endl;
 
     _time_since_last_segment_received = 0;
@@ -184,7 +184,7 @@ void TCPConnection::segment_received(const TCPSegment &seg) {
     //  可处理发送空ack segment的情况
     if(seg.length_in_sequence_space() > 0)    //  receiver recv syn , payload , fin
     {
-        cout<<"ack_to_send = true"<<endl;
+        // cout<<"ack_to_send = true"<<endl;
         ack_to_send = true;
     }
 
@@ -203,7 +203,7 @@ void TCPConnection::segment_received(const TCPSegment &seg) {
     //  如果本端TCPConnection刚接收到SYN 那么易知其要发送syn作为返回TCPConnection CLOSED -> SYN_SENT : TCPSender send syn
     if(_receiver.state() == TCPReceiver::State::SYN_RECV && _sender.state() == TCPSender::State::CLOSED)
     {
-        cout<<"local send syn as a passive peer"<<endl;
+        // cout<<"local send syn as a passive peer"<<endl;
         connect();       
         // ack_to_send = false;    //  ack已经和该syn segment一起在connect中发送,不必再发送一个空ack segment
         return ;
@@ -216,12 +216,11 @@ void TCPConnection::segment_received(const TCPSegment &seg) {
     // {
     //     // _active = true;
     // }
-    cout<<"777777777777stat vars77777777777777"<<endl;
     //  断开连接
         //  clean shutdown 之 本端 被动断开连接 : 必然会经历关闭连接的第一个状态 : CLOSE_WAIT
     if(_receiver.state() == TCPReceiver::State::FIN_RECV && (_sender.state() == TCPSender::State::SYN_ACKED_2 || _sender.state() == TCPSender::State::SYN_ACKED_1))
     {
-        cout<<"TCPConnection should be CLOSE_WAIT now"<<endl;
+        // cout<<"TCPConnection should be CLOSE_WAIT now"<<endl;
         _linger_after_streams_finish = false;
     }
 
@@ -236,7 +235,7 @@ void TCPConnection::segment_received(const TCPSegment &seg) {
         //  clean shutdown 之 本端 主动关闭连接 进入 TIME_WAIT
     if(_receiver.state() == TCPReceiver::State::FIN_RECV && _sender.state() == TCPSender::State::FIN_ACKED && _linger_after_streams_finish)
     {
-        cout<<"come into TIME_WAIT!"<<endl;
+        // cout<<"come into TIME_WAIT!"<<endl;
         //  TIME_WAIT
         // _linger_after_streams_finish = true;
     }
@@ -245,7 +244,7 @@ void TCPConnection::segment_received(const TCPSegment &seg) {
     //  如果TCPReceiver 需要发送ack segment 且无法被捎带(TCPSender没有发送segment),那么单独发送一个空的ack segment
     if(ack_to_send && _sender.segments_out().empty())
     {
-        cout<<"send an empty ack segment"<<endl;
+        // cout<<"send an empty ack segment"<<endl;
         _sender.send_empty_segment();
     }
 
@@ -276,12 +275,12 @@ size_t TCPConnection::write(const string &data) {
 
 void TCPConnection::clean_shutdown()
 {
-    cout<<"===================TCPConnection clean_shutdown start========================"<<endl;
+    // cout<<"===================TCPConnection clean_shutdown start========================"<<endl;
 
     _active = false;
     _linger_after_streams_finish = false;
 
-    cout<<"===================TCPConnection clean_shutdown end========================"<<endl;
+    // cout<<"===================TCPConnection clean_shutdown end========================"<<endl;
 
 }
 
@@ -319,7 +318,7 @@ void TCPConnection::tick(const size_t ms_since_last_tick) {
     
     if(_receiver.state() == TCPReceiver::State::FIN_RECV && _sender.state() == TCPSender::State::FIN_ACKED && _linger_after_streams_finish)
     {
-        cout<<_time_since_last_segment_received<<" "<<_cfg.rt_timeout<<endl;
+        // cout<<_time_since_last_segment_received<<" "<<_cfg.rt_timeout<<endl;
         if(_time_since_last_segment_received >= 10 * _cfg.rt_timeout)
         {
             clean_shutdown();
@@ -344,6 +343,7 @@ void TCPConnection::end_input_stream() {
 void TCPConnection::connect() {
     //  send syn
     //  TCPSender : CLOSED -> SYN_SENT
+    cout<<"client connect"<<endl;
     _sender.fill_window();
     send_segments();
 }

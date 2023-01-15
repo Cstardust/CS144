@@ -19,6 +19,9 @@ using namespace std;
 //! the result that future outgoing segments go to the sender of the SYN segment.
 //! \returns a std::optional<TCPSegment> that is empty if the segment was invalid or unrelated
 optional<TCPSegment> TCPOverUDPSocketAdapter::read() {
+
+    cerr<<"TCPOverUDPSocketAdapter::read"<<endl;
+
     auto datagram = _sock.recv();
 
     // is it for us?
@@ -48,6 +51,7 @@ optional<TCPSegment> TCPOverUDPSocketAdapter::read() {
 //! Serialize a TCP segment and send it as the payload of a UDP datagram.
 //! \param[in] seg is the TCP segment to write
 void TCPOverUDPSocketAdapter::write(TCPSegment &seg) {
+    cerr<<"TCPOverUDPSocketAdapter::write"<<endl;
     seg.header().sport = config().source.port();
     seg.header().dport = config().destination.port();
     _sock.sendto(config().destination, seg.serialize(0));

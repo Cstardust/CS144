@@ -47,6 +47,7 @@ FileDescriptor FileDescriptor::duplicate() const { return FileDescriptor(_intern
 //! \param[in] limit is the maximum number of bytes to read; fewer bytes may be returned
 //! \param[out] str is the string to be read
 void FileDescriptor::read(std::string &str, const size_t limit) {
+    // cerr<<"void FileDescriptor::read(std::string &str, const size_t limit)"<<endl;
     constexpr size_t BUFFER_SIZE = 1024 * 1024;  // maximum size of a read
     const size_t size_to_read = min(BUFFER_SIZE, limit);
     str.resize(size_to_read);
@@ -69,7 +70,7 @@ string FileDescriptor::read(const size_t limit) {
     string ret;
 
     read(ret, limit);
-
+    cerr<<"read from stdin : "<<ret<<endl;
     return ret;
 }
 

@@ -29,7 +29,7 @@ bool TCPReceiver::corner(const TCPSegment & seg) const
 //  合法seg : seg.header().syn || seg.header().fin || (seg.payload().size()!=0)
 //  可处理非法seg
 void TCPReceiver::segment_received(const TCPSegment &seg) {
-    cout<<"====================TCPReceiver segment_received start================"<<endl;
+    // cout<<"====================TCPReceiver segment_received start================"<<endl;
     //  0.  corner case such as invalid idx
     if(corner(seg))
         return ;
@@ -46,14 +46,14 @@ void TCPReceiver::segment_received(const TCPSegment &seg) {
     size_t abs_seq = unwrap(seg.header().seqno,_isn.value(),_reassembler.first_unassembled());   
     size_t stream_idx = abs_seq_to_stream_idx(abs_seq);
 
-    cout<<"seqno "<<seg.header().seqno<<" abs_seq "<<abs_seq<<" stream_idx "<<stream_idx<<" payload "<<seg.payload().str()<<" syn "<<seg.header().syn<<" fin "<<seg.header().fin<<endl;
+    // cout<<"seqno "<<seg.header().seqno<<" abs_seq "<<abs_seq<<" stream_idx "<<stream_idx<<" payload "<<seg.payload().str()<<" syn "<<seg.header().syn<<" fin "<<seg.header().fin<<endl;
     //  4.  push_substring(segment)
     //  这里可以看出 reassembler之中 payload占据空间 而不flag不占据空间
     _reassembler.push_substring(string(seg.payload().str()),stream_idx,seg.header().fin);   
 
     // update_state();         
 
-    cout<<"====================TCPReceiver segment_received end================"<<endl;
+    // cout<<"====================TCPReceiver segment_received end================"<<endl;
 
 }
 

@@ -25,9 +25,8 @@ StreamReassembler::StreamReassembler(const size_t capacity)
     , _first_unread(0)
     , _first_unassembled(0)
     , _eof_idx(0)
-    , _eof(false) {
-        cout<<"capacity "<<_capacity<<endl;
-    }
+    , _eof(false) 
+    {}
 
 
 
@@ -133,10 +132,10 @@ bool StreamReassembler::corner(const string &data, const size_t index, const boo
         //  改进：加上判断unassembled_bytes() == 0 即可。(即 // if(_eof && unassembled_bytes() == 0))
     if(_eof && unassembled_bytes() == 0)
     {
-        cout<<"eof already!"<<endl;
-        cout<<data<<" "<<index<<" "<<eof<<endl;
-        cout<<data.size()<<" "<<index<<" "<<eof<<endl;
-        cout<<_first_unread<<" "<<_first_unassembled<<" "<<first_unacceptable()<<" "<<_receving_window.size()<<" "<<_output.bytes_read()<<" "<<_output.bytes_written()<<endl;
+        // cout<<"eof already!"<<endl;
+        // cout<<data<<" "<<index<<" "<<eof<<endl;
+        // cout<<data.size()<<" "<<index<<" "<<eof<<endl;
+        // cout<<_first_unread<<" "<<_first_unassembled<<" "<<first_unacceptable()<<" "<<_receving_window.size()<<" "<<_output.bytes_read()<<" "<<_output.bytes_written()<<endl;
         return true;
     }
     //  corner 2 : data empty , then nothing todo
