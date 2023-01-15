@@ -192,6 +192,11 @@ fi
 TEST_OUT_FILE=$(mktemp)
 TEST_IN_FILE=$(mktemp)
 make_test_file "${TEST_IN_FILE}" "${DATASIZE}"
+
+echo "hello user!"
+echo "$TEST_IN_FILE"
+echo "$TEST_OUT_FILE"
+
 HASH_IN=$(sha256sum ${TEST_IN_FILE} | cut -d \  -f 1)
 HASH_OUT2=
 case "$RSDMODE" in
@@ -229,6 +234,12 @@ if ! wait; then
     echo ERROR: subprocess failed
     exit 1
 fi
+
+
+cp $TEST_IN_FILE /home/shc/CS144/sponge/tmp
+cp $TEST_OUT_FILE /home/shc/CS144/sponge/tmp
+
+echo "Bye User!"
 
 HASH_OUT=$(hash_file ${TEST_OUT_FILE})
 if [ ! -z "${HASH_OUT2}" ] && [ "${HASH_OUT}" != "${HASH_OUT2}" ] || [ "${HASH_IN}" != "${HASH_OUT}" ]; then

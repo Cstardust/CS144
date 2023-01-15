@@ -229,7 +229,7 @@ void TCPSender::ack_received(const WrappingInt32 ackno, const uint16_t window_si
     //  即如果send_window empty的话，则ack无用。确认谁啊。没谁能确认了。
     if(_send_window.empty())
     {
-        cout<<"send window is empty"<<endl;
+        // cout<<"send window is empty"<<endl;
         return ;
     }
 

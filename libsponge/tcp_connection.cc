@@ -139,10 +139,10 @@ static void Assert(bool msg)
 
 void TCPConnection::segment_received(const TCPSegment &seg) { 
     Assert(1);
-    cout<<"===================TCPConnection segment_received start========================"<<endl;
+    // cout<<"===================TCPConnection segment_received start========================"<<endl;
         // cout<<"\t";_receiver.state();
         // cout<<"\t";_sender.state();
-    cout<<"len "<<seg.length_in_sequence_space()<<" payload "<<seg.payload().copy()<<" syn "<<seg.header().syn<<" fin "<<seg.header().fin<<" ack "<<seg.header().ack<<" ackno "<<seg.header().ackno<<endl;
+    // cout<<"len "<<seg.length_in_sequence_space()<<" payload "<<seg.payload().copy()<<" syn "<<seg.header().syn<<" fin "<<seg.header().fin<<" ack "<<seg.header().ack<<" ackno "<<seg.header().ackno<<endl;
 
     _time_since_last_segment_received = 0;
     bool ack_to_send{false};
@@ -196,7 +196,7 @@ void TCPConnection::segment_received(const TCPSegment &seg) {
     if(seg.header().ack && _sender.state() != TCPSender::State::CLOSED)
     {
         _sender.ack_received(seg.header().ackno,seg.header().win);
-            // _sender.fill_window();   已经包含在ack_received中了
+        _sender.fill_window();                  //  有可能ack_received中没fill到
     }
 
     //  如果本端TCPConnection刚接收到SYN 那么易知其要发送syn作为返回TCPConnection CLOSED -> SYN_SENT : TCPSender send syn
@@ -249,7 +249,7 @@ void TCPConnection::segment_received(const TCPSegment &seg) {
 
     send_segments();
 
-    cout<<"===================TCPConnection segment_received end========================"<<endl;
+    // cout<<"===================TCPConnection segment_received end========================"<<endl;
 
 }
 
@@ -257,7 +257,7 @@ bool TCPConnection::active() const { return _active; }
 
 size_t TCPConnection::write(const string &data) {
 
-    cout<<"===================TCPConnection write start========================"<<endl;
+    // cout<<"===================TCPConnection write start========================"<<endl;
 
     //  write into sender's outbound_stream
     size_t bytes_written = _sender.stream_in().write(data);
@@ -265,7 +265,7 @@ size_t TCPConnection::write(const string &data) {
     _sender.fill_window();
     send_segments();
 
-    cout<<"===================TCPConnection write end========================"<<endl;
+    // cout<<"===================TCPConnection write end========================"<<endl;
 
     return bytes_written;
 }
@@ -342,7 +342,7 @@ void TCPConnection::end_input_stream() {
 void TCPConnection::connect() {
     //  send syn
     //  TCPSender : CLOSED -> SYN_SENT
-    cout<<"client connect"<<endl;
+    // cout<<"client connect"<<endl;
     _sender.fill_window();
     send_segments();
 }
