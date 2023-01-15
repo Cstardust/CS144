@@ -70,7 +70,6 @@ string FileDescriptor::read(const size_t limit) {
     string ret;
 
     read(ret, limit);
-    cerr<<"read from stdin : "<<ret<<endl;
     return ret;
 }
 

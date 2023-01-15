@@ -72,16 +72,15 @@ void TCPSpongeSocket<AdaptT>::_initialize_TCP(const TCPConfig &config) {
     //    given to underlying datagram socket)
 
     // rule 1: read from filtered packet stream and dump into TCPConnection
-    cout<<"add rule"<<endl;
     _eventloop.add_rule(_datagram_adapter,
                         Direction::In,
                         [&] {
                             auto seg = _datagram_adapter.read();
-                            cerr<<"read from filtered packet stream and dump into TCPConnection "<<endl;
-                            if(!seg.value().payload().copy().empty())
-                            {
-                                cout<<"\t"<<seg.value().payload().copy()<<endl;
-                            }
+                            // cerr<<"read from filtered packet stream and dump into TCPConnection "<<endl;
+                            // if(!seg.value().payload().copy().empty())
+                            // {
+                            //     cout<<"\t"<<seg.value().payload().copy()<<endl;
+                            // }
                             if (seg) {
                                 _tcp->segment_received(move(seg.value()));
                             }
@@ -101,7 +100,7 @@ void TCPSpongeSocket<AdaptT>::_initialize_TCP(const TCPConfig &config) {
         _thread_data,
         Direction::In,
         [&] {
-            cerr<<"read from pipe into outbound buffer"<<endl;
+            // cerr<<"read from pipe into outbound buffer"<<endl;
             const auto data = _thread_data.read(_tcp->remaining_outbound_capacity());
             const auto len = data.size();
             const auto amount_written = _tcp->write(move(data));
@@ -130,7 +129,7 @@ void TCPSpongeSocket<AdaptT>::_initialize_TCP(const TCPConfig &config) {
         _thread_data,
         Direction::Out,
         [&] {
-            cerr<<"read from inbound buffer into pipe"<<endl;
+            // cerr<<"read from inbound buffer into pipe"<<endl;
             ByteStream &inbound = _tcp->inbound_stream();
             // Write from the inbound_stream into
             // the pipe, handling the possibility of a partial
@@ -161,11 +160,11 @@ void TCPSpongeSocket<AdaptT>::_initialize_TCP(const TCPConfig &config) {
     _eventloop.add_rule(_datagram_adapter,
                         Direction::Out,
                         [&] {
-                            cerr<<"read outbound segments from TCPConnection and send as datagrams"<<endl;
+                            // cerr<<"read outbound segments from TCPConnection and send as datagrams"<<endl;
                             while (not _tcp->segments_out().empty()) {
-                                cout<<"\t";
-                                TCPSegment seg = _tcp->segments_out().front();
-                                cout<<"len "<<seg.length_in_sequence_space()<<" payload "<<seg.payload().copy()<<" syn "<<seg.header().syn<<" fin "<<seg.header().fin<<" ack "<<seg.header().ack<<" ackno "<<seg.header().ackno<<endl;
+                                // cout<<"\t";
+                                // TCPSegment seg = _tcp->segments_out().front();
+                                // cout<<"len "<<seg.length_in_sequence_space()<<" payload "<<seg.payload().copy()<<" syn "<<seg.header().syn<<" fin "<<seg.header().fin<<" ack "<<seg.header().ack<<" ackno "<<seg.header().ackno<<endl;
                                 _datagram_adapter.write(_tcp->segments_out().front());
                                 _tcp->segments_out().pop();
                             }

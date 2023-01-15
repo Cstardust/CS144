@@ -88,9 +88,8 @@ void DUMMY_CODE(Targs &&... /* unused */) {}
 
 using namespace std;
 
-//  sender还有多少bytes没发送过 
 size_t TCPConnection::remaining_outbound_capacity() const {
-    return _sender.stream_in().buffer_size();
+    return _sender.stream_in().remaining_capacity();
 }
 
 //  bytes sent but not acked

@@ -91,7 +91,6 @@ EventLoop::Result EventLoop::wait_next_event(const int timeout_ms) {
 
     // quit if there is nothing left to poll
     if (not something_to_poll) {
-        cerr<<"quit if there is nothing left to poll"<<endl;
         return Result::Exit;
     }
 
@@ -142,6 +141,6 @@ EventLoop::Result EventLoop::wait_next_event(const int timeout_ms) {
 
         ++it;  // if we got here, it means we didn't call _rules.erase()
     }
-    cerr<<"Success"<<endl;
+    // cerr<<"Success"<<endl;
     return Result::Success;
 }

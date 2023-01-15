@@ -344,6 +344,10 @@ thread
 vector
 -
 
+/home/shc/CS144/sponge/libsponge/tcp_helpers/tuntap_adapter.cc
+tuntap_adapter.hh
+/home/shc/CS144/sponge/libsponge/tcp_helpers/tuntap_adapter.hh
+
 /home/shc/CS144/sponge/libsponge/tcp_helpers/tuntap_adapter.hh
 tcp_over_ip.hh
 /home/shc/CS144/sponge/libsponge/tcp_helpers/tcp_over_ip.hh
