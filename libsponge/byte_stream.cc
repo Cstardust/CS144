@@ -25,27 +25,20 @@ ByteStream::ByteStream(const size_t capacity)
 }
 
 size_t ByteStream::write(const string &data) {
-    // cout<<"==============wirte start============"<<endl;
-    // cout << "write data " << data << endl;
     
     assert(!input_ended());     //  如果写端被关闭，则外界不应当对stream进行write。
 
     size_t bytes_to_write = min(data.size(), _capacity - _stream.size());   //  最多写多少bytes
     _bytes_pushed += bytes_to_write;
     for (size_t i = 0; i < bytes_to_write; ++i) {
-        // cout << data[i];
         _stream.push_back(data[i]);
     }
-    // cout << endl;
-    // cout<<"==============wirte end============"<<endl;
 
     return bytes_to_write;
 }
 
 //! \param[in] len bytes will be copied from the output side of the buffer
 string ByteStream::peek_output(const size_t len) const {
-    // cout<<"=============peek_output start============="<<endl;
-    
     assert(_stream.size() <= _capacity);
 
     size_t bytes_to_read = min(len, _stream.size());
@@ -55,32 +48,19 @@ string ByteStream::peek_output(const size_t len) const {
     //     res.push_back(*iter);
     // }
     // return res;
-    // cout << endl << res << endl;
-    // cout<<"=============peek_output end============="<<endl;
     return string(_stream.begin(),_stream.begin()+bytes_to_read);
 }
 
 
 //! \param[in] len bytes will be removed from the output side of the buffer
 void ByteStream::pop_output(const size_t len) {
-
-    // cout<<"=============pop_output start============="<<endl;
-
     assert(_stream.size() <= _capacity);
-
+    
     size_t bytes_to_pop = min(len, _stream.size());  //  最多全部弹出
-    // cout<<"bytes popped"<<_bytes_popped<<endl;
-    // cout<<"bytes_to_pop "<<bytes_to_pop<<endl;
-
     _bytes_popped += bytes_to_pop;
-
     while (bytes_to_pop--) {
         _stream.pop_front();
     }
-    
-    // cout<<"bytes popped"<<_bytes_popped<<endl;
-    // cout<<"=============pop_output end============="<<endl;
-
 }
 
 //! Read (i.e., copy and then pop) the next "len" bytes of the stream

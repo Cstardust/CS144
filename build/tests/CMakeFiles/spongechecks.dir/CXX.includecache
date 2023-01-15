@@ -129,19 +129,17 @@ tcp_segment.hh
 ../libsponge/tcp_segment.hh
 wrapping_integers.hh
 ../libsponge/wrapping_integers.hh
+deque
+-
 functional
+-
+iostream
 -
 queue
 -
 unordered_map
 -
 vector
--
-iostream
--
-queue
--
-deque
 -
 
 ../libsponge/util/address.hh
