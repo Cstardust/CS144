@@ -146,14 +146,6 @@ cassert
 optional
 -
 
-/home/shc/CS144/sponge/libsponge/tcp_sender.cc
-tcp_sender.hh
-/home/shc/CS144/sponge/libsponge/tcp_sender.hh
-tcp_config.hh
-/home/shc/CS144/sponge/libsponge/tcp_config.hh
-random
--
-
 /home/shc/CS144/sponge/libsponge/tcp_sender.hh
 byte_stream.hh
 /home/shc/CS144/sponge/libsponge/byte_stream.hh
@@ -174,19 +166,5 @@ queue
 unordered_map
 -
 vector
--
-
-/home/shc/CS144/sponge/libsponge/wrapping_integers.cc
-wrapping_integers.hh
-/home/shc/CS144/sponge/libsponge/wrapping_integers.hh
-cmath
--
-iostream
--
-
-/home/shc/CS144/sponge/libsponge/wrapping_integers.hh
-cstdint
--
-ostream
 -
 

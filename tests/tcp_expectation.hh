@@ -224,7 +224,7 @@ struct ExpectSegment : public TCPExpectation {
             throw SegmentExpectationViolation::violated_verb("existed");
         }
         TCPSegment seg;
-        //  这个read到底是从哪里read ? read出来的到底是TCPSender发送的segment还是TCPReceiver接受的segment ? 
+        //  read出来的应当是发送给本tcpconnection的segment 
         if (ParseResult::NoError != seg.parse(harness._flt.read())) {
             throw SegmentExpectationViolation::violated_verb("was parsable");
         }

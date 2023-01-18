@@ -202,9 +202,12 @@ HASH_OUT2=
 case "$RSDMODE" in
     S)  # test sending
         if [ "$CSMODE" = "c" ]; then
-            ref_listen "${TEST_OUT_FILE}" /dev/null
+            ref_listen "${TEST_OUT_FILE}" /dev/null     # (输出重定向,输入重定向)
             test_connect /dev/null "${TEST_IN_FILE}"
         else
+        # linux kernel TCP从TEST_IN_FILE读入数据，通过下层网络协议发送给我们实现的tcp，
+        # 我们实现的tcp 把结果 写入TEST_OUT_FILE。 
+        # 如果两个文件相同，测试就通过了。 对接收功能的测试也很类似。
             test_listen /dev/null "${TEST_IN_FILE}"
             ref_connect "${TEST_OUT_FILE}" /dev/null
         fi
@@ -221,6 +224,8 @@ case "$RSDMODE" in
     D)  # test full-duplex
         TEST_OUT2_FILE=$(mktemp)
         if [ "$CSMODE" = "c" ]; then
+        # 标准tcp 从 test_in_file 中读取数据 发送给 我们实现的tcp , 我们实现的tcp将结果写入TEST_OUT2_FILE
+        # 我们实现的tcp 从 test_in_file中读取数据 发送给 标准tcp , 标准tcp将结果写入TEST_OUT_FILE
             ref_listen "${TEST_OUT_FILE}" "${TEST_IN_FILE}"
             test_connect "${TEST_OUT2_FILE}" "${TEST_IN_FILE}"
         else

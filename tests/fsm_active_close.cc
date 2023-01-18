@@ -38,26 +38,17 @@ int main() {
         //  review
         // test #2: start in CLOSING, send ack, time out
         {
-            TCPTestHarness test_2 = TCPTestHarness::in_closing(cfg);
-
-            test_2.execute(Tick(4 * cfg.rt_timeout));
-            test_2.execute(ExpectOneSegment{}.with_fin(true));
-
-            cout<<"---------------------------------------------------"<<endl;
-            test_2.execute(ExpectState{State::CLOSING});
-            test_2.send_ack(WrappingInt32{2}, WrappingInt32{2});
-            test_2.execute(ExpectNoSegment{});
-            cout<<"---------------------------------------------------"<<endl;
-
+            TCPTestHarness test_2 = TCPTestHarness::in_closing(cfg);    //  closing . TCPSender : FIN_SENT , TCPReceiver : FIN_RECV
+            test_2.execute(Tick(4 * cfg.rt_timeout));                   //  超时 local重传fin segment
+            test_2.execute(ExpectOneSegment{}.with_fin(true));          //  check local是否重传fin segment
+            test_2.execute(ExpectState{State::CLOSING});                //  local state still = closing
+            test_2.send_ack(WrappingInt32{2}, WrappingInt32{2});        //  收到ack
+            test_2.execute(ExpectNoSegment{});                          //  local send no segment
+            test_2.execute(ExpectState{State::TIME_WAIT});              //  local in time_wait
+            test_2.execute(Tick(10 * cfg.rt_timeout - 1));              
             test_2.execute(ExpectState{State::TIME_WAIT});
-
-            test_2.execute(Tick(10 * cfg.rt_timeout - 1));
-
-            test_2.execute(ExpectState{State::TIME_WAIT});
-
             test_2.execute(Tick(2));
-
-            test_2.execute(ExpectState{State::CLOSED});
+            test_2.execute(ExpectState{State::CLOSED});                 //  local pass time_wait
         }
         cout<<"*********************start in FIN_WAIT_2, send FIN, time out*********************"<<endl;
         // test #3: start in FIN_WAIT_2, send FIN, time out

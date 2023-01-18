@@ -21,14 +21,7 @@ class TCPConnection {
     //! Should the TCPConnection stay active (and keep ACKing)
     //! for 10 * _cfg.rt_timeout milliseconds after both streams have ended,
     //! in case the remote TCPConnection doesn't know we've received its whole stream?
-    //  这就是说本端是否需要有 TIME_WAIT状态 ?
-    //  什么时候需要有TIME_WAIT : 本端正常主动发起关闭
-    //  什么时候没有TIME_WAIT : 被动关闭连接 | 发送/收到 rst
-    bool _linger_after_streams_finish{true};
-
-    //  什么时候第一次变成true
-      //  之前认为是在established的时候
-      //  然后看tcpstate里面是一开始就是true
+    bool _linger_after_streams_finish{true};    //  本端是否需要等待linger time 来满足 #4
     bool _active{true};
     size_t _time_since_last_segment_received{0};
   private:

@@ -10,7 +10,7 @@ void Timer::start(uint64_t initial_alarm) {
     _alarm = _initial_alarm;
 }
 
-//  Timer eplapse到期之后(return true) user一定要接着调用reset
+//  tip : Timer eplapse到期之后(return true) user一定要调用reset
 bool Timer::elapse(uint64_t elapsed) {
     if (!_active)
         throw "unstart";
@@ -92,8 +92,6 @@ size_t TCPSender::send_segment(size_t remaining_recv_window_sz) {
 //          so that it will expire after RTO seconds (for the current value
 //          of RTO).
 void TCPSender::timer_when_filling() {
-    //  如果此时 timer 还未开启
-    //  如果这是 send_window empty之后 第一次发送数据（装入数据到_send_window）。
     if (!_timer.active()) {
         _timer.reset();
         _timer.start(_initial_retransmission_timeout);
@@ -114,7 +112,7 @@ void TCPSender::fill_window()  //  try to send segment to fill the receive windo
         // "the recv_window should == bytes_in_flight"
         // "In fact , the receive_window is full now , but because of our sender implementation , we can't acked part of
         // the segment , so we can't bascially remaining_recv_window_sz -= bytes_in_flight() to get 0 . Instead, we
-        // should return now"<<endl;
+        // should return now"
         return;
     }
 
@@ -126,8 +124,7 @@ void TCPSender::fill_window()  //  try to send segment to fill the receive windo
         //  build and send tcpsegment
         size_t seg_len_in_seq_space = send_segment(remaining_recv_window_sz);
 
-        //  如果这个segment 既没有 flag 如 syn fin；又没有 payload 则 不必发送该seg
-        // nothing to send
+        // nothing to send : no syn or fin flag , no payload
         if (seg_len_in_seq_space == 0)
             break;
 
@@ -138,13 +135,6 @@ void TCPSender::fill_window()  //  try to send segment to fill the receive windo
         update_when_filling(seg_len_in_seq_space, remaining_recv_window_sz);
     }
 }
-
-/**
- * 读取好后，如果满足以下条件，则增加 FIN
- *  1. 从来没发送过 FIN
- *  2. 输入字节流处于 EOF
- *  3. window 减去 payload 大小后，仍然可以存放下 FIN
- */
 
 //! \param ackno The remote receiver's ackno (acknowledgment number)
 //! \param window_size The remote receiver's advertised window size
@@ -159,12 +149,11 @@ void TCPSender::ack_received(const WrappingInt32 ackno, const uint16_t window_si
                                   // sender顺序将要发送的下一个字节索引
         return;
 
-    //  send window is empty
-    //  即如果send_window empty的话，则ack无用。确认谁啊。没谁能确认了。
+    //  if send_window is empty , then ack is useless. (nothing is unacked in TCPSender)
     if (_send_window.empty())
         return;
 
-    bool seg_acked = false;  //  send_window中的seg被确认了。(可以顺带排除ack < left edge of the send_window)
+    bool seg_acked = false;  //  whether the seg in send_window is acked。(可以顺带排除ack < left edge of the send_window)
     //  remove acked seg from the send_window
     for (deque<TCPSegment>::iterator iter = _send_window.begin(); iter != _send_window.end();) {
         uint64_t abs_idx = unwrap(iter->header().seqno, _isn, _next_seqno);
@@ -172,43 +161,39 @@ void TCPSender::ack_received(const WrappingInt32 ackno, const uint16_t window_si
         //  _send_window中得seqno一定都是增序排列(由fill_window可知，是按照发送的顺序push到send_window中的)
         if (abs_idx >= abs_ackno)
             break;
+        //  remove seg from send_window
         if (abs_idx + len <= abs_ackno)  
         {
-            // cout<<"\t remove it from sender window "<<abs_idx<<" "<<len<<" "<<abs_ackno<<" payload
-            // "<<iter->payload().copy()<<" syn "<<iter->header().syn<<" fin "<<iter->header().fin<<endl;
             seg_acked = true;
             iter = _send_window.erase(iter);
         } else {
-            // cout<<"\t not remove it from sender window "<<abs_idx<<" "<<len<<" "<<abs_ackno<<" payload
-            // "<<iter->payload().copy()<<" syn "<<iter->header().syn<<" fin "<<iter->header().fin<<endl;
+        //  not remove seg from send_window
             ++iter;
         }
     }
 
     //  send_window中没有字节被ack，故不需要重启 / 关闭定时器 ，也不需要发送数据
-    //  invalid acked
     if (!seg_acked) {
         fill_window();
         return;
     }
+    
     //  上一个计时重传的分组被移除 故 下一个重新计数
     _consecutive_retransmissions_cnt = 0;
 
     //    (5.3) When an ACK is received that acknowledges new data, restart the
     //      retransmission timer so that it will expire after RTO seconds
     //      (for the current value of RTO).
-    // close and start a new timer
     if (!_send_window.empty()) {
         _timer.reset();
         _timer.start(_initial_retransmission_timeout);
     }
-    //    (5.2) When all outstanding data has been acknowledged, turn off the retransmission timer.
-    // send_window is empty , close the timer
+    //    (5.2) When all outstanding data has been acknowledged, turn off the retransmission timer. 即 send_window is empty , close the timer
     else {
         _timer.reset();
     }
 
-    //  接着从next_seqno发送新segment
+    //  send new data
     fill_window();
 }
 
@@ -223,33 +208,26 @@ void TCPSender::tick(const size_t ms_since_last_tick) {
         TCPSegment &oldest_seg = _send_window.front();
 
         uint64_t timeout = _timer.initial_alarm();
-        //  只有当window size > 0的时候 才 double alarm ; 才 ++ cnt
-        //  why ？ 依据 ？？
+        //  (why ?) only when window size > 0 , double alarm and ++ cnt
         if (_receive_window_size > 0) {
             //    (5.5) The host MUST set RTO <- RTO * 2 ("back off the timer").  The
             //          maximum value discussed in (2.5) above may be used to provide
             //          an upper bound to this doubling operation.
             timeout <<= 1;
-            ++_consecutive_retransmissions_cnt;  // > MAX_RETX_ATTEMPTS 该怎么办 ? 放弃该tcp连接？如何放弃 ？
+            ++_consecutive_retransmissions_cnt;  
             //    (5.7) If the timer expires awaiting the ACK of a SYN segment and the
             //          TCP implementation is using an RTO less than 3 seconds, the RTO
             //          MUST be re-initialized to 3 seconds when data transmission
             //          begins (i.e., after the three-way handshake completes).
         }
-        // else
-        // {
-        // _receive_window_size == 0 , not double timeout and not ++cnt
-        //  why
-        // }
-        //  如果recv windowsize == 0 则 不double 不记录cnt
         //    (5.6) Start the retransmission timer, such that it expires after RTO
         //  seconds (for the value of RTO after the doubling operation
         //  outlined in 5.5).
         _timer.reset();
         _timer.start(timeout);
 
-        //    超时重传 (5.4) Retransmit the earliest segment that has not been acknowledged by the TCP receiver.
-        _segments_out.push(oldest_seg);
+        //  (5.4) Retransmit the earliest segment that has not been acknowledged by the TCP receiver.
+        _segments_out.push(oldest_seg);     //  即 超时重传
     }
 }
 
@@ -259,9 +237,7 @@ void TCPSender::send_empty_segment(bool rst /*= false*/) {
     TCPSegment seg;
     seg.header().seqno = wrap(_next_seqno, _isn);
     if (rst)
-        seg.header().rst = true;  //  rst seg之前还会有一些未发送出去的普通segment.
-                                  //  目前是需要先将那些segment发送出去之后再发送rst segment
-
+        seg.header().rst = true; 
     _next_seqno += 0;
     _segments_out.push(seg);
 }
