@@ -160,5 +160,6 @@ t_isnR_128K_8K_lL 11 0.0712072
 t_isnD_128K_8K_l 11 0.074751
 t_isnD_128K_8K_L 11 0.0346027
 t_isnD_128K_8K_lL 11 0.0298047
+arp_network_interface 7 0.000340543
 ---
 t_webget

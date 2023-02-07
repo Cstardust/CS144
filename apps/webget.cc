@@ -23,7 +23,8 @@ void get_URL(const string &host, const string &path) {
     Address addr(host,"http");    //  getaddrinfo : host -> ip ; http -> port 
     //  connect
     // TCPSocket tcp_socket;
-    CS144TCPSocket tcp_socket;
+    // CS144TCPSocket tcp_socket;
+    FullStackSocket tcp_socket;
     tcp_socket.connect(addr);   
     //  send req
     string request("GET " + path + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n" + "\r\n");
