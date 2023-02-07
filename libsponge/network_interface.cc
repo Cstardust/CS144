@@ -61,20 +61,6 @@ void NetworkInterface::send_datagram(const InternetDatagram &dgram, const Addres
         _frames_out.push(std::move(ethernet_frame));
 
     } else {
-        // build an ARP request into EthernetFrame
-        // EthernetFrame ethernet_frame;
-        // ethernet_frame.header().dst = ETHERNET_BROADCAST;  //  因为要arp request
-        // ethernet_frame.header().src = _ethernet_address;
-        // ethernet_frame.header().type = EthernetHeader::TYPE_ARP;
-
-        // ARPMessage arp;                           //  arp查询分组
-        // arp.opcode = ARPMessage::OPCODE_REQUEST;  //  arp request
-        // arp.sender_ethernet_address = _ethernet_address;
-        // arp.sender_ip_address = _ip_address.ipv4_numeric();
-        // arp.target_ethernet_address = ETHERNET_BROADCAST;
-        // arp.target_ip_address = next_hop_ip;
-        // ethernet_frame.payload().append(arp.serialize());
-
         //   If the network interface already sent an ARP request about the same IP address in the last five seconds, don’t send a second request—just wait for a reply to the first one
         if(_wait_for_req[next_hop_ip] <= 0)
         {
@@ -124,7 +110,6 @@ optional<InternetDatagram> NetworkInterface::recv_frame(const EthernetFrame &fra
     InternetDatagram ipv4_data;
     //  recv IPv4
     if (ipv4_data.parse(frame.payload()) == ParseResult::NoError) {
-        // cerr<<"receive ipv4"<<endl;
         return ipv4_data;
     }
     //  recv ARP
@@ -134,7 +119,6 @@ optional<InternetDatagram> NetworkInterface::recv_frame(const EthernetFrame &fra
             cerr << " Not ipv4 or Arp " << endl;
             return {};
         }
-        // cerr<<"receive arp"<<endl;
         //  remember the mapping between the sender’s IP address and Ethernet address for 30 seconds. (Learn mappings
         //  from both requests and replies.)
         _arp_table[arp.sender_ip_address] = make_pair(arp.sender_ethernet_address, TTL);
@@ -143,19 +127,6 @@ optional<InternetDatagram> NetworkInterface::recv_frame(const EthernetFrame &fra
 
         //  In addition, if it’s an ARP request asking for our IP address, send an appropriate ARP reply
         if (arp.opcode == ARPMessage::OPCODE_REQUEST) {
-            // build an ARP Reply into EthernetFrame
-            // EthernetFrame ethernet_frame;
-            // ethernet_frame.header().dst = arp.sender_ethernet_address;  //  因为要arp reply
-            // ethernet_frame.header().src = _ethernet_address;
-            // ethernet_frame.header().type = EthernetHeader::TYPE_ARP;
-
-            // ARPMessage reply;                         //  arp响应分组
-            // reply.opcode = ARPMessage::OPCODE_REPLY;  //  arp reply
-            // reply.sender_ethernet_address = _ethernet_address;
-            // reply.sender_ip_address = _ip_address.ipv4_numeric();
-            // reply.target_ethernet_address = arp.sender_ethernet_address;
-            // reply.target_ip_address = arp.sender_ip_address;
-            // ethernet_frame.payload().append(reply.serialize());
             //  ARP_REQ广播并非指向本节点
             if(_ip_address.ipv4_numeric() != arp.target_ip_address)
                 return {};
