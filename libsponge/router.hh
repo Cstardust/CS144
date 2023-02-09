@@ -28,6 +28,7 @@ class AsyncNetworkInterface : public NetworkInterface {
     //!
     //! \param[in] frame the incoming Ethernet frame
     void recv_frame(const EthernetFrame &frame) {
+        //  只有EthernetFrame中封装的说ipv4 datagram , 才会被放入_datagrams_out
         auto optional_dgram = NetworkInterface::recv_frame(frame);
         if (optional_dgram.has_value()) {
             _datagrams_out.push(std::move(optional_dgram.value()));
@@ -48,6 +49,18 @@ class Router {
     //! as specified by the route with the longest prefix_length that matches the
     //! datagram's destination address.
     void route_one_datagram(InternetDatagram &dgram);
+
+    struct RouterEntry{
+        const uint32_t route_prefix;          //  ip
+        const uint8_t prefix_length;                 //  ip_perfix_len
+        const std::optional<Address> next_hop;       //  下一跳的ip地址 不过我觉着好像没啥必要这个 对转发来说? 
+        const size_t interface_num;             //  从哪个网卡转发出去 编号 
+        RouterEntry(const uint32_t ip , const uint8_t prefix , const std::optional<Address> ne , const size_t interface_idx):
+            route_prefix(ip),prefix_length(prefix),next_hop(ne),interface_num(interface_idx)
+        {}
+    };
+
+    std::vector<RouterEntry> _forwarding_table{};
 
   public:
     //! Add an interface to the router

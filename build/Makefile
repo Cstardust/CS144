@@ -733,43 +733,121 @@ tidy_tests__fsm_loopback_win.cc/fast:
 .PHONY : tidy_tests__fsm_loopback_win.cc/fast
 
 #=============================================================================
-# Target rules for targets named tidy_quiet_tcp_helpers__ipv4_header.cc
+# Target rules for targets named tidy_tests__fsm_loopback.cc
 
 # Build rule for target.
-tidy_quiet_tcp_helpers__ipv4_header.cc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tidy_quiet_tcp_helpers__ipv4_header.cc
-.PHONY : tidy_quiet_tcp_helpers__ipv4_header.cc
+tidy_tests__fsm_loopback.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_tests__fsm_loopback.cc
+.PHONY : tidy_tests__fsm_loopback.cc
 
 # fast build rule for target.
-tidy_quiet_tcp_helpers__ipv4_header.cc/fast:
-	$(MAKE) -f CMakeFiles/tidy_quiet_tcp_helpers__ipv4_header.cc.dir/build.make CMakeFiles/tidy_quiet_tcp_helpers__ipv4_header.cc.dir/build
-.PHONY : tidy_quiet_tcp_helpers__ipv4_header.cc/fast
+tidy_tests__fsm_loopback.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_tests__fsm_loopback.cc.dir/build.make CMakeFiles/tidy_tests__fsm_loopback.cc.dir/build
+.PHONY : tidy_tests__fsm_loopback.cc/fast
 
 #=============================================================================
-# Target rules for targets named tidy_tests__byte_stream_one_write.cc
+# Target rules for targets named tidy_quiet_tests__send_retx.cc
 
 # Build rule for target.
-tidy_tests__byte_stream_one_write.cc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tidy_tests__byte_stream_one_write.cc
-.PHONY : tidy_tests__byte_stream_one_write.cc
+tidy_quiet_tests__send_retx.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_quiet_tests__send_retx.cc
+.PHONY : tidy_quiet_tests__send_retx.cc
 
 # fast build rule for target.
-tidy_tests__byte_stream_one_write.cc/fast:
-	$(MAKE) -f CMakeFiles/tidy_tests__byte_stream_one_write.cc.dir/build.make CMakeFiles/tidy_tests__byte_stream_one_write.cc.dir/build
-.PHONY : tidy_tests__byte_stream_one_write.cc/fast
+tidy_quiet_tests__send_retx.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_quiet_tests__send_retx.cc.dir/build.make CMakeFiles/tidy_quiet_tests__send_retx.cc.dir/build
+.PHONY : tidy_quiet_tests__send_retx.cc/fast
 
 #=============================================================================
-# Target rules for targets named tidy_tests__fsm_connect_relaxed.cc
+# Target rules for targets named tidy_tests__send_connect.cc
 
 # Build rule for target.
-tidy_tests__fsm_connect_relaxed.cc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tidy_tests__fsm_connect_relaxed.cc
-.PHONY : tidy_tests__fsm_connect_relaxed.cc
+tidy_tests__send_connect.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_tests__send_connect.cc
+.PHONY : tidy_tests__send_connect.cc
 
 # fast build rule for target.
-tidy_tests__fsm_connect_relaxed.cc/fast:
-	$(MAKE) -f CMakeFiles/tidy_tests__fsm_connect_relaxed.cc.dir/build.make CMakeFiles/tidy_tests__fsm_connect_relaxed.cc.dir/build
-.PHONY : tidy_tests__fsm_connect_relaxed.cc/fast
+tidy_tests__send_connect.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_tests__send_connect.cc.dir/build.make CMakeFiles/tidy_tests__send_connect.cc.dir/build
+.PHONY : tidy_tests__send_connect.cc/fast
+
+#=============================================================================
+# Target rules for targets named tidy_quiet_tests__fsm_loopback.cc
+
+# Build rule for target.
+tidy_quiet_tests__fsm_loopback.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_quiet_tests__fsm_loopback.cc
+.PHONY : tidy_quiet_tests__fsm_loopback.cc
+
+# fast build rule for target.
+tidy_quiet_tests__fsm_loopback.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_quiet_tests__fsm_loopback.cc.dir/build.make CMakeFiles/tidy_quiet_tests__fsm_loopback.cc.dir/build
+.PHONY : tidy_quiet_tests__fsm_loopback.cc/fast
+
+#=============================================================================
+# Target rules for targets named tidy_tests__fsm_listen_relaxed.cc
+
+# Build rule for target.
+tidy_tests__fsm_listen_relaxed.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_tests__fsm_listen_relaxed.cc
+.PHONY : tidy_tests__fsm_listen_relaxed.cc
+
+# fast build rule for target.
+tidy_tests__fsm_listen_relaxed.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_tests__fsm_listen_relaxed.cc.dir/build.make CMakeFiles/tidy_tests__fsm_listen_relaxed.cc.dir/build
+.PHONY : tidy_tests__fsm_listen_relaxed.cc/fast
+
+#=============================================================================
+# Target rules for targets named tidy_quiet_libsponge__router.cc
+
+# Build rule for target.
+tidy_quiet_libsponge__router.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_quiet_libsponge__router.cc
+.PHONY : tidy_quiet_libsponge__router.cc
+
+# fast build rule for target.
+tidy_quiet_libsponge__router.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_quiet_libsponge__router.cc.dir/build.make CMakeFiles/tidy_quiet_libsponge__router.cc.dir/build
+.PHONY : tidy_quiet_libsponge__router.cc/fast
+
+#=============================================================================
+# Target rules for targets named tidy_quiet_tests__fsm_passive_close.cc
+
+# Build rule for target.
+tidy_quiet_tests__fsm_passive_close.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_quiet_tests__fsm_passive_close.cc
+.PHONY : tidy_quiet_tests__fsm_passive_close.cc
+
+# fast build rule for target.
+tidy_quiet_tests__fsm_passive_close.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_quiet_tests__fsm_passive_close.cc.dir/build.make CMakeFiles/tidy_quiet_tests__fsm_passive_close.cc.dir/build
+.PHONY : tidy_quiet_tests__fsm_passive_close.cc/fast
+
+#=============================================================================
+# Target rules for targets named tidy_apps__tcp_udp.cc
+
+# Build rule for target.
+tidy_apps__tcp_udp.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_apps__tcp_udp.cc
+.PHONY : tidy_apps__tcp_udp.cc
+
+# fast build rule for target.
+tidy_apps__tcp_udp.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_apps__tcp_udp.cc.dir/build.make CMakeFiles/tidy_apps__tcp_udp.cc.dir/build
+.PHONY : tidy_apps__tcp_udp.cc/fast
+
+#=============================================================================
+# Target rules for targets named tidy_libsponge__wrapping_integers.cc
+
+# Build rule for target.
+tidy_libsponge__wrapping_integers.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_libsponge__wrapping_integers.cc
+.PHONY : tidy_libsponge__wrapping_integers.cc
+
+# fast build rule for target.
+tidy_libsponge__wrapping_integers.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_libsponge__wrapping_integers.cc.dir/build.make CMakeFiles/tidy_libsponge__wrapping_integers.cc.dir/build
+.PHONY : tidy_libsponge__wrapping_integers.cc/fast
 
 #=============================================================================
 # Target rules for targets named tidy_quiet_libsponge__network_interface.cc
@@ -835,6 +913,19 @@ tidy_tests__fsm_ack_rst_win.cc: cmake_check_build_system
 tidy_tests__fsm_ack_rst_win.cc/fast:
 	$(MAKE) -f CMakeFiles/tidy_tests__fsm_ack_rst_win.cc.dir/build.make CMakeFiles/tidy_tests__fsm_ack_rst_win.cc.dir/build
 .PHONY : tidy_tests__fsm_ack_rst_win.cc/fast
+
+#=============================================================================
+# Target rules for targets named tidy_libsponge__router.cc
+
+# Build rule for target.
+tidy_libsponge__router.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_libsponge__router.cc
+.PHONY : tidy_libsponge__router.cc
+
+# fast build rule for target.
+tidy_libsponge__router.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_libsponge__router.cc.dir/build.make CMakeFiles/tidy_libsponge__router.cc.dir/build
+.PHONY : tidy_libsponge__router.cc/fast
 
 #=============================================================================
 # Target rules for targets named tidy_tests__fsm_stream_reassembler_single.cc
@@ -1006,43 +1097,108 @@ tidy_quiet_tcp_helpers__arp_message.cc/fast:
 .PHONY : tidy_quiet_tcp_helpers__arp_message.cc/fast
 
 #=============================================================================
-# Target rules for targets named tidy_tcp_helpers__ipv4_datagram.cc
+# Target rules for targets named check_webget
 
 # Build rule for target.
-tidy_tcp_helpers__ipv4_datagram.cc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tidy_tcp_helpers__ipv4_datagram.cc
-.PHONY : tidy_tcp_helpers__ipv4_datagram.cc
+check_webget: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 check_webget
+.PHONY : check_webget
 
 # fast build rule for target.
-tidy_tcp_helpers__ipv4_datagram.cc/fast:
-	$(MAKE) -f CMakeFiles/tidy_tcp_helpers__ipv4_datagram.cc.dir/build.make CMakeFiles/tidy_tcp_helpers__ipv4_datagram.cc.dir/build
-.PHONY : tidy_tcp_helpers__ipv4_datagram.cc/fast
+check_webget/fast:
+	$(MAKE) -f CMakeFiles/check_webget.dir/build.make CMakeFiles/check_webget.dir/build
+.PHONY : check_webget/fast
 
 #=============================================================================
-# Target rules for targets named tidy_tcp_helpers__fd_adapter.cc
+# Target rules for targets named tidy_apps__tcp_ipv4.cc
 
 # Build rule for target.
-tidy_tcp_helpers__fd_adapter.cc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tidy_tcp_helpers__fd_adapter.cc
-.PHONY : tidy_tcp_helpers__fd_adapter.cc
+tidy_apps__tcp_ipv4.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_apps__tcp_ipv4.cc
+.PHONY : tidy_apps__tcp_ipv4.cc
 
 # fast build rule for target.
-tidy_tcp_helpers__fd_adapter.cc/fast:
-	$(MAKE) -f CMakeFiles/tidy_tcp_helpers__fd_adapter.cc.dir/build.make CMakeFiles/tidy_tcp_helpers__fd_adapter.cc.dir/build
-.PHONY : tidy_tcp_helpers__fd_adapter.cc/fast
+tidy_apps__tcp_ipv4.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_apps__tcp_ipv4.cc.dir/build.make CMakeFiles/tidy_apps__tcp_ipv4.cc.dir/build
+.PHONY : tidy_apps__tcp_ipv4.cc/fast
 
 #=============================================================================
-# Target rules for targets named tidy_apps__tcp_native.cc
+# Target rules for targets named tidy_quiet_tests__fsm_connect_relaxed.cc
 
 # Build rule for target.
-tidy_apps__tcp_native.cc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tidy_apps__tcp_native.cc
-.PHONY : tidy_apps__tcp_native.cc
+tidy_quiet_tests__fsm_connect_relaxed.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_quiet_tests__fsm_connect_relaxed.cc
+.PHONY : tidy_quiet_tests__fsm_connect_relaxed.cc
 
 # fast build rule for target.
-tidy_apps__tcp_native.cc/fast:
-	$(MAKE) -f CMakeFiles/tidy_apps__tcp_native.cc.dir/build.make CMakeFiles/tidy_apps__tcp_native.cc.dir/build
-.PHONY : tidy_apps__tcp_native.cc/fast
+tidy_quiet_tests__fsm_connect_relaxed.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_quiet_tests__fsm_connect_relaxed.cc.dir/build.make CMakeFiles/tidy_quiet_tests__fsm_connect_relaxed.cc.dir/build
+.PHONY : tidy_quiet_tests__fsm_connect_relaxed.cc/fast
+
+#=============================================================================
+# Target rules for targets named tidy_quiet_doctests__parser_dt.cc
+
+# Build rule for target.
+tidy_quiet_doctests__parser_dt.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_quiet_doctests__parser_dt.cc
+.PHONY : tidy_quiet_doctests__parser_dt.cc
+
+# fast build rule for target.
+tidy_quiet_doctests__parser_dt.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_quiet_doctests__parser_dt.cc.dir/build.make CMakeFiles/tidy_quiet_doctests__parser_dt.cc.dir/build
+.PHONY : tidy_quiet_doctests__parser_dt.cc/fast
+
+#=============================================================================
+# Target rules for targets named check_lab1
+
+# Build rule for target.
+check_lab1: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 check_lab1
+.PHONY : check_lab1
+
+# fast build rule for target.
+check_lab1/fast:
+	$(MAKE) -f CMakeFiles/check_lab1.dir/build.make CMakeFiles/check_lab1.dir/build
+.PHONY : check_lab1/fast
+
+#=============================================================================
+# Target rules for targets named tidy_apps__tcp_ip_ethernet.cc
+
+# Build rule for target.
+tidy_apps__tcp_ip_ethernet.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_apps__tcp_ip_ethernet.cc
+.PHONY : tidy_apps__tcp_ip_ethernet.cc
+
+# fast build rule for target.
+tidy_apps__tcp_ip_ethernet.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_apps__tcp_ip_ethernet.cc.dir/build.make CMakeFiles/tidy_apps__tcp_ip_ethernet.cc.dir/build
+.PHONY : tidy_apps__tcp_ip_ethernet.cc/fast
+
+#=============================================================================
+# Target rules for targets named tidy_quiet_doctests__socket_example_2.cc
+
+# Build rule for target.
+tidy_quiet_doctests__socket_example_2.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_quiet_doctests__socket_example_2.cc
+.PHONY : tidy_quiet_doctests__socket_example_2.cc
+
+# fast build rule for target.
+tidy_quiet_doctests__socket_example_2.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_quiet_doctests__socket_example_2.cc.dir/build.make CMakeFiles/tidy_quiet_doctests__socket_example_2.cc.dir/build
+.PHONY : tidy_quiet_doctests__socket_example_2.cc/fast
+
+#=============================================================================
+# Target rules for targets named tidy_apps__webget.cc
+
+# Build rule for target.
+tidy_apps__webget.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_apps__webget.cc
+.PHONY : tidy_apps__webget.cc
+
+# fast build rule for target.
+tidy_apps__webget.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_apps__webget.cc.dir/build.make CMakeFiles/tidy_apps__webget.cc.dir/build
+.PHONY : tidy_apps__webget.cc/fast
 
 #=============================================================================
 # Target rules for targets named tidy_quiet_tests__wrapping_integers_roundtrip.cc
@@ -1149,6 +1305,32 @@ tidy_tests__byte_stream_capacity.cc/fast:
 .PHONY : tidy_tests__byte_stream_capacity.cc/fast
 
 #=============================================================================
+# Target rules for targets named tidy_apps__tcp_native.cc
+
+# Build rule for target.
+tidy_apps__tcp_native.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_apps__tcp_native.cc
+.PHONY : tidy_apps__tcp_native.cc
+
+# fast build rule for target.
+tidy_apps__tcp_native.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_apps__tcp_native.cc.dir/build.make CMakeFiles/tidy_apps__tcp_native.cc.dir/build
+.PHONY : tidy_apps__tcp_native.cc/fast
+
+#=============================================================================
+# Target rules for targets named tidy_tcp_helpers__fd_adapter.cc
+
+# Build rule for target.
+tidy_tcp_helpers__fd_adapter.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_tcp_helpers__fd_adapter.cc
+.PHONY : tidy_tcp_helpers__fd_adapter.cc
+
+# fast build rule for target.
+tidy_tcp_helpers__fd_adapter.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_tcp_helpers__fd_adapter.cc.dir/build.make CMakeFiles/tidy_tcp_helpers__fd_adapter.cc.dir/build
+.PHONY : tidy_tcp_helpers__fd_adapter.cc/fast
+
+#=============================================================================
 # Target rules for targets named tidy_quiet_doctests__address_dt.cc
 
 # Build rule for target.
@@ -1160,58 +1342,6 @@ tidy_quiet_doctests__address_dt.cc: cmake_check_build_system
 tidy_quiet_doctests__address_dt.cc/fast:
 	$(MAKE) -f CMakeFiles/tidy_quiet_doctests__address_dt.cc.dir/build.make CMakeFiles/tidy_quiet_doctests__address_dt.cc.dir/build
 .PHONY : tidy_quiet_doctests__address_dt.cc/fast
-
-#=============================================================================
-# Target rules for targets named check_lab1
-
-# Build rule for target.
-check_lab1: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 check_lab1
-.PHONY : check_lab1
-
-# fast build rule for target.
-check_lab1/fast:
-	$(MAKE) -f CMakeFiles/check_lab1.dir/build.make CMakeFiles/check_lab1.dir/build
-.PHONY : check_lab1/fast
-
-#=============================================================================
-# Target rules for targets named tidy_apps__tcp_ip_ethernet.cc
-
-# Build rule for target.
-tidy_apps__tcp_ip_ethernet.cc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tidy_apps__tcp_ip_ethernet.cc
-.PHONY : tidy_apps__tcp_ip_ethernet.cc
-
-# fast build rule for target.
-tidy_apps__tcp_ip_ethernet.cc/fast:
-	$(MAKE) -f CMakeFiles/tidy_apps__tcp_ip_ethernet.cc.dir/build.make CMakeFiles/tidy_apps__tcp_ip_ethernet.cc.dir/build
-.PHONY : tidy_apps__tcp_ip_ethernet.cc/fast
-
-#=============================================================================
-# Target rules for targets named tidy_quiet_doctests__socket_example_2.cc
-
-# Build rule for target.
-tidy_quiet_doctests__socket_example_2.cc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tidy_quiet_doctests__socket_example_2.cc
-.PHONY : tidy_quiet_doctests__socket_example_2.cc
-
-# fast build rule for target.
-tidy_quiet_doctests__socket_example_2.cc/fast:
-	$(MAKE) -f CMakeFiles/tidy_quiet_doctests__socket_example_2.cc.dir/build.make CMakeFiles/tidy_quiet_doctests__socket_example_2.cc.dir/build
-.PHONY : tidy_quiet_doctests__socket_example_2.cc/fast
-
-#=============================================================================
-# Target rules for targets named tidy_apps__webget.cc
-
-# Build rule for target.
-tidy_apps__webget.cc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tidy_apps__webget.cc
-.PHONY : tidy_apps__webget.cc
-
-# fast build rule for target.
-tidy_apps__webget.cc/fast:
-	$(MAKE) -f CMakeFiles/tidy_apps__webget.cc.dir/build.make CMakeFiles/tidy_apps__webget.cc.dir/build
-.PHONY : tidy_apps__webget.cc/fast
 
 #=============================================================================
 # Target rules for targets named tidy_quiet_tests__fsm_stream_reassembler_overlapping.cc
@@ -1279,6 +1409,32 @@ doc/fast:
 .PHONY : doc/fast
 
 #=============================================================================
+# Target rules for targets named tidy_quiet_tcp_helpers__fd_adapter.cc
+
+# Build rule for target.
+tidy_quiet_tcp_helpers__fd_adapter.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_quiet_tcp_helpers__fd_adapter.cc
+.PHONY : tidy_quiet_tcp_helpers__fd_adapter.cc
+
+# fast build rule for target.
+tidy_quiet_tcp_helpers__fd_adapter.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_quiet_tcp_helpers__fd_adapter.cc.dir/build.make CMakeFiles/tidy_quiet_tcp_helpers__fd_adapter.cc.dir/build
+.PHONY : tidy_quiet_tcp_helpers__fd_adapter.cc/fast
+
+#=============================================================================
+# Target rules for targets named tidy_doctests__parser_example.cc
+
+# Build rule for target.
+tidy_doctests__parser_example.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_doctests__parser_example.cc
+.PHONY : tidy_doctests__parser_example.cc
+
+# fast build rule for target.
+tidy_doctests__parser_example.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_doctests__parser_example.cc.dir/build.make CMakeFiles/tidy_doctests__parser_example.cc.dir/build
+.PHONY : tidy_doctests__parser_example.cc/fast
+
+#=============================================================================
 # Target rules for targets named tidy_libsponge__tcp_receiver.cc
 
 # Build rule for target.
@@ -1318,19 +1474,6 @@ tidy_quiet_tests__byte_stream_many_writes.cc/fast:
 .PHONY : tidy_quiet_tests__byte_stream_many_writes.cc/fast
 
 #=============================================================================
-# Target rules for targets named tidy_quiet_tcp_helpers__ethernet_frame.cc
-
-# Build rule for target.
-tidy_quiet_tcp_helpers__ethernet_frame.cc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tidy_quiet_tcp_helpers__ethernet_frame.cc
-.PHONY : tidy_quiet_tcp_helpers__ethernet_frame.cc
-
-# fast build rule for target.
-tidy_quiet_tcp_helpers__ethernet_frame.cc/fast:
-	$(MAKE) -f CMakeFiles/tidy_quiet_tcp_helpers__ethernet_frame.cc.dir/build.make CMakeFiles/tidy_quiet_tcp_helpers__ethernet_frame.cc.dir/build
-.PHONY : tidy_quiet_tcp_helpers__ethernet_frame.cc/fast
-
-#=============================================================================
 # Target rules for targets named tidy_quiet_apps__tcp_benchmark.cc
 
 # Build rule for target.
@@ -1342,6 +1485,19 @@ tidy_quiet_apps__tcp_benchmark.cc: cmake_check_build_system
 tidy_quiet_apps__tcp_benchmark.cc/fast:
 	$(MAKE) -f CMakeFiles/tidy_quiet_apps__tcp_benchmark.cc.dir/build.make CMakeFiles/tidy_quiet_apps__tcp_benchmark.cc.dir/build
 .PHONY : tidy_quiet_apps__tcp_benchmark.cc/fast
+
+#=============================================================================
+# Target rules for targets named tidy_quiet_tcp_helpers__ethernet_frame.cc
+
+# Build rule for target.
+tidy_quiet_tcp_helpers__ethernet_frame.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_quiet_tcp_helpers__ethernet_frame.cc
+.PHONY : tidy_quiet_tcp_helpers__ethernet_frame.cc
+
+# fast build rule for target.
+tidy_quiet_tcp_helpers__ethernet_frame.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_quiet_tcp_helpers__ethernet_frame.cc.dir/build.make CMakeFiles/tidy_quiet_tcp_helpers__ethernet_frame.cc.dir/build
+.PHONY : tidy_quiet_tcp_helpers__ethernet_frame.cc/fast
 
 #=============================================================================
 # Target rules for targets named tidy_util__eventloop.cc
@@ -1409,45 +1565,6 @@ tidy_quiet_tests__fsm_active_close.cc/fast:
 .PHONY : tidy_quiet_tests__fsm_active_close.cc/fast
 
 #=============================================================================
-# Target rules for targets named check_webget
-
-# Build rule for target.
-check_webget: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 check_webget
-.PHONY : check_webget
-
-# fast build rule for target.
-check_webget/fast:
-	$(MAKE) -f CMakeFiles/check_webget.dir/build.make CMakeFiles/check_webget.dir/build
-.PHONY : check_webget/fast
-
-#=============================================================================
-# Target rules for targets named tidy_apps__tcp_ipv4.cc
-
-# Build rule for target.
-tidy_apps__tcp_ipv4.cc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tidy_apps__tcp_ipv4.cc
-.PHONY : tidy_apps__tcp_ipv4.cc
-
-# fast build rule for target.
-tidy_apps__tcp_ipv4.cc/fast:
-	$(MAKE) -f CMakeFiles/tidy_apps__tcp_ipv4.cc.dir/build.make CMakeFiles/tidy_apps__tcp_ipv4.cc.dir/build
-.PHONY : tidy_apps__tcp_ipv4.cc/fast
-
-#=============================================================================
-# Target rules for targets named tidy_quiet_tests__fsm_connect_relaxed.cc
-
-# Build rule for target.
-tidy_quiet_tests__fsm_connect_relaxed.cc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tidy_quiet_tests__fsm_connect_relaxed.cc
-.PHONY : tidy_quiet_tests__fsm_connect_relaxed.cc
-
-# fast build rule for target.
-tidy_quiet_tests__fsm_connect_relaxed.cc/fast:
-	$(MAKE) -f CMakeFiles/tidy_quiet_tests__fsm_connect_relaxed.cc.dir/build.make CMakeFiles/tidy_quiet_tests__fsm_connect_relaxed.cc.dir/build
-.PHONY : tidy_quiet_tests__fsm_connect_relaxed.cc/fast
-
-#=============================================================================
 # Target rules for targets named tidy_quiet_tests__tcp_parser.cc
 
 # Build rule for target.
@@ -1474,6 +1591,19 @@ tidy_doctests__socket_example_3.cc/fast:
 .PHONY : tidy_doctests__socket_example_3.cc/fast
 
 #=============================================================================
+# Target rules for targets named tidy_quiet_apps__network_simulator.cc
+
+# Build rule for target.
+tidy_quiet_apps__network_simulator.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_quiet_apps__network_simulator.cc
+.PHONY : tidy_quiet_apps__network_simulator.cc
+
+# fast build rule for target.
+tidy_quiet_apps__network_simulator.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_quiet_apps__network_simulator.cc.dir/build.make CMakeFiles/tidy_quiet_apps__network_simulator.cc.dir/build
+.PHONY : tidy_quiet_apps__network_simulator.cc/fast
+
+#=============================================================================
 # Target rules for targets named tidy_quiet_tests__byte_stream_test_harness.cc
 
 # Build rule for target.
@@ -1485,45 +1615,6 @@ tidy_quiet_tests__byte_stream_test_harness.cc: cmake_check_build_system
 tidy_quiet_tests__byte_stream_test_harness.cc/fast:
 	$(MAKE) -f CMakeFiles/tidy_quiet_tests__byte_stream_test_harness.cc.dir/build.make CMakeFiles/tidy_quiet_tests__byte_stream_test_harness.cc.dir/build
 .PHONY : tidy_quiet_tests__byte_stream_test_harness.cc/fast
-
-#=============================================================================
-# Target rules for targets named tidy_quiet_tests__fsm_passive_close.cc
-
-# Build rule for target.
-tidy_quiet_tests__fsm_passive_close.cc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tidy_quiet_tests__fsm_passive_close.cc
-.PHONY : tidy_quiet_tests__fsm_passive_close.cc
-
-# fast build rule for target.
-tidy_quiet_tests__fsm_passive_close.cc/fast:
-	$(MAKE) -f CMakeFiles/tidy_quiet_tests__fsm_passive_close.cc.dir/build.make CMakeFiles/tidy_quiet_tests__fsm_passive_close.cc.dir/build
-.PHONY : tidy_quiet_tests__fsm_passive_close.cc/fast
-
-#=============================================================================
-# Target rules for targets named tidy_apps__tcp_udp.cc
-
-# Build rule for target.
-tidy_apps__tcp_udp.cc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tidy_apps__tcp_udp.cc
-.PHONY : tidy_apps__tcp_udp.cc
-
-# fast build rule for target.
-tidy_apps__tcp_udp.cc/fast:
-	$(MAKE) -f CMakeFiles/tidy_apps__tcp_udp.cc.dir/build.make CMakeFiles/tidy_apps__tcp_udp.cc.dir/build
-.PHONY : tidy_apps__tcp_udp.cc/fast
-
-#=============================================================================
-# Target rules for targets named tidy_libsponge__wrapping_integers.cc
-
-# Build rule for target.
-tidy_libsponge__wrapping_integers.cc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tidy_libsponge__wrapping_integers.cc
-.PHONY : tidy_libsponge__wrapping_integers.cc
-
-# fast build rule for target.
-tidy_libsponge__wrapping_integers.cc/fast:
-	$(MAKE) -f CMakeFiles/tidy_libsponge__wrapping_integers.cc.dir/build.make CMakeFiles/tidy_libsponge__wrapping_integers.cc.dir/build
-.PHONY : tidy_libsponge__wrapping_integers.cc/fast
 
 #=============================================================================
 # Target rules for targets named tidy_quiet_doctests__address_example_2.cc
@@ -1550,6 +1641,45 @@ tidy_quiet_apps__tun.cc: cmake_check_build_system
 tidy_quiet_apps__tun.cc/fast:
 	$(MAKE) -f CMakeFiles/tidy_quiet_apps__tun.cc.dir/build.make CMakeFiles/tidy_quiet_apps__tun.cc.dir/build
 .PHONY : tidy_quiet_apps__tun.cc/fast
+
+#=============================================================================
+# Target rules for targets named tidy_quiet_libsponge__byte_stream.cc
+
+# Build rule for target.
+tidy_quiet_libsponge__byte_stream.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_quiet_libsponge__byte_stream.cc
+.PHONY : tidy_quiet_libsponge__byte_stream.cc
+
+# fast build rule for target.
+tidy_quiet_libsponge__byte_stream.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_quiet_libsponge__byte_stream.cc.dir/build.make CMakeFiles/tidy_quiet_libsponge__byte_stream.cc.dir/build
+.PHONY : tidy_quiet_libsponge__byte_stream.cc/fast
+
+#=============================================================================
+# Target rules for targets named tidy_apps__tun.cc
+
+# Build rule for target.
+tidy_apps__tun.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_apps__tun.cc
+.PHONY : tidy_apps__tun.cc
+
+# fast build rule for target.
+tidy_apps__tun.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_apps__tun.cc.dir/build.make CMakeFiles/tidy_apps__tun.cc.dir/build
+.PHONY : tidy_apps__tun.cc/fast
+
+#=============================================================================
+# Target rules for targets named tidy_doctests__address_dt.cc
+
+# Build rule for target.
+tidy_doctests__address_dt.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_doctests__address_dt.cc
+.PHONY : tidy_doctests__address_dt.cc
+
+# fast build rule for target.
+tidy_doctests__address_dt.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_doctests__address_dt.cc.dir/build.make CMakeFiles/tidy_doctests__address_dt.cc.dir/build
+.PHONY : tidy_doctests__address_dt.cc/fast
 
 #=============================================================================
 # Target rules for targets named tidy_libsponge__tcp_connection.cc
@@ -1708,58 +1838,6 @@ tidy_quiet_doctests__address_example_1.cc/fast:
 .PHONY : tidy_quiet_doctests__address_example_1.cc/fast
 
 #=============================================================================
-# Target rules for targets named tidy_apps__tun.cc
-
-# Build rule for target.
-tidy_apps__tun.cc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tidy_apps__tun.cc
-.PHONY : tidy_apps__tun.cc
-
-# fast build rule for target.
-tidy_apps__tun.cc/fast:
-	$(MAKE) -f CMakeFiles/tidy_apps__tun.cc.dir/build.make CMakeFiles/tidy_apps__tun.cc.dir/build
-.PHONY : tidy_apps__tun.cc/fast
-
-#=============================================================================
-# Target rules for targets named tidy_doctests__address_dt.cc
-
-# Build rule for target.
-tidy_doctests__address_dt.cc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tidy_doctests__address_dt.cc
-.PHONY : tidy_doctests__address_dt.cc
-
-# fast build rule for target.
-tidy_doctests__address_dt.cc/fast:
-	$(MAKE) -f CMakeFiles/tidy_doctests__address_dt.cc.dir/build.make CMakeFiles/tidy_doctests__address_dt.cc.dir/build
-.PHONY : tidy_doctests__address_dt.cc/fast
-
-#=============================================================================
-# Target rules for targets named tidy_quiet_libsponge__byte_stream.cc
-
-# Build rule for target.
-tidy_quiet_libsponge__byte_stream.cc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tidy_quiet_libsponge__byte_stream.cc
-.PHONY : tidy_quiet_libsponge__byte_stream.cc
-
-# fast build rule for target.
-tidy_quiet_libsponge__byte_stream.cc/fast:
-	$(MAKE) -f CMakeFiles/tidy_quiet_libsponge__byte_stream.cc.dir/build.make CMakeFiles/tidy_quiet_libsponge__byte_stream.cc.dir/build
-.PHONY : tidy_quiet_libsponge__byte_stream.cc/fast
-
-#=============================================================================
-# Target rules for targets named tidy_quiet_doctests__parser_dt.cc
-
-# Build rule for target.
-tidy_quiet_doctests__parser_dt.cc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tidy_quiet_doctests__parser_dt.cc
-.PHONY : tidy_quiet_doctests__parser_dt.cc
-
-# fast build rule for target.
-tidy_quiet_doctests__parser_dt.cc/fast:
-	$(MAKE) -f CMakeFiles/tidy_quiet_doctests__parser_dt.cc.dir/build.make CMakeFiles/tidy_quiet_doctests__parser_dt.cc.dir/build
-.PHONY : tidy_quiet_doctests__parser_dt.cc/fast
-
-#=============================================================================
 # Target rules for targets named tidy_tests__fsm_passive_close.cc
 
 # Build rule for target.
@@ -1825,32 +1903,6 @@ tidy_tcp_helpers__tuntap_adapter.cc/fast:
 .PHONY : tidy_tcp_helpers__tuntap_adapter.cc/fast
 
 #=============================================================================
-# Target rules for targets named tidy_doctests__parser_example.cc
-
-# Build rule for target.
-tidy_doctests__parser_example.cc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tidy_doctests__parser_example.cc
-.PHONY : tidy_doctests__parser_example.cc
-
-# fast build rule for target.
-tidy_doctests__parser_example.cc/fast:
-	$(MAKE) -f CMakeFiles/tidy_doctests__parser_example.cc.dir/build.make CMakeFiles/tidy_doctests__parser_example.cc.dir/build
-.PHONY : tidy_doctests__parser_example.cc/fast
-
-#=============================================================================
-# Target rules for targets named tidy_quiet_tcp_helpers__fd_adapter.cc
-
-# Build rule for target.
-tidy_quiet_tcp_helpers__fd_adapter.cc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tidy_quiet_tcp_helpers__fd_adapter.cc
-.PHONY : tidy_quiet_tcp_helpers__fd_adapter.cc
-
-# fast build rule for target.
-tidy_quiet_tcp_helpers__fd_adapter.cc/fast:
-	$(MAKE) -f CMakeFiles/tidy_quiet_tcp_helpers__fd_adapter.cc.dir/build.make CMakeFiles/tidy_quiet_tcp_helpers__fd_adapter.cc.dir/build
-.PHONY : tidy_quiet_tcp_helpers__fd_adapter.cc/fast
-
-#=============================================================================
 # Target rules for targets named tidy_verbose
 
 # Build rule for target.
@@ -1877,19 +1929,6 @@ tidy_quiet_tests__net_interface.cc/fast:
 .PHONY : tidy_quiet_tests__net_interface.cc/fast
 
 #=============================================================================
-# Target rules for targets named tidy_quiet_tcp_helpers__ipv4_datagram.cc
-
-# Build rule for target.
-tidy_quiet_tcp_helpers__ipv4_datagram.cc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tidy_quiet_tcp_helpers__ipv4_datagram.cc
-.PHONY : tidy_quiet_tcp_helpers__ipv4_datagram.cc
-
-# fast build rule for target.
-tidy_quiet_tcp_helpers__ipv4_datagram.cc/fast:
-	$(MAKE) -f CMakeFiles/tidy_quiet_tcp_helpers__ipv4_datagram.cc.dir/build.make CMakeFiles/tidy_quiet_tcp_helpers__ipv4_datagram.cc.dir/build
-.PHONY : tidy_quiet_tcp_helpers__ipv4_datagram.cc/fast
-
-#=============================================================================
 # Target rules for targets named tidy_quiet_tcp_helpers__tcp_state.cc
 
 # Build rule for target.
@@ -1903,17 +1942,82 @@ tidy_quiet_tcp_helpers__tcp_state.cc/fast:
 .PHONY : tidy_quiet_tcp_helpers__tcp_state.cc/fast
 
 #=============================================================================
-# Target rules for targets named tidy_quiet_util__socket.cc
+# Target rules for targets named tidy_quiet_tcp_helpers__ipv4_datagram.cc
 
 # Build rule for target.
-tidy_quiet_util__socket.cc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tidy_quiet_util__socket.cc
-.PHONY : tidy_quiet_util__socket.cc
+tidy_quiet_tcp_helpers__ipv4_datagram.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_quiet_tcp_helpers__ipv4_datagram.cc
+.PHONY : tidy_quiet_tcp_helpers__ipv4_datagram.cc
 
 # fast build rule for target.
-tidy_quiet_util__socket.cc/fast:
-	$(MAKE) -f CMakeFiles/tidy_quiet_util__socket.cc.dir/build.make CMakeFiles/tidy_quiet_util__socket.cc.dir/build
-.PHONY : tidy_quiet_util__socket.cc/fast
+tidy_quiet_tcp_helpers__ipv4_datagram.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_quiet_tcp_helpers__ipv4_datagram.cc.dir/build.make CMakeFiles/tidy_quiet_tcp_helpers__ipv4_datagram.cc.dir/build
+.PHONY : tidy_quiet_tcp_helpers__ipv4_datagram.cc/fast
+
+#=============================================================================
+# Target rules for targets named tidy_apps__network_simulator.cc
+
+# Build rule for target.
+tidy_apps__network_simulator.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_apps__network_simulator.cc
+.PHONY : tidy_apps__network_simulator.cc
+
+# fast build rule for target.
+tidy_apps__network_simulator.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_apps__network_simulator.cc.dir/build.make CMakeFiles/tidy_apps__network_simulator.cc.dir/build
+.PHONY : tidy_apps__network_simulator.cc/fast
+
+#=============================================================================
+# Target rules for targets named tidy_tests__fsm_connect_relaxed.cc
+
+# Build rule for target.
+tidy_tests__fsm_connect_relaxed.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_tests__fsm_connect_relaxed.cc
+.PHONY : tidy_tests__fsm_connect_relaxed.cc
+
+# fast build rule for target.
+tidy_tests__fsm_connect_relaxed.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_tests__fsm_connect_relaxed.cc.dir/build.make CMakeFiles/tidy_tests__fsm_connect_relaxed.cc.dir/build
+.PHONY : tidy_tests__fsm_connect_relaxed.cc/fast
+
+#=============================================================================
+# Target rules for targets named tidy_tcp_helpers__ipv4_datagram.cc
+
+# Build rule for target.
+tidy_tcp_helpers__ipv4_datagram.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_tcp_helpers__ipv4_datagram.cc
+.PHONY : tidy_tcp_helpers__ipv4_datagram.cc
+
+# fast build rule for target.
+tidy_tcp_helpers__ipv4_datagram.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_tcp_helpers__ipv4_datagram.cc.dir/build.make CMakeFiles/tidy_tcp_helpers__ipv4_datagram.cc.dir/build
+.PHONY : tidy_tcp_helpers__ipv4_datagram.cc/fast
+
+#=============================================================================
+# Target rules for targets named tidy_quiet_tcp_helpers__ipv4_header.cc
+
+# Build rule for target.
+tidy_quiet_tcp_helpers__ipv4_header.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_quiet_tcp_helpers__ipv4_header.cc
+.PHONY : tidy_quiet_tcp_helpers__ipv4_header.cc
+
+# fast build rule for target.
+tidy_quiet_tcp_helpers__ipv4_header.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_quiet_tcp_helpers__ipv4_header.cc.dir/build.make CMakeFiles/tidy_quiet_tcp_helpers__ipv4_header.cc.dir/build
+.PHONY : tidy_quiet_tcp_helpers__ipv4_header.cc/fast
+
+#=============================================================================
+# Target rules for targets named tidy_tests__byte_stream_one_write.cc
+
+# Build rule for target.
+tidy_tests__byte_stream_one_write.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_tests__byte_stream_one_write.cc
+.PHONY : tidy_tests__byte_stream_one_write.cc
+
+# fast build rule for target.
+tidy_tests__byte_stream_one_write.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_tests__byte_stream_one_write.cc.dir/build.make CMakeFiles/tidy_tests__byte_stream_one_write.cc.dir/build
+.PHONY : tidy_tests__byte_stream_one_write.cc/fast
 
 #=============================================================================
 # Target rules for targets named tidy_doctests__address_example_3.cc
@@ -1927,6 +2031,19 @@ tidy_doctests__address_example_3.cc: cmake_check_build_system
 tidy_doctests__address_example_3.cc/fast:
 	$(MAKE) -f CMakeFiles/tidy_doctests__address_example_3.cc.dir/build.make CMakeFiles/tidy_doctests__address_example_3.cc.dir/build
 .PHONY : tidy_doctests__address_example_3.cc/fast
+
+#=============================================================================
+# Target rules for targets named tidy_quiet_util__socket.cc
+
+# Build rule for target.
+tidy_quiet_util__socket.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_quiet_util__socket.cc
+.PHONY : tidy_quiet_util__socket.cc
+
+# fast build rule for target.
+tidy_quiet_util__socket.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_quiet_util__socket.cc.dir/build.make CMakeFiles/tidy_quiet_util__socket.cc.dir/build
+.PHONY : tidy_quiet_util__socket.cc/fast
 
 #=============================================================================
 # Target rules for targets named tidy_tcp_helpers__ipv4_header.cc
@@ -2018,19 +2135,6 @@ tidy_tests__fsm_listen.cc: cmake_check_build_system
 tidy_tests__fsm_listen.cc/fast:
 	$(MAKE) -f CMakeFiles/tidy_tests__fsm_listen.cc.dir/build.make CMakeFiles/tidy_tests__fsm_listen.cc.dir/build
 .PHONY : tidy_tests__fsm_listen.cc/fast
-
-#=============================================================================
-# Target rules for targets named tidy_tests__fsm_listen_relaxed.cc
-
-# Build rule for target.
-tidy_tests__fsm_listen_relaxed.cc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tidy_tests__fsm_listen_relaxed.cc
-.PHONY : tidy_tests__fsm_listen_relaxed.cc
-
-# fast build rule for target.
-tidy_tests__fsm_listen_relaxed.cc/fast:
-	$(MAKE) -f CMakeFiles/tidy_tests__fsm_listen_relaxed.cc.dir/build.make CMakeFiles/tidy_tests__fsm_listen_relaxed.cc.dir/build
-.PHONY : tidy_tests__fsm_listen_relaxed.cc/fast
 
 #=============================================================================
 # Target rules for targets named tidy_tcp_helpers__arp_message.cc
@@ -2189,19 +2293,6 @@ tidy_tests__wrapping_integers_wrap.cc/fast:
 .PHONY : tidy_tests__wrapping_integers_wrap.cc/fast
 
 #=============================================================================
-# Target rules for targets named tidy_quiet_apps__webget.cc
-
-# Build rule for target.
-tidy_quiet_apps__webget.cc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tidy_quiet_apps__webget.cc
-.PHONY : tidy_quiet_apps__webget.cc
-
-# fast build rule for target.
-tidy_quiet_apps__webget.cc/fast:
-	$(MAKE) -f CMakeFiles/tidy_quiet_apps__webget.cc.dir/build.make CMakeFiles/tidy_quiet_apps__webget.cc.dir/build
-.PHONY : tidy_quiet_apps__webget.cc/fast
-
-#=============================================================================
 # Target rules for targets named tidy_tcp_helpers__tcp_state.cc
 
 # Build rule for target.
@@ -2213,6 +2304,19 @@ tidy_tcp_helpers__tcp_state.cc: cmake_check_build_system
 tidy_tcp_helpers__tcp_state.cc/fast:
 	$(MAKE) -f CMakeFiles/tidy_tcp_helpers__tcp_state.cc.dir/build.make CMakeFiles/tidy_tcp_helpers__tcp_state.cc.dir/build
 .PHONY : tidy_tcp_helpers__tcp_state.cc/fast
+
+#=============================================================================
+# Target rules for targets named tidy_quiet_apps__webget.cc
+
+# Build rule for target.
+tidy_quiet_apps__webget.cc: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tidy_quiet_apps__webget.cc
+.PHONY : tidy_quiet_apps__webget.cc
+
+# fast build rule for target.
+tidy_quiet_apps__webget.cc/fast:
+	$(MAKE) -f CMakeFiles/tidy_quiet_apps__webget.cc.dir/build.make CMakeFiles/tidy_quiet_apps__webget.cc.dir/build
+.PHONY : tidy_quiet_apps__webget.cc/fast
 
 #=============================================================================
 # Target rules for targets named tidy_quiet_tcp_helpers__tcp_segment.cc
@@ -2369,19 +2473,6 @@ tidy_quiet_tests__fsm_ack_rst_win.cc: cmake_check_build_system
 tidy_quiet_tests__fsm_ack_rst_win.cc/fast:
 	$(MAKE) -f CMakeFiles/tidy_quiet_tests__fsm_ack_rst_win.cc.dir/build.make CMakeFiles/tidy_quiet_tests__fsm_ack_rst_win.cc.dir/build
 .PHONY : tidy_quiet_tests__fsm_ack_rst_win.cc/fast
-
-#=============================================================================
-# Target rules for targets named tidy_tests__fsm_loopback.cc
-
-# Build rule for target.
-tidy_tests__fsm_loopback.cc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tidy_tests__fsm_loopback.cc
-.PHONY : tidy_tests__fsm_loopback.cc
-
-# fast build rule for target.
-tidy_tests__fsm_loopback.cc/fast:
-	$(MAKE) -f CMakeFiles/tidy_tests__fsm_loopback.cc.dir/build.make CMakeFiles/tidy_tests__fsm_loopback.cc.dir/build
-.PHONY : tidy_tests__fsm_loopback.cc/fast
 
 #=============================================================================
 # Target rules for targets named tidy_quiet_tests__fsm_loopback_win.cc
@@ -2603,45 +2694,6 @@ tidy_quiet_tests__byte_stream_capacity.cc: cmake_check_build_system
 tidy_quiet_tests__byte_stream_capacity.cc/fast:
 	$(MAKE) -f CMakeFiles/tidy_quiet_tests__byte_stream_capacity.cc.dir/build.make CMakeFiles/tidy_quiet_tests__byte_stream_capacity.cc.dir/build
 .PHONY : tidy_quiet_tests__byte_stream_capacity.cc/fast
-
-#=============================================================================
-# Target rules for targets named tidy_quiet_tests__send_retx.cc
-
-# Build rule for target.
-tidy_quiet_tests__send_retx.cc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tidy_quiet_tests__send_retx.cc
-.PHONY : tidy_quiet_tests__send_retx.cc
-
-# fast build rule for target.
-tidy_quiet_tests__send_retx.cc/fast:
-	$(MAKE) -f CMakeFiles/tidy_quiet_tests__send_retx.cc.dir/build.make CMakeFiles/tidy_quiet_tests__send_retx.cc.dir/build
-.PHONY : tidy_quiet_tests__send_retx.cc/fast
-
-#=============================================================================
-# Target rules for targets named tidy_tests__send_connect.cc
-
-# Build rule for target.
-tidy_tests__send_connect.cc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tidy_tests__send_connect.cc
-.PHONY : tidy_tests__send_connect.cc
-
-# fast build rule for target.
-tidy_tests__send_connect.cc/fast:
-	$(MAKE) -f CMakeFiles/tidy_tests__send_connect.cc.dir/build.make CMakeFiles/tidy_tests__send_connect.cc.dir/build
-.PHONY : tidy_tests__send_connect.cc/fast
-
-#=============================================================================
-# Target rules for targets named tidy_quiet_tests__fsm_loopback.cc
-
-# Build rule for target.
-tidy_quiet_tests__fsm_loopback.cc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tidy_quiet_tests__fsm_loopback.cc
-.PHONY : tidy_quiet_tests__fsm_loopback.cc
-
-# fast build rule for target.
-tidy_quiet_tests__fsm_loopback.cc/fast:
-	$(MAKE) -f CMakeFiles/tidy_quiet_tests__fsm_loopback.cc.dir/build.make CMakeFiles/tidy_quiet_tests__fsm_loopback.cc.dir/build
-.PHONY : tidy_quiet_tests__fsm_loopback.cc/fast
 
 #=============================================================================
 # Target rules for targets named tidy_quiet_libsponge__tcp_connection.cc
@@ -2954,6 +3006,19 @@ tcp_udp: cmake_check_build_system
 tcp_udp/fast:
 	$(MAKE) -f apps/CMakeFiles/tcp_udp.dir/build.make apps/CMakeFiles/tcp_udp.dir/build
 .PHONY : tcp_udp/fast
+
+#=============================================================================
+# Target rules for targets named network_simulator
+
+# Build rule for target.
+network_simulator: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 network_simulator
+.PHONY : network_simulator
+
+# fast build rule for target.
+network_simulator/fast:
+	$(MAKE) -f apps/CMakeFiles/network_simulator.dir/build.make apps/CMakeFiles/network_simulator.dir/build
+.PHONY : network_simulator/fast
 
 #=============================================================================
 # Target rules for targets named tcp_ipv4
@@ -3710,15 +3775,21 @@ help:
 	@echo "... tidy_quiet_tests__fsm_retx_relaxed.cc"
 	@echo "... tidy_quiet_tests__fsm_retx.cc"
 	@echo "... tidy_tests__fsm_loopback_win.cc"
-	@echo "... rebuild_cache"
-	@echo "... tidy_quiet_tcp_helpers__ipv4_header.cc"
-	@echo "... tidy_tests__byte_stream_one_write.cc"
-	@echo "... tidy_tests__fsm_connect_relaxed.cc"
+	@echo "... tidy_tests__fsm_loopback.cc"
+	@echo "... tidy_quiet_tests__send_retx.cc"
+	@echo "... tidy_tests__send_connect.cc"
+	@echo "... tidy_quiet_tests__fsm_loopback.cc"
+	@echo "... tidy_tests__fsm_listen_relaxed.cc"
+	@echo "... tidy_quiet_libsponge__router.cc"
+	@echo "... tidy_quiet_tests__fsm_passive_close.cc"
+	@echo "... tidy_apps__tcp_udp.cc"
+	@echo "... tidy_libsponge__wrapping_integers.cc"
 	@echo "... tidy_quiet_libsponge__network_interface.cc"
 	@echo "... check_lab6"
 	@echo "... tidy_quiet_util__parser.cc"
 	@echo "... tidy_tests__byte_stream_two_writes.cc"
 	@echo "... tidy_tests__fsm_ack_rst_win.cc"
+	@echo "... tidy_libsponge__router.cc"
 	@echo "... tidy_tests__fsm_stream_reassembler_single.cc"
 	@echo "... tidy_doctests__socket_example_2.cc"
 	@echo "... tidy_doctests__address_example_1.cc"
@@ -3732,9 +3803,14 @@ help:
 	@echo "... tidy_quiet_tests__send_transmit.cc"
 	@echo "... tidy_quiet_apps__tcp_native.cc"
 	@echo "... tidy_quiet_tcp_helpers__arp_message.cc"
-	@echo "... tidy_tcp_helpers__ipv4_datagram.cc"
-	@echo "... tidy_tcp_helpers__fd_adapter.cc"
-	@echo "... tidy_apps__tcp_native.cc"
+	@echo "... check_webget"
+	@echo "... tidy_apps__tcp_ipv4.cc"
+	@echo "... tidy_quiet_tests__fsm_connect_relaxed.cc"
+	@echo "... tidy_quiet_doctests__parser_dt.cc"
+	@echo "... check_lab1"
+	@echo "... tidy_apps__tcp_ip_ethernet.cc"
+	@echo "... tidy_quiet_doctests__socket_example_2.cc"
+	@echo "... tidy_apps__webget.cc"
 	@echo "... tidy_quiet_tests__wrapping_integers_roundtrip.cc"
 	@echo "... tidy_quiet_tests__send_connect.cc"
 	@echo "... tidy_quiet_tests__fsm_stream_reassembler_seq.cc"
@@ -3743,37 +3819,35 @@ help:
 	@echo "... tidy_tests__fsm_retx.cc"
 	@echo "... tidy_quiet_tests__fsm_ack_rst.cc"
 	@echo "... tidy_tests__byte_stream_capacity.cc"
+	@echo "... tidy_apps__tcp_native.cc"
+	@echo "... tidy_tcp_helpers__fd_adapter.cc"
 	@echo "... tidy_quiet_doctests__address_dt.cc"
-	@echo "... check_lab1"
-	@echo "... tidy_apps__tcp_ip_ethernet.cc"
-	@echo "... tidy_quiet_doctests__socket_example_2.cc"
-	@echo "... tidy_apps__webget.cc"
 	@echo "... tidy_quiet_tests__fsm_stream_reassembler_overlapping.cc"
 	@echo "... tidy_quiet_apps__tcp_ip_ethernet.cc"
 	@echo "... tidy_tests__send_window.cc"
 	@echo "... tidy_quiet_util__file_descriptor.cc"
 	@echo "... doc"
+	@echo "... tidy_quiet_tcp_helpers__fd_adapter.cc"
+	@echo "... tidy_doctests__parser_example.cc"
 	@echo "... tidy_libsponge__tcp_receiver.cc"
 	@echo "... check_lab2"
 	@echo "... tidy_quiet_tests__byte_stream_many_writes.cc"
-	@echo "... tidy_quiet_tcp_helpers__ethernet_frame.cc"
 	@echo "... tidy_quiet_apps__tcp_benchmark.cc"
+	@echo "... tidy_quiet_tcp_helpers__ethernet_frame.cc"
 	@echo "... tidy_util__eventloop.cc"
 	@echo "... tidy_quiet_tests__send_ack.cc"
 	@echo "... tidy_tests__fsm_stream_reassembler_many.cc"
 	@echo "... tidy_tests__fsm_stream_reassembler_holes.cc"
 	@echo "... tidy_quiet_tests__fsm_active_close.cc"
-	@echo "... check_webget"
-	@echo "... tidy_apps__tcp_ipv4.cc"
-	@echo "... tidy_quiet_tests__fsm_connect_relaxed.cc"
 	@echo "... tidy_quiet_tests__tcp_parser.cc"
 	@echo "... tidy_doctests__socket_example_3.cc"
+	@echo "... tidy_quiet_apps__network_simulator.cc"
 	@echo "... tidy_quiet_tests__byte_stream_test_harness.cc"
-	@echo "... tidy_quiet_tests__fsm_passive_close.cc"
-	@echo "... tidy_apps__tcp_udp.cc"
-	@echo "... tidy_libsponge__wrapping_integers.cc"
 	@echo "... tidy_quiet_doctests__address_example_2.cc"
 	@echo "... tidy_quiet_apps__tun.cc"
+	@echo "... tidy_quiet_libsponge__byte_stream.cc"
+	@echo "... tidy_apps__tun.cc"
+	@echo "... tidy_doctests__address_dt.cc"
 	@echo "... tidy_libsponge__tcp_connection.cc"
 	@echo "... tidy_quiet_tests__fsm_reorder.cc"
 	@echo "... tidy_quiet_apps__udp_tcpdump.cc"
@@ -3786,23 +3860,23 @@ help:
 	@echo "... tidy_util__tun.cc"
 	@echo "... tidy_apps__bidirectional_stream_copy.cc"
 	@echo "... tidy_quiet_doctests__address_example_1.cc"
-	@echo "... tidy_apps__tun.cc"
-	@echo "... tidy_doctests__address_dt.cc"
-	@echo "... tidy_quiet_libsponge__byte_stream.cc"
-	@echo "... tidy_quiet_doctests__parser_dt.cc"
 	@echo "... tidy_tests__fsm_passive_close.cc"
 	@echo "... tidy_doctests__parser_dt.cc"
 	@echo "... tidy_quiet_doctests__address_example_3.cc"
 	@echo "... tidy_tests__fsm_reorder.cc"
 	@echo "... tidy_tcp_helpers__tuntap_adapter.cc"
-	@echo "... tidy_doctests__parser_example.cc"
-	@echo "... tidy_quiet_tcp_helpers__fd_adapter.cc"
 	@echo "... tidy_verbose"
 	@echo "... tidy_quiet_tests__net_interface.cc"
-	@echo "... tidy_quiet_tcp_helpers__ipv4_datagram.cc"
 	@echo "... tidy_quiet_tcp_helpers__tcp_state.cc"
-	@echo "... tidy_quiet_util__socket.cc"
+	@echo "... tidy_quiet_tcp_helpers__ipv4_datagram.cc"
+	@echo "... tidy_apps__network_simulator.cc"
+	@echo "... tidy_tests__fsm_connect_relaxed.cc"
+	@echo "... tidy_tcp_helpers__ipv4_datagram.cc"
+	@echo "... rebuild_cache"
+	@echo "... tidy_quiet_tcp_helpers__ipv4_header.cc"
+	@echo "... tidy_tests__byte_stream_one_write.cc"
 	@echo "... tidy_doctests__address_example_3.cc"
+	@echo "... tidy_quiet_util__socket.cc"
 	@echo "... tidy_tcp_helpers__ipv4_header.cc"
 	@echo "... tidy_doctests__address_example_2.cc"
 	@echo "... tidy_quiet_tcp_helpers__tcp_header.cc"
@@ -3810,7 +3884,6 @@ help:
 	@echo "... tidy_tcp_helpers__tcp_header.cc"
 	@echo "... tidy_quiet_tcp_helpers__tcp_over_ip.cc"
 	@echo "... tidy_tests__fsm_listen.cc"
-	@echo "... tidy_tests__fsm_listen_relaxed.cc"
 	@echo "... tidy_tcp_helpers__arp_message.cc"
 	@echo "... tidy_tcp_helpers__tcp_over_ip.cc"
 	@echo "... tidy_apps__tcp_benchmark.cc"
@@ -3824,8 +3897,8 @@ help:
 	@echo "... tidy_quiet_tests__network_interface_test_harness.cc"
 	@echo "... tidy_tcp_helpers__tcp_sponge_socket.cc"
 	@echo "... tidy_tests__wrapping_integers_wrap.cc"
-	@echo "... tidy_quiet_apps__webget.cc"
 	@echo "... tidy_tcp_helpers__tcp_state.cc"
+	@echo "... tidy_quiet_apps__webget.cc"
 	@echo "... tidy_quiet_tcp_helpers__tcp_segment.cc"
 	@echo "... tidy_quiet_tcp_helpers__tuntap_adapter.cc"
 	@echo "... tidy_quiet_tests__send_close.cc"
@@ -3838,7 +3911,6 @@ help:
 	@echo "... tidy_quiet_doctests__socket_example_1.cc"
 	@echo "... tidy_quiet_util__buffer.cc"
 	@echo "... tidy_quiet_tests__fsm_ack_rst_win.cc"
-	@echo "... tidy_tests__fsm_loopback.cc"
 	@echo "... tidy_quiet_tests__fsm_loopback_win.cc"
 	@echo "... tidy_quiet_util__eventloop.cc"
 	@echo "... tidy_quiet_apps__bidirectional_stream_copy.cc"
@@ -3856,9 +3928,6 @@ help:
 	@echo "... tidy_quiet_tests__fsm_stream_reassembler_many.cc"
 	@echo "... tidy_tests__byte_stream_construction.cc"
 	@echo "... tidy_quiet_tests__byte_stream_capacity.cc"
-	@echo "... tidy_quiet_tests__send_retx.cc"
-	@echo "... tidy_tests__send_connect.cc"
-	@echo "... tidy_quiet_tests__fsm_loopback.cc"
 	@echo "... tidy_quiet_libsponge__tcp_connection.cc"
 	@echo "... tidy_quiet_tests__byte_stream_construction.cc"
 	@echo "... tidy_quiet_tests__fsm_retx_win.cc"
@@ -3884,6 +3953,7 @@ help:
 	@echo "... webget"
 	@echo "... tcp_ip_ethernet"
 	@echo "... tcp_udp"
+	@echo "... network_simulator"
 	@echo "... tcp_ipv4"
 	@echo "... tcp_native"
 	@echo "... tun"
