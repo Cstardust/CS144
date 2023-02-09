@@ -124,7 +124,10 @@ void sendmsg_helper(const int fd_num,
     message.msg_iov = iovecs.data();
     message.msg_iovlen = iovecs.size();
 
-    const ssize_t bytes_sent = SystemCall("sendmsg", ::sendmsg(fd_num, &message, 0));
+    const ssize_t bytes_sent = SystemCall("sendmsg", ::sendmsg(fd_num, &message, 0));   
+    //  msghr message : 目标ip和port(sockaddr*) + 要发送数据payload
+    //  本lab中 该sendmsg 用于通过udp socket fd 发送 udp segment
+    //  udp 的 payload 为 tcp segment. 存入 msghdr
 
     if (size_t(bytes_sent) != payload.size()) {
         throw runtime_error("datagram payload too big for sendmsg()");

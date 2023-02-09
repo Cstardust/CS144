@@ -57,16 +57,18 @@ void NetworkInterface::send_datagram(const InternetDatagram &dgram, const Addres
             return;
         }
 
-        EthernetFrame ethernet_frame = buildEthernetFrame(mac.first, _ethernet_address, EthernetHeader::TYPE_IPv4,dgram.serialize());
+        EthernetFrame ethernet_frame =
+            buildEthernetFrame(mac.first, _ethernet_address, EthernetHeader::TYPE_IPv4, dgram.serialize());
         _frames_out.push(std::move(ethernet_frame));
 
     } else {
-        //   If the network interface already sent an ARP request about the same IP address in the last five seconds, don’t send a second request—just wait for a reply to the first one
-        if(_wait_for_req[next_hop_ip] <= 0)
-        {
+        //   If the network interface already sent an ARP request about the same IP address in the last five seconds,
+        //   don’t send a second request—just wait for a reply to the first one
+        if (_wait_for_req[next_hop_ip] <= 0) {
             //  build an ARP request into EthernetFrame
             ARPMessage arp = buildArpRequest(next_hop_ip);
-            EthernetFrame ethernet_frame = buildEthernetFrame(ETHERNET_BROADCAST , _ethernet_address,EthernetHeader::TYPE_ARP,arp.serialize());
+            EthernetFrame ethernet_frame =
+                buildEthernetFrame(ETHERNET_BROADCAST, _ethernet_address, EthernetHeader::TYPE_ARP, arp.serialize());
             //  send arp req
             _frames_out.push(std::move(ethernet_frame));
             //  waiting reply for 5 s
@@ -78,11 +80,7 @@ void NetworkInterface::send_datagram(const InternetDatagram &dgram, const Addres
     }
 }
 
-
-
-
-bool NetworkInterface::checkInValidFrame(const EthernetFrame &frame)
-{
+bool NetworkInterface::checkInValidFrame(const EthernetFrame &frame) {
     return frame.header().dst != _ethernet_address && frame.header().dst != ETHERNET_BROADCAST;
 }
 
@@ -128,11 +126,12 @@ optional<InternetDatagram> NetworkInterface::recv_frame(const EthernetFrame &fra
         //  In addition, if it’s an ARP request asking for our IP address, send an appropriate ARP reply
         if (arp.opcode == ARPMessage::OPCODE_REQUEST) {
             //  ARP_REQ广播并非指向本节点
-            if(_ip_address.ipv4_numeric() != arp.target_ip_address)
+            if (_ip_address.ipv4_numeric() != arp.target_ip_address)
                 return {};
             //  build an ARP reply into EthernetFrame
-            ARPMessage reply = buildArpReply(arp.sender_ethernet_address,arp.sender_ip_address);
-            EthernetFrame ethernet_frame = buildEthernetFrame(arp.sender_ethernet_address,_ethernet_address,EthernetHeader::TYPE_ARP,reply.serialize());            
+            ARPMessage reply = buildArpReply(arp.sender_ethernet_address, arp.sender_ip_address);
+            EthernetFrame ethernet_frame = buildEthernetFrame(
+                arp.sender_ethernet_address, _ethernet_address, EthernetHeader::TYPE_ARP, reply.serialize());
             //  send an ARP reply
             _frames_out.push(std::move(ethernet_frame));
         }
@@ -140,8 +139,6 @@ optional<InternetDatagram> NetworkInterface::recv_frame(const EthernetFrame &fra
 
     return {};
 }
-
-
 
 //  已经获取到ip对应mac，故将之前等待的datagram全部发送
 void NetworkInterface::updateDataBuffer(uint32_t ip) {
@@ -170,46 +167,40 @@ void NetworkInterface::tick(const size_t ms_since_last_tick) {
         }
     }
 
-    for(auto &waiting_item : _wait_for_req)
-    {
-        if(waiting_item.second <= 0) 
+    for (auto &waiting_item : _wait_for_req) {
+        if (waiting_item.second <= 0)
             continue;
         waiting_item.second -= ms_since_last_tick;
     }
 }
 
-
 //  构造ARP查询分组
-ARPMessage NetworkInterface::buildArpRequest(uint32_t target_ip_address)
-{
+ARPMessage NetworkInterface::buildArpRequest(uint32_t target_ip_address) {
     ARPMessage req;                           //  arp查询分组
     req.opcode = ARPMessage::OPCODE_REQUEST;  //  arp request
     req.sender_ethernet_address = _ethernet_address;
     req.sender_ip_address = _ip_address.ipv4_numeric();
-    req.target_ethernet_address = EthernetAddress{};            //  00:00:00:00:00:00why ? 
+    req.target_ethernet_address = EthernetAddress{};  //  00:00:00:00:00:00why ?
     req.target_ip_address = target_ip_address;
     return req;
 }
 
 //  构造ARP响应分组
-ARPMessage NetworkInterface::buildArpReply(EthernetAddress target_ethernet_address,uint32_t target_ip_address)
-{
+ARPMessage NetworkInterface::buildArpReply(EthernetAddress target_ethernet_address, uint32_t target_ip_address) {
     ARPMessage reply;                         //  arp响应分组
     reply.opcode = ARPMessage::OPCODE_REPLY;  //  arp reply
     reply.sender_ethernet_address = _ethernet_address;
     reply.sender_ip_address = _ip_address.ipv4_numeric();
     reply.target_ethernet_address = target_ethernet_address;
     reply.target_ip_address = target_ip_address;
-    return reply;    
+    return reply;
 }
-
-
 
 //  build an IPv4Datagram into EthernetFrame
 EthernetFrame NetworkInterface::buildEthernetFrame(EthernetAddress dst_mac_addr,
-                                                       EthernetAddress src_mac_addr,
-                                                       uint16_t type,
-                                                       const BufferList &load) {
+                                                   EthernetAddress src_mac_addr,
+                                                   uint16_t type,
+                                                   const BufferList &load) {
     EthernetFrame ethernet_frame;
     ethernet_frame.header().dst = dst_mac_addr;  //  dst mac addr
     ethernet_frame.header().src = src_mac_addr;  //  src mac addr
