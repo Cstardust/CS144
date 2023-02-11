@@ -160,8 +160,6 @@ t_isnR_128K_8K_lL 12 0.12269
 t_isnD_128K_8K_l 12 0.0356459
 t_isnD_128K_8K_L 12 0.0249978
 t_isnD_128K_8K_lL 12 0.110116
-arp_network_interface 9 0.000523178
-router_test 0 0
+arp_network_interface 11 0.000167736
+router_test 1 0.005484
 ---
-t_webget
-router_test
