@@ -158,7 +158,10 @@ class TCPSocketLab7 : public TCPSpongeSocket<NetworkInterfaceAdapter> {
 
 void program_body(bool is_client, const string &bounce_host, const string &bounce_port, const bool debug) {
     UDPSocket internet_socket;
-    Address bounce_address{bounce_host, bounce_port};
+    //  要连接到的Relay Server的ip和port
+        //  our server connected to the relay server on port 8888
+        //  our client connected to the relay server on port 8889
+    Address bounce_address{bounce_host, bounce_port};       
 
     /* let bouncer know where we are */
     internet_socket.sendto(bounce_address, "");
