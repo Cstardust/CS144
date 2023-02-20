@@ -50,6 +50,7 @@ ParseResult TCPHeader::parse(NetParser &p) {
 //! Serialize the TCPHeader to a string (does not recompute the checksum)
 string TCPHeader::serialize() const {
     // sanity check
+    //! - there is less data in the header than the `doff` field claims the checksum is bad
     if (doff < 5) {
         throw runtime_error("TCP header too short");
     }

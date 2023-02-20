@@ -19,6 +19,7 @@ TCPOverIPv4OverEthernetAdapter::TCPOverIPv4OverEthernetAdapter(TapFD &&tap,
 optional<TCPSegment> TCPOverIPv4OverEthernetAdapter::read() {
     // Read Ethernet frame from the raw device
     EthernetFrame frame;
+    //  网卡读数据的! : _tap.read()
     if (frame.parse(_tap.read()) != ParseResult::NoError) {
         return {};
     }
@@ -44,12 +45,17 @@ void TCPOverIPv4OverEthernetAdapter::tick(const size_t ms_since_last_tick) {
 
 //! \param[in] seg the TCPSegment to send
 void TCPOverIPv4OverEthernetAdapter::write(TCPSegment &seg) {
+    //  wrap_tcp_in_ip : tcp seg 封装成 ip datagram
+    //  send_datagram : ip datagram 封装成 frame
     _interface.send_datagram(wrap_tcp_in_ip(seg), _next_hop);
     send_pending();
 }
 
 void TCPOverIPv4OverEthernetAdapter::send_pending() {
+    //  Frame逐个从TapFD发送出去
+        //  tap设备特点 : TAP device接收上层构造好的链路层帧(link-layer frames)并直接发送出去
     while (not _interface.frames_out().empty()) {
+        //  这个write最终还是从FileDescriptor封装的write发送出去
         _tap.write(_interface.frames_out().front().serialize());
         _interface.frames_out().pop();
     }

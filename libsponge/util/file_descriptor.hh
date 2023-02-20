@@ -8,10 +8,13 @@
 #include <limits>
 #include <memory>
 
+//  FileDescriptor并不创建fd , 只是管理user传入的fd
 //! A reference-counted handle to a file descriptor
 class FileDescriptor {
     //! \brief A handle on a kernel file descriptor.
     //! \details FileDescriptor objects contain a std::shared_ptr to a FDWrapper.
+    //  FDWrapper : 简单的封装一下fd. 记录了 是否EOF, read/write 次数 以及是否closed.
+    //  FDWrapper并不负责创建fd
     class FDWrapper {
       public:
         int _fd;                    //!< The file descriptor number returned by the kernel
@@ -45,6 +48,7 @@ class FileDescriptor {
     explicit FileDescriptor(std::shared_ptr<FDWrapper> other_shared_ptr);
 
   protected:
+    //  操作FDWrapper 记录读写次数
     void register_read() { ++_internal_fd->_read_count; }    //!< increment read count
     void register_write() { ++_internal_fd->_write_count; }  //!< increment write count
 

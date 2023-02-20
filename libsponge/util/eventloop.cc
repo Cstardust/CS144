@@ -59,14 +59,17 @@ void EventLoop::add_rule(const FileDescriptor &fd,
 //! because [poll(2)](\ref man2::poll) is level triggered, so failing to act on a ready file descriptor
 //! will result in a busy loop (poll returns on a ready file descriptor; file descriptor is not read or
 //! written, so it is still ready; the next call to poll will immediately return).
+//  1. make pollfds  2. poll() 监听事件  3. handleEvents
 EventLoop::Result EventLoop::wait_next_event(const int timeout_ms) {
     vector<pollfd> pollfds{};
     pollfds.reserve(_rules.size());
     bool something_to_poll = false;
 
+    //  根据user传入的_rules , 生成pollfds
     // set up the pollfd for each rule
     for (auto it = _rules.cbegin(); it != _rules.cend();) {  // NOTE: it gets erased or incremented in loop body
         const auto &this_rule = *it;
+        //  如果事件为读事件 且 相关fd已经读完
         if (this_rule.direction == Direction::In && this_rule.fd.eof()) {
             // no more reading on this rule, it's reached eof
             this_rule.cancel();
@@ -74,12 +77,13 @@ EventLoop::Result EventLoop::wait_next_event(const int timeout_ms) {
             continue;
         }
 
+        //  如果相关fd已经关闭
         if (this_rule.fd.closed()) {
             this_rule.cancel();
             it = _rules.erase(it);
             continue;
         }
-
+        //  如果该事件需要被poll
         if (this_rule.interest()) {
             pollfds.push_back({this_rule.fd.fd_num(), static_cast<short>(this_rule.direction), 0});
             something_to_poll = true;
@@ -89,24 +93,27 @@ EventLoop::Result EventLoop::wait_next_event(const int timeout_ms) {
         ++it;
     }
 
-    // quit if there is nothing left to poll
+    //  没有事件可以监听 return Exit
+    //  quit if there is nothing left to poll
     if (not something_to_poll) {
         return Result::Exit;
     }
 
+    //  poll(fds); 监听事件. timeout_ms
     // call poll -- wait until one of the fds satisfies one of the rules (writeable/readable)
     try {
         if (0 == SystemCall("poll", ::poll(pollfds.data(), pollfds.size(), timeout_ms))) {
             return Result::Timeout;
         }
     } catch (unix_error const &e) {
+        //  发生异常 / 事件不应被监听 return Exit
         if (e.code().value() == EINTR) {
             return Result::Exit;
         }
     }
 
     // go through the poll results
-
+    //  遍历 , 处理活跃事件
     for (auto [it, idx] = make_pair(_rules.begin(), size_t(0)); it != _rules.end(); ++idx) {
         const auto &this_pollfd = pollfds[idx];
 
@@ -115,8 +122,14 @@ EventLoop::Result EventLoop::wait_next_event(const int timeout_ms) {
             throw runtime_error("EventLoop: error on polled file descriptor");
         }
 
+        //  移除死掉的fd的上事件
         const auto &this_rule = *it;
+        //  fd上是否发生关注事件
         const auto poll_ready = static_cast<bool>(this_pollfd.revents & this_pollfd.events);
+        //  POLLHUP
+        //       Hang  up  (only  returned  in  revents; ignored in events).  Note that when reading from a channel such as a pipe or a stream socket, this
+        //       event merely indicates that the peer closed its end of the channel.  Subsequent reads from the channel will return 0 (end  of  file)  only
+        //       after all outstanding data in the channel has been consumed.
         const auto poll_hup = static_cast<bool>(this_pollfd.revents & POLLHUP);
         if (poll_hup && this_pollfd.events && !poll_ready) {
             // if we asked for the status, and the _only_ condition was a hangup, this FD is defunct:
@@ -127,11 +140,12 @@ EventLoop::Result EventLoop::wait_next_event(const int timeout_ms) {
             continue;
         }
 
+        //  调用回调函数处理事件
         if (poll_ready) {
             // we only want to call callback if revents includes the event we asked for
             const auto count_before = this_rule.service_count();
             this_rule.callback();
-
+            //  如果处理该活跃事件失败，那么立刻退出eventloop. 因为该poll是水平触发. 如果活跃事件处理失败的话会陷入死循环
             // only check for busy wait if we're not canceling or exiting
             if (count_before == this_rule.service_count() and this_rule.interest()) {
                 throw runtime_error(
@@ -141,6 +155,7 @@ EventLoop::Result EventLoop::wait_next_event(const int timeout_ms) {
 
         ++it;  // if we got here, it means we didn't call _rules.erase()
     }
-    // cerr<<"Success"<<endl;
+
+    //  监听并处理成功
     return Result::Success;
 }

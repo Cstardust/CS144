@@ -53,6 +53,7 @@ class EventLoop {
                   const InterestT &interest = [] { return true; },
                   const CallbackT &cancel = [] {});
 
+    //  reactor
     //! Calls [poll(2)](\ref man2::poll) and then executes callback for each ready fd.
     Result wait_next_event(const int timeout_ms);
 };

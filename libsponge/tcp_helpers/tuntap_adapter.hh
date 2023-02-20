@@ -46,9 +46,9 @@ using LossyTCPOverIPv4OverTunFdAdapter = LossyFdAdapter<TCPOverIPv4OverTunFdAdap
 //! \brief A FD adapter for IPv4 datagrams read from and written to a TAP device
 class TCPOverIPv4OverEthernetAdapter : public TCPOverIPv4Adapter {
   private:
-    TapFD _tap;  //!< Raw Ethernet connection
+    TapFD _tap;  //!< Raw Ethernet connection   //  最底下也不过是个fd 还是继承自我们熟悉的FileDescriptor
 
-    NetworkInterface _interface;  //!< NIC abstraction
+    NetworkInterface _interface;  //!< NIC abstraction    //  get mac addr from ip
 
     Address _next_hop;  //!< IP address of the next hop
 
@@ -64,12 +64,14 @@ class TCPOverIPv4OverEthernetAdapter : public TCPOverIPv4Adapter {
     std::optional<TCPSegment> read();
 
     //! Sends a TCP segment (in an IPv4 datagram, in an Ethernet frame).
+    //  _interface
     void write(TCPSegment &seg);
 
     //! Called periodically when time elapses
     void tick(const size_t ms_since_last_tick);
 
     //! Access the underlying raw Ethernet connection
+      //  trick : 重载引用 , 这样将TCPOverIPv4OverEthernetAdapter作为引用传递时 传递的就是最底层的TapFd
     operator TapFD &() { return _tap; }
 
     //! Access the underlying raw Ethernet connection

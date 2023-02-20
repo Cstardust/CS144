@@ -11,6 +11,12 @@
 
 //! \brief Base class for network sockets (TCP, UDP, etc.)
 //! \details Socket is generally used via a subclass. See TCPSocket and UDPSocket for usage examples.
+//  Socket : Wrapper Of socket
+  //  Socket(const int domain, const int type);  Socket() constructor 负责创建socket
+  //  封装了bind , connect , shutdown , local_address{该socket的ip和port} , peer_address{已连接的对端的socket的ip和port}
+    //  user通过bind绑定ip和port到该socket上
+    //  local_addr需要在bind之后使用
+    //  peer_address在连接之后使用
 class Socket : public FileDescriptor {
   private:
     //! Get the local or peer address the socket is connected to
@@ -103,12 +109,12 @@ class TCPSocket : public Socket {
 };
 
 //! \class TCPSocket
-//! Functions in this class are essentially wrappers over their POSIX eponyms.
+//! Functions in this class are essentially wrappers over their POSIX eponyms.  此类中的函数本质上是其 POSIX 同名的包装器
 //!
 //! Example:
 //!
 //! \include socket_example_2.cc
-
+//  LocalStreamSocket 即 Socket
 //! A wrapper around [Unix-domain stream sockets](\ref man7::unix)
 class LocalStreamSocket : public Socket {
   public:

@@ -32,11 +32,13 @@ optional<TCPSegment> TCPOverIPv4Adapter::unwrap_tcp_in_ip(const InternetDatagram
         return {};
     }
 
+    //  check des_ip == local ip
     // is the IPv4 datagram from our peer?
     if (not listening() and (ip_dgram.header().src != config().destination.ipv4_numeric())) {
         return {};
     }
 
+    //  check_tcp
     // does the IPv4 datagram claim that its payload is a TCP segment?
     if (ip_dgram.header().proto != IPv4Header::PROTO_TCP) {
         return {};
@@ -48,6 +50,9 @@ optional<TCPSegment> TCPOverIPv4Adapter::unwrap_tcp_in_ip(const InternetDatagram
         return {};
     }
 
+    //  check port whether for our socket ?. 
+    //  (TCPOverIPv4Adapter封装在AdaptFd中 , AdaptFd是个Socket的成员. 
+    //  Adapt接收时会check port是否是给本socket的(通过port),不是,则丢掉)
     // is the TCP segment for us?
     if (tcp_seg.header().dport != config().source.port()) {
         return {};
@@ -76,10 +81,12 @@ optional<TCPSegment> TCPOverIPv4Adapter::unwrap_tcp_in_ip(const InternetDatagram
 //! \param[in] seg is the TCP segment to convert
 InternetDatagram TCPOverIPv4Adapter::wrap_tcp_in_ip(TCPSegment &seg) {
 
+    //  在这里填充TCP Segment的des port 和 src port
     // set the port numbers in the TCP segment
     seg.header().sport = config().source.port();
     seg.header().dport = config().destination.port();
 
+    //  封装成datagram
     // create an Internet Datagram and set its addresses and length
     InternetDatagram ip_dgram;
     ip_dgram.header().src = config().source.ipv4_numeric();

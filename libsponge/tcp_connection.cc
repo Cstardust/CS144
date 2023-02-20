@@ -39,6 +39,7 @@ void TCPConnection::unclean_shutdown(bool rst_to_send /* = false */) {
     _receiver.stream_out().set_error();
 }
 
+//  本端接收seg 并根据自身receiver以及sender状态 发送相应seg给peer
 void TCPConnection::segment_received(const TCPSegment &seg) {
     _time_since_last_segment_received = 0;
     bool ack_to_send{false};
@@ -104,6 +105,7 @@ void TCPConnection::segment_received(const TCPSegment &seg) {
 
 bool TCPConnection::active() const { return _active; }
 
+//  upper user use the write() function to send the data from application layer
 size_t TCPConnection::write(const string &data) {
     //  write into sender's outbound_stream
     size_t bytes_written = _sender.stream_in().write(data);

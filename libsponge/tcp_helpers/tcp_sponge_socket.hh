@@ -44,6 +44,7 @@ class TCPSpongeSocket : public LocalStreamSocket {
     void _tcp_main();
 
     //! Handle to the TCPConnection thread; owner thread calls join() in the destructor
+    //  不是mainthread,是负责eventloop的那个thread
     std::thread _tcp_thread{};
 
     //! Construct LocalStreamSocket fds from socket pair, initialize eventloop
@@ -96,9 +97,9 @@ class TCPSpongeSocket : public LocalStreamSocket {
     //!@}
 };
 
-using TCPOverUDPSpongeSocket = TCPSpongeSocket<TCPOverUDPSocketAdapter>;
-using TCPOverIPv4SpongeSocket = TCPSpongeSocket<TCPOverIPv4OverTunFdAdapter>;
-using TCPOverIPv4OverEthernetSpongeSocket = TCPSpongeSocket<TCPOverIPv4OverEthernetAdapter>;
+using TCPOverUDPSpongeSocket = TCPSpongeSocket<TCPOverUDPSocketAdapter>;    //  tcp in [ udp in ip in ethernet ] 
+using TCPOverIPv4SpongeSocket = TCPSpongeSocket<TCPOverIPv4OverTunFdAdapter>; //  tcp in ip [ in ethernet ]
+using TCPOverIPv4OverEthernetSpongeSocket = TCPSpongeSocket<TCPOverIPv4OverEthernetAdapter>;  //  tcp in ip in ethernet
 
 using LossyTCPOverUDPSpongeSocket = TCPSpongeSocket<LossyTCPOverUDPSocketAdapter>;
 using LossyTCPOverIPv4SpongeSocket = TCPSpongeSocket<LossyTCPOverIPv4OverTunFdAdapter>;

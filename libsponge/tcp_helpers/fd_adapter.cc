@@ -28,7 +28,7 @@ optional<TCPSegment> TCPOverUDPSocketAdapter::read() {
     if (not listening() and (datagram.source_address != config().destination)) {
         return {};
     }
-
+    //  应对 tcp_in_udp_in_ip
     // is the payload a valid TCP segment?
     TCPSegment seg;
     if (ParseResult::NoError != seg.parse(move(datagram.payload), 0)) {

@@ -77,6 +77,7 @@ void BufferViewList::remove_prefix(size_t n) {
         }
 
         if (n < _views.front().size()) {
+            //  string_view.remove_prefix 并不会真正释放string. 只是移动了指针. (view 顾名思义 一个只可读的视图罢了)
             _views.front().remove_prefix(n);
             n = 0;
         } else {

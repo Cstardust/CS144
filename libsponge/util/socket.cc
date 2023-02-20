@@ -11,8 +11,11 @@ using namespace std;
 // default constructor for socket of (subclassed) domain and type
 //! \param[in] domain is as described in [socket(7)](\ref man7::socket), probably `AF_INET` or `AF_UNIX`
 //! \param[in] type is as described in [socket(7)](\ref man7::socket)
+//  Socket创建sockfd 并交给FileDescriptor管理
 Socket::Socket(const int domain, const int type) : FileDescriptor(SystemCall("socket", socket(domain, type, 0))) {}
 
+
+//  将FileDescriptor fd交由Socket管理. 并check domain和type是否符合预期
 // construct from file descriptor
 //! \param[in] fd is the FileDescriptor from which to construct
 //! \param[in] domain is `fd`'s domain; throws std::runtime_error if wrong value is supplied
@@ -36,6 +39,7 @@ Socket::Socket(FileDescriptor &&fd, const int domain, const int type) : FileDesc
     }
 }
 
+//  获取本地Address{ip,port} 或者连接的对端的Adrress{ip,port}
 // get the local or peer address the socket is connected to
 //! \param[in] name_of_function is the function to call (string passed to SystemCall())
 //! \param[in] function is a pointer to the function
@@ -50,16 +54,22 @@ Address Socket::get_address(const string &name_of_function,
     return {address, size};
 }
 
+//  在本端已经绑定端口的情况下 , 获取本地Address{ip,port} 
+    // getsockname()  returns the current address to which the socket sockfd is bound, in the buffer pointed to by addr
 //! \returns the local Address of the socket
 Address Socket::local_address() const { return get_address("getsockname", getsockname); }
 
+//  在已经建立连接的情况下 , 获取连接的对端的Adrress{ip,port}
+    // getpeername()  returns  the address of the peer connected to the socket sockfd, in the buffer pointed to by addr
 //! \returns the socket's peer's Address
 Address Socket::peer_address() const { return get_address("getpeername", getpeername); }
 
+//  绑定ip port到本socket
 // bind socket to a specified local address (usually to listen/accept)
 //! \param[in] address is a local Address to bind
 void Socket::bind(const Address &address) { SystemCall("bind", ::bind(fd_num(), address, address.size())); }
 
+//  connect to {ip,port}
 // connect socket to a specified peer address
 //! \param[in] address is the peer's Address
 void Socket::connect(const Address &address) { SystemCall("connect", ::connect(fd_num(), address, address.size())); }

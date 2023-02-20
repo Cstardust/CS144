@@ -58,6 +58,8 @@
         "ios": "cpp",
         "locale": "cpp",
         "queue": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "buffer": "cpp",
+        "netfwd": "cpp"
     }
 }

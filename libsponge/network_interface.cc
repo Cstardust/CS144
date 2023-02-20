@@ -76,7 +76,7 @@ void NetworkInterface::send_datagram(const InternetDatagram &dgram, const Addres
         }
 
         //  queue the dgram
-        _data_buffer[next_hop_ip].push_back(dgram);  //  能够/可以std::move吗 ？ 从语法/意义 我觉着不可。。
+        _data_buffer[next_hop_ip].push_back(dgram);  
     }
 }
 
