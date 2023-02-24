@@ -76,7 +76,7 @@ void NetworkInterface::send_datagram(const InternetDatagram &dgram, const Addres
         }
 
         //  queue the dgram
-        _data_buffer[next_hop_ip].push_back(dgram);  
+        _data_buffer[next_hop_ip].push_back(dgram);
     }
 }
 

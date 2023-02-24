@@ -29,16 +29,11 @@ void Router::add_route(const uint32_t route_prefix,
     cerr << "DEBUG: adding route " << Address::from_ipv4_numeric(route_prefix).ip() << "/" << int(prefix_length)
          << " => " << (next_hop.has_value() ? next_hop->ip() : "(direct)") << " on interface " << interface_num << "\n";
     //  next_hop是位于route_prefix + prefix_length中的ip 应该是
-    DUMMY_CODE(route_prefix, prefix_length, next_hop, interface_num);
-    // Your code here.
-    //  会不会重复添加一个前缀的entry ? 即 route_prefix >> prefix_length已经存在
     _forwarding_table.emplace_back(route_prefix, prefix_length, next_hop, interface_num);
 }
 
 //! \param[in] dgram The datagram to be routed
 void Router::route_one_datagram(InternetDatagram &dgram) {
-    DUMMY_CODE(dgram);
-    // Your code here.
 
     uint32_t dgram_dst_ip = dgram.header().dst;
     size_t matched_entry_idx = _forwarding_table.size();

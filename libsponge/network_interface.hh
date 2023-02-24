@@ -49,7 +49,7 @@ class NetworkInterface {
     std::unordered_map<uint32_t,MacAddrInfo> _arp_table{};
     //  data buffer : <IP addr , datagrams> , 由于不知道ip对应的mac , 等待被发送的datagram
     std::unordered_map<uint32_t,std::vector<InternetDatagram> > _data_buffer{};
-    //  ip - time_since_last_req
+    //  ip - time_since_last_arp_request
     std::unordered_map<uint32_t,int> _wait_for_req{};
     static const int WAITING_TIME = 5 * 1000;
 

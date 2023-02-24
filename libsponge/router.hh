@@ -28,7 +28,7 @@ class AsyncNetworkInterface : public NetworkInterface {
     //!
     //! \param[in] frame the incoming Ethernet frame
     void recv_frame(const EthernetFrame &frame) {
-        //  只有EthernetFrame中封装的说ipv4 datagram , 才会被放入_datagrams_out
+        //  只有EthernetFrame中封装的是ipv4 datagram , 才会被放入_datagrams_out
         auto optional_dgram = NetworkInterface::recv_frame(frame);
         if (optional_dgram.has_value()) {
             _datagrams_out.push(std::move(optional_dgram.value()));

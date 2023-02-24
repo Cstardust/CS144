@@ -118,7 +118,6 @@ size_t TCPConnection::write(const string &data) {
 
 void TCPConnection::clean_shutdown() {
     _active = false;
-    _linger_after_streams_finish = false;
 }
 
 //! \param[in] ms_since_last_tick number of milliseconds since the last call to this method
@@ -139,7 +138,7 @@ void TCPConnection::tick(const size_t ms_since_last_tick) {
 
     _time_since_last_segment_received += ms_since_last_tick;
 
-    //  end the connection cleanly if passes the TIME_WAIT
+    //  active cleanshutdown : end the connection cleanly if passes the TIME_WAIT
     if (_receiver.state() == TCPReceiver::State::FIN_RECV && _sender.state() == TCPSender::State::FIN_ACKED &&
         _linger_after_streams_finish) {
         if (_time_since_last_segment_received >= 10 * _cfg.rt_timeout)
