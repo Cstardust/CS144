@@ -11,6 +11,7 @@ using namespace std;
 int main() {
     try {
         {
+            cout<<"TEST1"<<endl;
             ReassemblerTestHarness test{2};
 
             test.execute(SubmitSegment{"ab", 0});
@@ -27,6 +28,7 @@ int main() {
         }
 
         {
+            cout<<"TEST2"<<endl;
             ReassemblerTestHarness test{2};
 
             test.execute(SubmitSegment{"ab", 0});
@@ -45,6 +47,7 @@ int main() {
         }
 
         {
+            cout<<"TEST3"<<endl;
             ReassemblerTestHarness test{2};
 
             test.execute(SubmitSegment{"bX", 1});
@@ -57,6 +60,8 @@ int main() {
         }
 
         {
+            cout<<"TEST4"<<endl;
+            
             ReassemblerTestHarness test{1};
 
             test.execute(SubmitSegment{"ab", 0});
@@ -76,6 +81,8 @@ int main() {
         }
 
         {
+            cout<<"TEST5"<<endl;
+
             ReassemblerTestHarness test{8};
 
             test.execute(SubmitSegment{"a", 0});
@@ -98,6 +105,8 @@ int main() {
         }
 
         {
+            cout<<"TEST6"<<endl;
+
             ReassemblerTestHarness test{3};
             for (unsigned int i = 0; i < 99997; i += 3) {
                 const string segment = {char(i), char(i + 1), char(i + 2), char(i + 13), char(i + 47), char(i + 9)};

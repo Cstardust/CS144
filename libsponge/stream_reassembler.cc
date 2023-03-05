@@ -7,7 +7,7 @@ using std::cout;
 using std::endl;
 
 
-# if 0
+# if 1
 
 // Dummy implementation of a stream reassembler.
 
@@ -31,166 +31,180 @@ StreamReassembler::StreamReassembler(const size_t capacity)
     , _eof(false) 
     {}
 
-
-
-//  实际做了所谓的reassembler重组工作
-size_t StreamReassembler::cached_into_receiving_window(const string &data, const size_t index,bool &non)
-{
-    size_t last_idx = 0;        //  for eof_idx。本轮操作结束后 如果有eof的话，则其坐标应当在last_idx
-    //  A. 将data的相应部分 正确的放入receving window   O(n)
-    //  1. data全部是已经排好序的老数据，即data全部是已经加入bytestream _output的数据,
-    //  则不必加入bytestream，也不必有其他操作
-    if (index + data.size() < _first_unassembled) {
-        non = true;
-        return 0;  //  nothiing
-    }
-    //  2. data全部是还没加入bytestream output的数据
-    //  则将其加入_receving_window、这里可能会重复加入，效率低，不过先无所谓了，保证正确性再说别的。
-    else if (index >= _first_unassembled && index < first_unacceptable()) {
-        size_t len = 0;
-        if (index + data.size() - 1 >= first_unacceptable()) {
-            len = first_unacceptable() - index;
-        } else {
-            len = data.size();
-        }
-        for (size_t i = 0; i < len; ++i) {
-            _receving_window[index + i] = data[i];
-        }
-        last_idx = index + len;
-    }
-    //  3.  data全部位于receving_window范围之外
-    //  这种情况即所谓的 [接收缓存溢出] 因为bytestream可能已经满了达到capacity 导致 receive_window_size == 0，向其中写入byte失败
-    //  因为bytestream长时间不读，导致bytestream_size + recv_window_sz == capacity(最终会变成bytestream_sz == capacity) , 致使data落在recv_window之外被discard
-    //  此即[接收缓存溢出]
-    //  与自顶向下P164描述不同 , 我的处理方案是 写失败后 并不将其从receive_window中移除
-    //  而是既不写入bytestream , 也不将其从receive_window中移除
-    //  也即不做操作，从bytestream到receive_window都不变
-    //  而之后如果有新的数据到来receiver , receiver 不会将其缓存进receive_window 而是丢弃。
-    else if (index >= first_unacceptable()) {
-        non = true;
-        return 0;  //  nothing
-    }
-    //  4. data一部分加入 一部分没加入bytestream
-    //  则截取相应部分落入recv_window
-    else if (index < _first_unassembled && index + data.size() >= _first_unassembled) {
-        size_t len = min(index + data.size() - _first_unassembled,
-                         first_unacceptable() - _first_unassembled);  //  data中有多少bytes落入recv_window
-        assert(len < data.size());
-        size_t start_idx = _first_unassembled - index;
-        for (size_t i = 0; i < len; ++i) {
-            _receving_window[_first_unassembled + i] = data[i + start_idx];
-        }
-        last_idx = _first_unassembled + len;
-    } else {
-        //  sth unknown happened;
-        non = true;
-        return 0;
-    }
-
-    return last_idx;
-}
-
-
-void StreamReassembler::whether_eof(const string &data,const int index,const bool eof,const int last_idx)
-{
-    if (eof && index + data.size() <= first_unacceptable()) {      //  不能用last_index<=first_unacc来判断，因为last_index会自动截断到first_unacc         貌似eof不占据byte位置 ?
-        _eof = true;
-        _eof_idx = last_idx;
-    }
-}
-
-// 将recv_window中已经顺序的字节加入bytestream 
-void StreamReassembler::move_receiving_window()
-{
-    size_t old_first_unacceptable = first_unacceptable();
-    string data;
-    bool ed = false;
-    for (size_t i = _first_unassembled; i <= old_first_unacceptable; ++i) {
-        if(i == _eof_idx && _eof)
-        {
-            ed = true;
-            // _output.end_input();
-            break;   
-        }
-        if(i == old_first_unacceptable)
-            break;
-
-        if (_receving_window.find(i) == _receving_window.end())
-            break;
-        
-        //  字节从recving_window进入bytestream
-        // _output.write(string(1,_receving_window[i]));
-        //  copy
-        data.push_back(_receving_window[i]);
-
-        //  从recving_window中移除
-        _receving_window.erase(i);
-    }
-
-    _output.write(std::move(data));        //  引用 &
-    if(ed)
-    {
-        _output.end_input();
-    }
-}
-
-//  return true : 
-bool StreamReassembler::corner(const string &data, const size_t index, const bool eof)
-{
-    //  corner 1 : 如果eof已经加入了bytestream
-        //  逻辑“如果已经eof，那么不再接受data。 可是加上这个就不对了，原因如下。
-        //  答：因为可能只是将eof加入到了recv_window。但是recv_window里面的字节还并没有排成顺序，也即recv_window里的bytes还没全部接收，也就没有加入到bytestream里，更不必说eof也只是在recv_window中而没有加入到bytestream中
-        //  改进：加上判断unassembled_bytes() == 0 即可。(即 // if(_eof && unassembled_bytes() == 0))
-    if(_eof && unassembled_bytes() == 0)
-        return true;
-    //  corner 2 : data empty , then nothing todo
-    if(data.empty() && (!eof))
-        return true;
-    //  corner 3 : data empty 
-    if(data.empty() && eof)
-    {
-        _eof = true;
-        _eof_idx = index;
-        _output.end_input();
-        return true;
-    }
-    return false;
-}
-
-
 //! \details This function accepts a substring (aka a segment) of bytes,
 //! possibly out-of-order, from the logical stream, and assembles any newly
 //! contiguous substrings and writes them into the output stream in order.
 //  合法data : empty || not empty
 void StreamReassembler::push_substring(const string &data, const size_t index, const bool eof) {
+
+
+    /*  1. 获取当前 index 在 _unassemble_strs 中的上界 pair
+     *      a. 如果存在上界 pair，则判断是否存在重复区域。如果存在部分重复则截断，存在全部重复则直接丢弃。
+     *      b. 如果不存在上界 pair, 则判断当前数据是否已经和已经被 assemble 的字符串重复。
+     *         如果存在部分重复则截断，存在全部重复则直接丢弃。
+     *  2. 获取当前 index 在 _unassemble_strs 中的下界 pair。 如果存在下界 pair
+     *      a. 如果下界 pair 没有被当前数据完全包含，则判断是否存在重复区域。如果存在则截断。
+     *      b. 如果下界 pair 被当前数据包含，则将下界 pair 从 _unassemble_strs 中丢弃，之后重新取出一个新的下界 pair,
+     * 重复第二步 这时候我们可以获得与 _unassemble_strs 中没有任何重复的字符串
+     *
+     * NOTE: 本人的整体操作是尽可能的降低内存消耗，用时间来换取空间，毕竟私以为数据比较珍贵，不能随意丢弃。
+    */
+    //  我们没有将不同的串合并，只是保证了不能重叠。合并省去了，感觉可能影响效率。
+    //  寻找 新串index 的 前串(其idx <= index)
+    map<size_t,string>::iterator prev_iter = _receving_window.upper_bound(index);       //  >
+    if(prev_iter!=_receving_window.begin())         //  <=
+        --prev_iter;
+    /**
+     *  此时迭代器有三种情况，
+     *  1. 一种是prev_iter == begin_iter == end_iter，表示_receive_window不存在任何数据
+     *  2. 一种是为prev_iter != end_iter. 
+     *              prev_iter 指向前串
+     *              prev_iter指向后串
+    */
+    //  new_idx 至少要从 _next_assembled_idx开始
+    size_t new_idx = max(index,first_unassembled());
+    //  _receving_window.empty()
+    if(prev_iter == _receving_window.end())
+    {
+        //  _receving_window.empty()
+    }
+    //  如果是 前串(其idx < index) 
+    else if(prev_iter->first <= index)
+    {
+        new_idx = max(prev_iter->first + prev_iter->second.size(),index);
+    }
     
-    //  0. corner case
-    if(corner(data,index,eof))
+    //  在考虑new data前面可能有老串重叠的情况下，得出data非重叠部分的起始偏移量(相对)
+    size_t data_start_offset = new_idx - index;
+    //  去除重叠部分的data长度
+        //  出去重叠前缀的data长度
+    
+    if(data.size() < (new_idx - index))    //  如果已经全部都在bytestream中     不写是因为可能有空的eof
         return ;
+    if(data.size() == new_idx - index)
+    {
+        if(eof)
+        {
+            _eof = true;
+            _eof_idx = index + data.size();
+            // cout<<"EOF IDX "<<_eof_idx<<endl;
+        }
+        if(_eof && _eof_idx <= first_unassembled())
+        {
+            _output.end_input();
+        }
+    }
+    size_t data_size = data.size() - (new_idx - index);
+    
 
-    _first_unread = _output.bytes_read();
-    _first_unassembled = _output.bytes_written();
+    // cout<<"new_idx "<<new_idx<<"data_size "<<data_size<<" "<<data_start_offset<<endl;
 
-    //  1. 将data的相应部分cached into receiving_window
-    bool non = false;   //  nothing_to_do 
-    size_t last_idx = cached_into_receiving_window(data,index,non);
-    if(non) return ;
+    //  寻找后串(且idx >= new_idx) :去掉全部覆盖的以及重叠后缀
+    map<size_t,string>::iterator ne_iter = _receving_window.lower_bound(new_idx);           // >=    感觉可以换成idx
+    //  如果和后面的重叠
+    while(ne_iter!=_receving_window.end() && new_idx <= ne_iter->first && new_idx + data_size > ne_iter->first)
+    {
+        //  new data 全部覆盖 ne_iter
+        if(new_idx + data_size >= ne_iter->first + ne_iter->second.size())
+        {
+            _receiving_window_size -= ne_iter->second.size();
+            ne_iter = _receving_window.erase(ne_iter);
+        }
+        //  new data 部分覆盖 ne_iter，去除后缀
+        else
+        {
+                //  去除后缀的data长度
+            data_size = ne_iter->first - new_idx;
+        }
+    }
 
-    _first_unread = _output.bytes_read();
-    _first_unassembled = _output.bytes_written();
+    //  至此，我们得到的 data.substr(data_start_offset,data_size) 
+    //  是一个不和receive_window中其他字段重叠的data
 
-    //  2. 计算eof下标
-    whether_eof(data,index,eof,last_idx);
-    //  3. 将receiving_window中的顺序字节加入bytestream，宏观来看就是移动接收窗口
-    move_receiving_window();
+    // 检测是否存在数据超出了窗口容量
+    // size_t first_unacceptable_idx = first_unassembled() + _capacity - _output.buffer_size();
+    // size_t first_unacceptable_idx = _output.bytes_read() + _capacity;
+    if (first_unacceptable() <= new_idx)
+        return;
+    
+    // cout<<"start offset "<<data_start_offset<<" data_size "<<data_size<<endl;
+    if(data_size > 0)
+    {
+        string isolated_data = data.substr(data_start_offset,data_size);
+        // cout<<"isolated data "<<isolated_data<<endl;
+        //  新串未构成顺序，不可直接写入stream
+        if(first_unassembled() < new_idx)
+        {
+            _receiving_window_size += isolated_data.size();
+            _receving_window.insert({new_idx,std::move(isolated_data)});
+        }
+        //  新串和stream构成顺序，可以直接写入stream
+        else if(first_unassembled() == new_idx)
+        {
+            // cout<<"try to write "<<isolated_data<<endl;
+            size_t written = _output.write(isolated_data);
+            // _next_assembled_idx += written;                 //  下一个要写的字节的下标（感觉直接writeen也没差别？）
+            //  似乎不用维护这个
+            //  没写完 -> 将剩下的str存入receive_window  维护_receive_window_size
+            if(written < data_size)
+            {
+                string left_data = isolated_data.substr(written,data_size - written);
+                _receiving_window_size += left_data.size();
+                _receving_window.insert({new_idx + written , left_data});
+            }
+        }
+        else
+        {
+            cerr<<"never reach!"<<endl;
+        }
+    }
 
-    _first_unread = _output.bytes_read();
-    _first_unassembled = _output.bytes_written();
+    //  本次来的新串写入bytestream之后 , 有可能造成别的串也可以压入bytestream了。
+    for(auto iter = _receving_window.begin();iter!=_receving_window.end();)
+    {
+        assert(first_unassembled() <= iter->first);
+        auto idx = iter->first;
+        auto &str = iter->second;
+        //  已经不可写入, break即可
+        if(first_unassembled() != idx)
+            break;
+        if(idx == first_unassembled())
+        {
+            // cout<<"try to write "<<str<<endl;
+            size_t written = _output.write(str);
+            // _next_assembled_idx += written;
+            //  维护 receive_window_size
+            _receiving_window_size -= written;
+            //  全部写入
+            if(written == str.size())
+            {
+                iter = _receving_window.erase(iter);
+            }
+            //  没全部写入 剩下的重新存入 break;
+            else
+            {
+                int nidx = idx + written;
+                _receving_window.insert({nidx,std::move(str.substr(written))}); 
+                iter = _receving_window.erase(iter);
+                break;
+            }
+        }
+    }
+    // cout<<"next ass "<<_next_assembled_idx<<endl;
+    if(eof)
+    {
+        _eof = true;
+        _eof_idx = index + data.size();
+    }
+    if(_eof && _eof_idx <= first_unassembled())
+    {
+        _output.end_input();
+    }
 
 }
 
 size_t StreamReassembler::unassembled_bytes() const { 
-    return _receving_window.size();
+    return _receiving_window_size;
 }
 
 bool StreamReassembler::empty() const { 
@@ -201,128 +215,9 @@ bool StreamReassembler::empty() const {
 #endif
 
 
-StreamReassembler::StreamReassembler(const size_t capacity)
-    : _output(capacity), _capacity(capacity), _first_unacceptable(capacity) {}
-
-void StreamReassembler::push_substring(const string &data, const size_t index, const bool eof) {
-    if (index >= _first_unacceptable) {  // 如果该字符串索引越界，则直接return
-        return;
-    } else if (data.length() == 0) {
-        if (eof)
-            _eof_flag = true;
-        assembled();
-        return;
-    }
-
-    bool all_store = true;  // 该字符串是否完全存入
-    size_t len = data.length();
-    size_t _index = index;
-    size_t start = 0;
-
-    if (_index + len - 1 < _first_unassembled) {  // 如果这个字符串已经完全被重组，则return
-        if (eof && all_store)
-            _eof_flag = true;
-        assembled();
-        return;
-    }
-
-    // step1. 去掉越界的部分
-    if (_index + len > _first_unacceptable) {
-        len = _first_unacceptable - _index;
-        all_store = false;
-    }
-
-    // step2. 去掉已经被重组的部分
-    if (_index < _first_unassembled) {
-        len -= _first_unassembled - _index;
-        _index = _first_unassembled;
-        start = _index - index;
-    }
-
-    if (len == 0) {
-        if (eof && all_store)
-            _eof_flag = true;
-        assembled();
-        return;
-    }
-
-    // step3. 去掉已经存储的前缀
-    auto iter = storage.lower_bound(_index);
-    // 如果存储中第一个索引不小于_index的元素不是第一个元素 或者
-    // 不存在（即storage.end())，则前一个元素就是最后一个索引小于_index的元素
-    if (iter != storage.begin()) {
-        iter--;
-        // 如果该子串已经完全重叠，也就该子串最后一个字符索引<=查询到的子串的最后一个字符索引, 返回
-        if (_index + len <= iter->first + iter->second.length()) {
-            if (eof && all_store)
-                _eof_flag = true;
-            assembled();
-            return;
-        } else if (iter->first + iter->second.length() > _index) {  // 如果有重叠，去掉前缀
-            len -= iter->first + iter->second.length() - _index;
-            _index = iter->first + iter->second.length();
-            start = _index - index;
-        }
-    }
-
-    // step4. 去掉已经存储的完全属于该串的子串或者该串已经被完全存储过则不存储该串直接写入
-    iter = storage.lower_bound(_index);
-    while (iter != storage.end()) {
-        if (iter->first + iter->second.length() <= _index + len) {
-            _unassembled_bytes -= iter->second.length();
-            storage.erase(iter);
-            iter = storage.lower_bound(_index);
-        } else if (iter->first == _index && iter->first + iter->second.length() >= _index + len) {
-            if (eof && all_store)
-                _eof_flag = true;
-            assembled();
-            return;
-        } else {
-            break;
-        }
-    }
-
-    // setp5. 去掉已经存储的后缀
-    // 找到第一个已经存储的索引大于_index的串
-    iter = storage.upper_bound(_index);
-    if (iter != storage.end()) {
-        if (iter->first <= _index + len - 1) {  // 有重叠
-            len = iter->first - _index;
-            all_store = false;
-        }
-    }
-
-    // 存储
-    storage[_index] = data.substr(start, len);
-    _unassembled_bytes += len;
-
-    if (all_store && eof)
-        _eof_flag = true;
-
-    // 写入字节流
-    assembled();
-}
-
-size_t StreamReassembler::unassembled_bytes() const { return _unassembled_bytes; }
-
-void StreamReassembler::assembled() {
-    while (storage.count(_first_unassembled)) {
-        string data = storage[_first_unassembled];
-        size_t len = _output.write(data);  // 实际重组了len个字节
-        if (len == 0)
-            break;
-        storage.erase(_first_unassembled);
-        _first_unassembled += len;
-        _first_unacceptable += len;
-        _unassembled_bytes -= len;
-        if (len < data.length()) {  // 如果没有完全写入，再将剩下的再次插入map
-            storage[_first_unassembled] = data.substr(len);
-            break;
-        }
-    }
-
-    if (_eof_flag && empty())
-        _output.end_input();
-}
-
-bool StreamReassembler::empty() const { return _unassembled_bytes == 0; }
+// cout<<"show window start"<<endl;
+// for(auto &item : _receving_window)
+// {
+//     cout<<item.first<<" "<<item.second<<endl;
+// }
+// cout<<"show window end"<<endl;

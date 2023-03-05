@@ -11,7 +11,7 @@ using namespace std;
 int main() {
     try {
         auto rd = get_random_generator();
-
+        cout<<"TEST 1"<<endl;
         {
             ReassemblerTestHarness test{65000};
 
@@ -25,6 +25,7 @@ int main() {
             test.execute(BytesAvailable(""));
             test.execute(NotAtEof{});
         }
+        cout<<"TEST 2"<<endl;
 
         {
             ReassemblerTestHarness test{65000};
@@ -49,6 +50,7 @@ int main() {
             test.execute(BytesAvailable(""));
             test.execute(NotAtEof{});
         }
+        cout<<"TEST 3"<<endl;
 
         {
             ReassemblerTestHarness test{65000};
@@ -74,6 +76,7 @@ int main() {
                 test.execute(NotAtEof{});
             }
         }
+        cout<<"TEST 4"<<endl;
 
         {
             ReassemblerTestHarness test{65000};
