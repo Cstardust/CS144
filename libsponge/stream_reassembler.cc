@@ -37,7 +37,6 @@ StreamReassembler::StreamReassembler(const size_t capacity)
 //  合法data : empty || not empty
 void StreamReassembler::push_substring(const string &data, const size_t index, const bool eof) {
 
-
     /*  1. 获取当前 index 在 _unassemble_strs 中的上界 pair
      *      a. 如果存在上界 pair，则判断是否存在重复区域。如果存在部分重复则截断，存在全部重复则直接丢弃。
      *      b. 如果不存在上界 pair, 则判断当前数据是否已经和已经被 assemble 的字符串重复。
@@ -46,8 +45,6 @@ void StreamReassembler::push_substring(const string &data, const size_t index, c
      *      a. 如果下界 pair 没有被当前数据完全包含，则判断是否存在重复区域。如果存在则截断。
      *      b. 如果下界 pair 被当前数据包含，则将下界 pair 从 _unassemble_strs 中丢弃，之后重新取出一个新的下界 pair,
      * 重复第二步 这时候我们可以获得与 _unassemble_strs 中没有任何重复的字符串
-     *
-     * NOTE: 本人的整体操作是尽可能的降低内存消耗，用时间来换取空间，毕竟私以为数据比较珍贵，不能随意丢弃。
     */
     //  我们没有将不同的串合并，只是保证了不能重叠。合并省去了，感觉可能影响效率。
     //  寻找 新串index 的 前串(其idx <= index)

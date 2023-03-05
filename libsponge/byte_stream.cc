@@ -24,6 +24,30 @@ ByteStream::ByteStream(const size_t capacity)
     : _stream(), _capacity(capacity), _bytes_popped(0), _bytes_pushed(0), _end(false) {
 }
 
+
+//  如果外界传参传的是个临时量或者char，则传参还会有一次拷贝. 
+//  原先StreamReassembler(unordered_map<size_t,char>)调用write时只能传递char，故每个char在传参的时候都会拷贝一次，这个const &就跟直接传值一样。那么对于一个大字符串，每个字符都要拷贝一次。
+//      为什么原先只能传递char 不能传递string呢? 因为原先是以char为单元来对窗口进行维护的，也没有维护哪些字符连续，只能边遍历边传unordered_map里的字符char拷贝给write.
+//  而我们将StreamReassembler 底层容器改为 map<size_t,string>时,可以以块(string)的形式维护字节连续的信息，这样当我们调用write的时候，直接传入给write const string &的就是map里的string，所以是以引用的方式传递的，故减少了拷贝的时间和内存上的消耗.
+//      这就是改变StreamReassembler提升性能的原因之1
+
+//  原先StreamReassembler(unordered_map<size_t,char>)调用write时只能传递char,一个一个传递，故调用write的次数会极多，write开辟和回退栈帧的消耗会变得很大
+//  故这也是StreamReassembler提升性能的原因之2
+
+//  继续优化，我们将ByteStream内部的底层容器改成BufferList.(deque<string>)
+//  在write里面，使用vector<char>时，每次只能push_back一个char，也会push很多很多次，push_back开辟和回退栈帧的开销也会很大.
+//  使用deque<string> 时，只需要一次，就能拷贝到所有char. 开辟回退栈帧开销小.
+
+//  但是可以看到，在ByteStream内部，底层容器采用BufferList还是deque<char>，对于在write中，拷贝char次数是相同的.
+//  采用deque<char>,每次push_back(char)的时候会有拷贝一个字符，最终会拷贝data的所有字符，将其放入deque中
+//  采用BufferList(deque<Buffer>, Buffer即shared_ptr拥有着一个string;可以看作是个deque<string>)，则虽然string不同于char，是个内部有移动构造函数的对象
+//  但是，由于data是个const & , 我们为了获取它的字符，还是需要substr一次。而substr是一个拷贝. 故 还是会拷贝一次string里所有的char
+
+//  StreamReassembler 提升性能原因之3
+    //  原先的策略，仅仅是为了保证正确性，对于到来的char，哪怕这些char之前已经缓存过，还是重新缓存一遍(也即，每个char会加入到receive_window中多次），对于重复的大量字符串，效率极差.
+    //  现在的策略，采用map<i,string>，对于缓存的char，会以块的方式维护（因为底层用的是string），可以维护哪些字符是连在一起的，这样调用write的时候不必1个char1个char的遍历、write。
+    //  且不会重复缓存已经缓存过的char! 每个char只会缓存一次. 也即 每个char只会加到 receive_window中一次!
+
 size_t ByteStream::write(const string &data) {
     
     assert(!input_ended());     //  如果写端被关闭，则外界不应当对stream进行write。
@@ -31,7 +55,7 @@ size_t ByteStream::write(const string &data) {
     size_t bytes_to_write = min(data.size(), _capacity - _stream.size());   //  最多写多少bytes
     _bytes_pushed += bytes_to_write;
     // for (size_t i = 0; i < bytes_to_write; ++i) {
-    //     _stream.push_back(data[i]);
+        // _stream.push_back(data[i]);
     // }
     //  substr copy 一次 ; 然后 move到_stream中
     _stream.append(std::move(data.substr(0,bytes_to_write)));

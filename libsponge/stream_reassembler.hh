@@ -28,21 +28,11 @@ class StreamReassembler {
     map<size_t , string> _receving_window;      //  起始下标为key的string
     //  为支持二分查找. 找到新来串的上一个分组（称为前串）和下一个分组（称为后串）
 
-    // size_t _nread;             //  已经读了多少bytes。（所谓读，即上层调用bytestream.read()读走) nread = _first_unread (起始索引为0)
-    size_t _first_unread;         //  第一个没被读的byte的索引
-    size_t _first_unassembled;    //  第一个没加入bytestream的byte的索引（第一个乱序的byte索引）。receiving_window左边界
     size_t first_unacceptable() const {return _output.bytes_read() + _capacity;} // 第一个不可接收的字节，即第一个超出接收范围的字节。receiving_window右边界
-
     size_t _eof_idx{0};
     bool _eof;
-
     //  receive_window中字节个数
     size_t _receiving_window_size{0};
-  private:
-    size_t cached_into_receiving_window(const string &data, const size_t index , bool& non);
-    void whether_eof(const string &data,const int index,const bool eof,const int last_idx);
-    void move_receiving_window();
-    bool corner(const string &data, const size_t index, const bool eof);
   public:
     //! \brief Construct a `StreamReassembler` that will store up to `capacity` bytes.
     //! \note This capacity limits both the bytes that have been reassembled,
