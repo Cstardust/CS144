@@ -30,9 +30,11 @@ size_t ByteStream::write(const string &data) {
 
     size_t bytes_to_write = min(data.size(), _capacity - _stream.size());   //  最多写多少bytes
     _bytes_pushed += bytes_to_write;
-    for (size_t i = 0; i < bytes_to_write; ++i) {
-        _stream.push_back(data[i]);
-    }
+    // for (size_t i = 0; i < bytes_to_write; ++i) {
+    //     _stream.push_back(data[i]);
+    // }
+    //  substr copy 一次 ; 然后 move到_stream中
+    _stream.append(std::move(data.substr(0,bytes_to_write)));
 
     return bytes_to_write;
 }
@@ -48,7 +50,9 @@ string ByteStream::peek_output(const size_t len) const {
     //     res.push_back(*iter);
     // }
     // return res;
-    return string(_stream.begin(),_stream.begin()+bytes_to_read);
+    string s(_stream.concatenate());
+    return s.substr(0,bytes_to_read);
+    // return string(_stream.begin(),_stream.begin()+bytes_to_read);
 }
 
 
@@ -58,9 +62,10 @@ void ByteStream::pop_output(const size_t len) {
     
     size_t bytes_to_pop = min(len, _stream.size());  //  最多全部弹出
     _bytes_popped += bytes_to_pop;
-    while (bytes_to_pop--) {
-        _stream.pop_front();
-    }
+    // while (bytes_to_pop--) {
+    //     _stream.pop_front();
+    // }
+    _stream.remove_prefix(bytes_to_pop);
 }
 
 //! Read (i.e., copy and then pop) the next "len" bytes of the stream
@@ -82,10 +87,14 @@ bool ByteStream::input_ended() const { return _end; }
 //  当前_stream中还有多少bytes未读出
 size_t ByteStream::buffer_size() const { return _stream.size(); }
 
-bool ByteStream::buffer_empty() const { return _stream.empty(); }
+// bool ByteStream::buffer_empty() const { return _stream.empty(); }
+bool ByteStream::buffer_empty() const { return _stream.size() == 0; }
+
 
 //  遇见eof : input关闭，且_stream中无数据
-bool ByteStream::eof() const { return _end && _stream.empty(); }
+// bool ByteStream::eof() const { return _end && _stream.empty(); }
+bool ByteStream::eof() const { return _end && _stream.size() == 0; }
+
 //  总共有多少bytes压入到_stream中过
 size_t ByteStream::bytes_written() const { return _bytes_pushed; }
 //  _stream中总共有过多少bytes流出

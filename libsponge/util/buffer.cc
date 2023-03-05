@@ -33,9 +33,9 @@ BufferList::operator Buffer() const {
 
 string BufferList::concatenate() const {
     std::string ret;
-    ret.reserve(size());
+    ret.reserve(size());                    //  感觉没必要.
     for (const auto &buf : _buffers) {
-        ret.append(buf);
+        ret.append(buf);                    //  copy
     }
     return ret;
 }

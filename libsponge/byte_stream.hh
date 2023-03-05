@@ -4,7 +4,7 @@
 #include <string>
 #include <queue>
 #include <deque>
-
+#include "buffer.hh"
 // using std::queue;
 using std::deque;
 
@@ -24,7 +24,8 @@ class ByteStream {
 
     bool _error{};  //!< Flag indicating that the stream suffered an error.
 
-    deque<char> _stream;     //  其实就是个pipe
+    // deque<char> _stream;     //  其实就是个pipe
+    BufferList _stream;
     size_t _capacity;        //  流中最多容纳多少bytes
     size_t _bytes_popped;    //  有多少bytes从流中弹出
     size_t _bytes_pushed;    //  有多少bytes被压入流中

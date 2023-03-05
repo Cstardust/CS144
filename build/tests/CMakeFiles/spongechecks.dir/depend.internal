@@ -3,6 +3,7 @@
 
 tests/CMakeFiles/spongechecks.dir/byte_stream_test_harness.cc.o
  ../libsponge/byte_stream.hh
+ ../libsponge/util/buffer.hh
  ../libsponge/util/util.hh
  /home/shc/CS144/sponge/tests/byte_stream_test_harness.cc
  /home/shc/CS144/sponge/tests/byte_stream_test_harness.hh
