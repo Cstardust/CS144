@@ -25,8 +25,6 @@ StreamReassembler::StreamReassembler(const size_t capacity)
     : _output(capacity)
     , _capacity(capacity)
     , _receving_window()
-    , _first_unread(0)
-    , _first_unassembled(0)
     , _eof_idx(0)
     , _eof(false) 
     {}
@@ -37,28 +35,23 @@ StreamReassembler::StreamReassembler(const size_t capacity)
 //  合法data : empty || not empty
 void StreamReassembler::push_substring(const string &data, const size_t index, const bool eof) {
 
-    /*  1. 获取当前 index 在 _unassemble_strs 中的上界 pair
-     *      a. 如果存在上界 pair，则判断是否存在重复区域。如果存在部分重复则截断，存在全部重复则直接丢弃。
-     *      b. 如果不存在上界 pair, 则判断当前数据是否已经和已经被 assemble 的字符串重复。
-     *         如果存在部分重复则截断，存在全部重复则直接丢弃。
-     *  2. 获取当前 index 在 _unassemble_strs 中的下界 pair。 如果存在下界 pair
-     *      a. 如果下界 pair 没有被当前数据完全包含，则判断是否存在重复区域。如果存在则截断。
-     *      b. 如果下界 pair 被当前数据包含，则将下界 pair 从 _unassemble_strs 中丢弃，之后重新取出一个新的下界 pair,
-     * 重复第二步 这时候我们可以获得与 _unassemble_strs 中没有任何重复的字符串
-    */
+//   约定 data的前串prev_data 为 prev_data的起始idx比data的起始idx小 ; 同理 data的 后串 next_data为 next_data的起始idx比data的起始idx大
+//   1. 获取当前 index 在 receive_window 中的前串
+//      a. 如果存在前串，则判断是否存在重复区域。如果存在部分重复则截断，存在全部重复则直接丢弃。
+//      b. 如果不存在前串, 则判断当前数据是否已经和已经被 receive_window 的字符串重复。如果存在部分重复则截断，存在全部重复则直接丢弃。
+//   2. 获取当前 index 在 receive_window 中的后串。 如果存在后串
+//     a. 如果后串 没有被当前数据完全包含，则判断是否存在重复区域。如果存在则截断。
+//     b. 如果后串 被当前数据包含，则将后串 从 receive_window 中丢弃，之后重新取出一个新的后串
+//     重复第二步 这时候我们可以获得与 receive_window 中没有任何重复的字符串
+//     我们没有将不同的串合并，只是让串之间不能重叠即可
     //  我们没有将不同的串合并，只是保证了不能重叠。合并省去了，感觉可能影响效率。
     //  寻找 新串index 的 前串(其idx <= index)
     map<size_t,string>::iterator prev_iter = _receving_window.upper_bound(index);       //  >
     if(prev_iter!=_receving_window.begin())         //  <=
         --prev_iter;
-    /**
-     *  此时迭代器有三种情况，
-     *  1. 一种是prev_iter == begin_iter == end_iter，表示_receive_window不存在任何数据
-     *  2. 一种是为prev_iter != end_iter. 
-     *              prev_iter 指向前串
-     *              prev_iter指向后串
-    */
-    //  new_idx 至少要从 _next_assembled_idx开始
+    //  1. prev_iter == begin_iter == end_iter，表示_receive_window不存在任何数据
+    //  2. prev_iter != end_iter. prev_iter 指向前串 prev_iter指向后串
+    //  new_idx 至少要从 first_unassembled()开始
     size_t new_idx = max(index,first_unassembled());
     //  _receving_window.empty()
     if(prev_iter == _receving_window.end())
@@ -75,7 +68,6 @@ void StreamReassembler::push_substring(const string &data, const size_t index, c
     size_t data_start_offset = new_idx - index;
     //  去除重叠部分的data长度
         //  出去重叠前缀的data长度
-    
     if(data.size() < (new_idx - index))    //  如果已经全部都在bytestream中     不写是因为可能有空的eof
         return ;
     if(data.size() == new_idx - index)
@@ -97,7 +89,7 @@ void StreamReassembler::push_substring(const string &data, const size_t index, c
     // cout<<"new_idx "<<new_idx<<"data_size "<<data_size<<" "<<data_start_offset<<endl;
 
     //  寻找后串(且idx >= new_idx) :去掉全部覆盖的以及重叠后缀
-    map<size_t,string>::iterator ne_iter = _receving_window.lower_bound(new_idx);           // >=    感觉可以换成idx
+    map<size_t,string>::iterator ne_iter = _receving_window.lower_bound(new_idx);           // >=    
     //  如果和后面的重叠
     while(ne_iter!=_receving_window.end() && new_idx <= ne_iter->first && new_idx + data_size > ne_iter->first)
     {
@@ -117,10 +109,7 @@ void StreamReassembler::push_substring(const string &data, const size_t index, c
 
     //  至此，我们得到的 data.substr(data_start_offset,data_size) 
     //  是一个不和receive_window中其他字段重叠的data
-
     // 检测是否存在数据超出了窗口容量
-    // size_t first_unacceptable_idx = first_unassembled() + _capacity - _output.buffer_size();
-    // size_t first_unacceptable_idx = _output.bytes_read() + _capacity;
     if (first_unacceptable() <= new_idx)
         return;
     
@@ -140,8 +129,6 @@ void StreamReassembler::push_substring(const string &data, const size_t index, c
         {
             // cout<<"try to write "<<isolated_data<<endl;
             size_t written = _output.write(isolated_data);
-            // _next_assembled_idx += written;                 //  下一个要写的字节的下标（感觉直接writeen也没差别？）
-            //  似乎不用维护这个
             //  没写完 -> 将剩下的str存入receive_window  维护_receive_window_size
             if(written < data_size)
             {
@@ -169,7 +156,6 @@ void StreamReassembler::push_substring(const string &data, const size_t index, c
         {
             // cout<<"try to write "<<str<<endl;
             size_t written = _output.write(str);
-            // _next_assembled_idx += written;
             //  维护 receive_window_size
             _receiving_window_size -= written;
             //  全部写入
@@ -187,7 +173,6 @@ void StreamReassembler::push_substring(const string &data, const size_t index, c
             }
         }
     }
-    // cout<<"next ass "<<_next_assembled_idx<<endl;
     if(eof)
     {
         _eof = true;
